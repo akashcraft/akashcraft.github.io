@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <Header />
-      <Box sx={{ margin: "1rem" }}>
+      <Box sx={{ margin: "4rem 0rem" }}>
         <Stack
           direction="row"
           spacing={3}

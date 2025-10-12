@@ -3,7 +3,7 @@ import Header from "./commons/Header";
 import { Box, Button, Stack } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
-import reactLogo from "./assets/reactLogo.svg";
+import reactLogo from "./assets/reactLogo.png";
 import { openMainWebsite } from "./commons/Utils";
 
 function App() {
@@ -51,7 +51,6 @@ function App() {
 const StyledSpan = styled.span`
   font-weight: normal;
   font-size: 0.75rem;
-  color: gray;
 `;
 
 const StyledImg = styled.img`

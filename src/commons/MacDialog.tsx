@@ -64,7 +64,12 @@ const StyledMacDialog = styled.div`
   -webkit-backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
   backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  background-color: rgba(45, 45, 45, 0.85);
+  background-color: color-mix(
+    in srgb,
+    var(--mui-palette-background-macos) 80%,
+    transparent
+  );
+  color: var(--mui-palette-text-secondary);
   transform: translate(-50%, -50%);
   font-family: "San Francisco";
   transform-origin: center;
@@ -82,13 +87,11 @@ const StyledMacDialog = styled.div`
     margin: 0;
     font-weight: 800;
     font-family: "San Francisco Bold";
-    transition: color 0.5s;
   }
 
   p.macos-description {
     margin: 1rem 2rem;
     font-size: small;
-    transition: color 0.5s;
     margin-left: 0;
     margin-right: 0;
   }
@@ -102,6 +105,7 @@ const StyledMacDialog = styled.div`
 
   div.macos-ok {
     background-color: #f38008;
+    color: white;
   }
 
   div.macos-ok:active {

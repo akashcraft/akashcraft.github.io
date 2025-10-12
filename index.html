@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/src/assets/logo.png" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AkashCraft</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <svg width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glassfilter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="edgeBlur"/>
+        
+        <feColorMatrix in="edgeBlur" type="matrix" result="edgeMap"
+          values="
+          0 0 0 0 0.5
+          0 0 0 0 1
+          0 0 0 0 0
+          0 0 0 1 0"/>
+
+        <feTurbulence type="turbulence" baseFrequency="0.003 0.003" numOctaves="1" seed="2" result="tinyNoise"/>
+        <feBlend in="edgeMap" in2="tinyNoise" mode="multiply" result="edgeMapWithNoise"/>
+
+        <feDisplacementMap in="SourceGraphic" in2="edgeMapWithNoise"
+                  scale="25"
+                  xChannelSelector="R"
+                  yChannelSelector="G"/>
+      </filter>
+      </defs>
+    </svg>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

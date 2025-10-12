@@ -9,21 +9,11 @@ import VolunteerActivism from "@mui/icons-material/VolunteerActivism";
 import Description from "@mui/icons-material/Description";
 
 import StyledMacDialog from "./MacDialog";
-
-function openResumeInNewTab() {
-  window.open("../../public/resume.pdf", "_blank");
-}
-
-function openDonatePageInNewTab() {
-  window.open(
-    "https://www.paypal.com/donate/?business=YFEQJ9D5KR9PW&no_recurring=0&item_name=Thank+you+for+considering+to+donate+me%21+This+way+I+can+keep+developing+more+applications+for+you.&currency_code=CAD",
-    "_blank",
-  );
-}
-
-function openMainWebsite() {
-  window.location.href = "https://akashcraft.ca";
-}
+import {
+  openResumeInNewTab,
+  openDonatePageInNewTab,
+  openMainWebsite,
+} from "./Utils";
 
 function Header() {
   const [openOpenMacDialog, setOpenMacDialog] = useState(false);

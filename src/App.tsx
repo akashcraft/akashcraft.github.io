@@ -1,15 +1,16 @@
 import "./styles/App.css";
 import Header from "./commons/Header";
-import { Box, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
 import reactLogo from "./assets/reactLogo.svg";
+import { openMainWebsite } from "./commons/Utils";
 
 function App() {
   return (
     <>
       <Header />
-      <Box sx={{ margin: "5rem" }}>
+      <Box sx={{ margin: "1rem" }}>
         <Stack
           direction="row"
           spacing={3}
@@ -21,14 +22,14 @@ function App() {
           <StyledImg2 src={reactLogo} />
         </Stack>
         <h2 className="about">
-          Canary Build <StyledSpan>26.1.0</StyledSpan>
+          Canary Build <StyledSpan>26.1.1</StyledSpan>
         </h2>
         <br />
         <p className="about">
           Hello! My name is Akash Samanta. You are viewing an upcoming build of
           my website. Development started on 12 October 2025. The purpose of
           this new build is to migrate from vanilla HTML, CSS, and JavaScript to
-          a more modern framework of React, Typescript, and Vite.
+          a more modern framework of React, TypeScript, and Vite.
           <br />
           <br />
           Things were becoming like spaghetti with the old build as I was adding
@@ -38,6 +39,10 @@ function App() {
           features. The final build may differ from what is already there. You
           can always view the completed website at akashcraft.ca.
         </p>
+        <br />
+        <Button variant="contained" color="primary" onClick={openMainWebsite}>
+          Go to akashcraft.ca
+        </Button>
       </Box>
     </>
   );

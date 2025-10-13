@@ -66,7 +66,7 @@ const StyledMacDialog = styled.div`
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   background-color: color-mix(
     in srgb,
-    var(--mui-palette-background-macos) 80%,
+    var(--mui-palette-background-macos) 95%,
     transparent
   );
   color: var(--mui-palette-text-secondary);

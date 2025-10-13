@@ -19,6 +19,9 @@ export type genericAppData = {
   linkText: string;
 };
 
+export const aboutMeText: string =
+  "Hello! My name is Akash Samanta. You are viewing an upcoming build of my website. Development started on 12 October 2025. The purpose of this new build is to migrate from vanilla HTML, CSS, and JavaScript to a more modern framework of React, TypeScript, and Vite. The final build may differ from what is already there. You can always view the completed website at akashcraft.ca.";
+
 export const codingData: genericAppData[] = [
   {
     title: "Web Development",

@@ -47,7 +47,7 @@ function App() {
           <StyledImg2 src={reactLogo} />
         </Stack>
         <h2 className="about">
-          Canary Build <StyledSpan>26.1.1</StyledSpan>
+          Canary Build <StyledSpan>26.1.2</StyledSpan>
         </h2>
         <p className="about">
           Hello! My name is Akash Samanta. You are viewing an upcoming build of

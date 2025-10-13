@@ -16,6 +16,7 @@ export type genericAppData = {
   subtitle?: string;
   description: string;
   image: string;
+  linkText: string;
 };
 
 export const codingData: genericAppData[] = [
@@ -23,17 +24,20 @@ export const codingData: genericAppData[] = [
     title: "Web Development",
     description: "Try some of my web apps and games right from your browser.",
     image: banner1,
+    linkText: "Explore",
   },
   {
     title: "App Development",
     description: "Try some of my web apps and games right from your browser.",
     image: banner2,
+    linkText: "Explore",
   },
   {
     title: "Game Development",
     description:
       "Check out Quest Plunge! My 2D Platformer Game made with Unity.",
     image: banner3,
+    linkText: "Play Now",
   },
 ];
 
@@ -44,12 +48,14 @@ export const workData = [
     description:
       "Worked with Marine Institute and MUN to develop an automated eye tracking software.",
     image: banner4,
+    linkText: "Learn More",
   },
   {
     title: "UI Developer",
     subtitle: "8 months",
     description: "Worked with Nasdaq Verafin in the Front-End Development Team",
     image: banner5,
+    linkText: "Private",
   },
   {
     title: "Datalakes Developer",
@@ -57,6 +63,7 @@ export const workData = [
     description:
       "Working with Nasdaq Verafin in the Warehouse Data Preparation Team",
     image: banner6,
+    linkText: "Private",
   },
 ];
 
@@ -66,6 +73,7 @@ export const educationData = [
     subtitle: "Current GPA: 4.0/4.0",
     description: "Studying in Memorial University of Newfoundland",
     image: banner7,
+    linkText: "External",
   },
 ];
 
@@ -75,12 +83,14 @@ export const videoEditingData = [
     description:
       "Check out some of my documentaries and travel vlogs on YouTube.",
     image: banner8,
+    linkText: "Watch Now",
   },
   {
     title: "Rotoscoping",
     description:
       "Manual tracing over motion picture using After Effects. Watch now.",
     image: banner9,
+    linkText: "Watch Now",
   },
 ];
 
@@ -90,17 +100,20 @@ export const otherData = [
     description:
       "Built ADDS, DNS, RADIUS Server, and Guest Wi-Fi at home. Learn More.",
     image: banner10,
+    linkText: "Learn More",
   },
   {
     title: "Arts and Crafts",
     description:
       "Sometimes we need a breather from school or work. See my sketches.",
     image: banner11,
+    linkText: "Watch Now",
   },
   {
     title: "Personal Website",
     description:
       "This website. Designed with React, TypeScript, Vite, and MUI.",
     image: banner12,
+    linkText: "Reload",
   },
 ];

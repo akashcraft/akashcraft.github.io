@@ -26,7 +26,7 @@ import {
 } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import StyledMacDialog from "./MacDialog";
+import MacDialog from "./MacDialog";
 
 import {
   openDonatePageInNewTab,
@@ -88,7 +88,7 @@ function Header() {
 
   return (
     <>
-      <StyledMacDialog
+      <MacDialog
         heading="Not Implemented"
         description="This feature is still under development. You can view the completed website on akashcraft.ca."
         visible={openOpenMacDialog}

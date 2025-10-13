@@ -51,7 +51,11 @@ function MainCard({ data, isDuration }: MainCardProps) {
         visible={openOpenMacDialog}
         onClose={() => setOpenMacDialog(false)}
       />
-      <StyledCard phone={phone} sx={{ maxWidth: "20rem" }}>
+      <StyledCard
+        sx={{
+          margin: phone ? "0.5rem" : "1rem",
+        }}
+      >
         <CardActionArea
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -59,8 +63,8 @@ function MainCard({ data, isDuration }: MainCardProps) {
         >
           <motion.div
             style={{ y: 0 }}
-            initial={{ scale: 1 }}
-            animate={{ scale: hovered ? 1.05 : 1 }}
+            initial={{ scale: 1, y: 0 }}
+            animate={{ scale: hovered ? 1.05 : 1, y: hovered ? -4 : 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
             <CardMedia component="img" height="170" image={data.image} />
@@ -70,7 +74,7 @@ function MainCard({ data, isDuration }: MainCardProps) {
               <motion.div
                 key="left"
                 initial={{ opacity: 1, x: 0 }}
-                animate={{ opacity: hovered ? 0 : 1, x: hovered ? -20 : 0 }}
+                animate={{ opacity: hovered ? 0 : 1, x: hovered ? 25 : 0 }}
                 transition={{ duration: 0.3 }}
                 style={{
                   position: "absolute",
@@ -84,7 +88,7 @@ function MainCard({ data, isDuration }: MainCardProps) {
               <motion.div
                 key="center"
                 initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : 20 }}
+                animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -25 }}
                 transition={{ duration: 0.3 }}
                 style={{
                   position: "absolute",
@@ -122,8 +126,13 @@ function MainCard({ data, isDuration }: MainCardProps) {
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
               <StyledStack
-                isReload={isReload}
-                isPrivate={isPrivate}
+                sx={{
+                  backgroundColor: isReload
+                    ? "green"
+                    : isPrivate
+                      ? "red"
+                      : "#ed784f",
+                }}
                 direction="row"
                 spacing={"1rem"}
                 alignItems="center"
@@ -157,28 +166,23 @@ function MainCard({ data, isDuration }: MainCardProps) {
   );
 }
 
-const StyledCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== "phone",
-})<{ phone: boolean }>(({ phone }) => ({
+const StyledCard = styled(Card)({
   backgroundColor: "var(--mui-palette-background-paper)",
-  margin: phone ? "0.5rem" : "1rem",
   borderRadius: "1rem",
+  maxWidth: "20rem",
   textAlign: "left",
-}));
+});
 
-const StyledStack = styled(Stack, {
-  shouldForwardProp: (prop) => prop !== "isPrivate" && prop !== "isReload",
-})<{ isPrivate: boolean; isReload: boolean }>(({ isPrivate, isReload }) => ({
+const StyledStack = styled(Stack)({
   borderRadius: "1rem",
   fontFamily: "Trebuchet",
   position: "absolute",
   textWrap: "nowrap",
   padding: "0.2rem 1rem",
   left: "50%",
-  backgroundColor: isReload ? "green" : isPrivate ? "red" : "#ed784f",
   fontSize: "1.1rem",
   transform: "translateX(-50%)",
   transformOrigin: "center",
-}));
+});
 
 export default MainCard;

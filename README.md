@@ -1,9 +1,35 @@
-- 👋 Hi, I’m Akash Samanta (@akashcraft)
-- 👀 I’m interested in Full-Stack Web Development and App Development.Applications
-- 💻 Application - Python, C++, C# (Unity), Dart (Flutter)
-- 🚅 Front-End - HTML, CSS, JavaScript, jQuery, MaterialUI, React, Typescript
-- 💾 Back-End and Data Analytics - Python, PHP, MySQL, PostgreSQL, Scala, Apache Spark, AWS (EC2, RDS, S3)
-- 🌱 I’m currently a computer engineering student with expected graduation in 2026.
-- ❤️ I like to explore new boundaries of tech and share my coding journey in GitHub.
-- ✨ I love video editing and sketching as my hobbies
-- 🪙 [Donate Here!](https://www.paypal.com/donate/?business=YFEQJ9D5KR9PW&no_recurring=0&item_name=Thank+you+for+considering+to+donate+me%21+This+way+I+can+keep+developing+more+applications+for+you.&currency_code=CAD)
+# Main Website
+The working directory of my Developer Portfolio Website
+
+> [!CAUTION]
+> This project is in still in development. All builds are canary and may contain bugs. Visit [akashcraft.ca](https://akashcraft.ca) to view the completed website.
+
+## Installation Guide
+
+### Pre-requisites
+
+Download and install the following in order to run the website:
+
+- VSCode or IntelliJ
+- Node.js
+- ESLint (Highly Recommended)
+
+> [!TIP]
+> WebStorm has free 1-year non-commercial license
+
+### GitHub
+
+You need to have a GitHub account. Please create one if you have not done so. Once that is done, **fork** this repository first and then clone it to your local machine. Use the following command to clone the forked repository to your local machine.
+
+```
+git clone <YOUR FORKED REPO ADDRESS> <OPTIONAL FOLDER NAME>
+```
+
+### Packages
+
+Run the following in the root of your project folder
+```
+npm install && npm run dev
+```
+
+You should see the website hosted on `localhost:5173`. Happy Coding!

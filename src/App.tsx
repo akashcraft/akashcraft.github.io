@@ -7,7 +7,9 @@ import githubLogo from "./assets/img-app/GitHub.png";
 import youtubeLogo from "./assets/img-app/Youtube.png";
 import linkedinLogo from "./assets/img-app/Linkedin.png";
 import reactLogo from "./assets/reactLogo.png";
+import packageJson from "../package.json";
 import {
+  aboutMeText,
   codingData,
   educationData,
   otherData,
@@ -30,6 +32,7 @@ import {
   Videocam,
   NoteAdd,
 } from "@mui/icons-material";
+import Footer from "./commons/Footer";
 
 function App() {
   return (
@@ -47,16 +50,9 @@ function App() {
           <StyledImg2 src={reactLogo} />
         </Stack>
         <h2 className="about">
-          Canary Build <StyledSpan>26.1.2</StyledSpan>
+          Canary Build <StyledSpan>{packageJson.version}</StyledSpan>
         </h2>
-        <p className="about">
-          Hello! My name is Akash Samanta. You are viewing an upcoming build of
-          my website. Development started on 12 October 2025. The purpose of
-          this new build is to migrate from vanilla HTML, CSS, and JavaScript to
-          a more modern framework of React, TypeScript, and Vite. The final
-          build may differ from what is already there. You can always view the
-          completed website at akashcraft.ca.
-        </p>
+        <p className="about">{aboutMeText}</p>
         <br />
         <Stack
           direction="row"
@@ -125,6 +121,7 @@ function App() {
           />
         </Stack>
       </Box>
+      <Footer />
     </>
   );
 }

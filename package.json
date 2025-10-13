@@ -2,7 +2,7 @@
   "name": "akashcraft-new",
   "homepage": "https://akashcraft.github.io/akashcraft/",
   "private": true,
-  "version": "26.1.2",
+  "version": "26.1.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "patch": "npm version patch --no-git-tag-version",
+    "minor": "npm version minor --no-git-tag-version",
+    "major": "npm version major --no-git-tag-version"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

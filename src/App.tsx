@@ -1,10 +1,35 @@
 import "./styles/App.css";
 import Header from "./commons/Header";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
+import githubLogo from "./assets/img-app/GitHub.png";
+import youtubeLogo from "./assets/img-app/Youtube.png";
+import linkedinLogo from "./assets/img-app/Linkedin.png";
 import reactLogo from "./assets/reactLogo.png";
-import { openMainWebsite } from "./commons/Utils";
+import {
+  codingData,
+  educationData,
+  otherData,
+  videoEditingData,
+  workData,
+} from "./app/appData";
+import {
+  openMainWebsite,
+  openGitHub,
+  openLinkedIn,
+  openYouTube,
+} from "./commons/Utils";
+import { orange, grey, red, blue } from "@mui/material/colors";
+import TopChip from "./app/TopChip";
+import MainSection from "./app/MainSection";
+import {
+  DataObject,
+  Work,
+  School,
+  Videocam,
+  NoteAdd,
+} from "@mui/icons-material";
 
 function App() {
   return (
@@ -24,25 +49,81 @@ function App() {
         <h2 className="about">
           Canary Build <StyledSpan>26.1.1</StyledSpan>
         </h2>
-        <br />
         <p className="about">
           Hello! My name is Akash Samanta. You are viewing an upcoming build of
           my website. Development started on 12 October 2025. The purpose of
           this new build is to migrate from vanilla HTML, CSS, and JavaScript to
-          a more modern framework of React, TypeScript, and Vite.
-          <br />
-          <br />
-          Things were becoming like spaghetti with the old build as I was adding
-          new features and sections. I wanted to start from scratch and make the
-          website newer, cleaner, faster, and easier to manage. This new build
-          is still under development, so please pardon any bugs or unfinished
-          features. The final build may differ from what is already there. You
-          can always view the completed website at akashcraft.ca.
+          a more modern framework of React, TypeScript, and Vite. The final
+          build may differ from what is already there. You can always view the
+          completed website at akashcraft.ca.
         </p>
         <br />
-        <Button variant="contained" color="primary" onClick={openMainWebsite}>
-          Go to akashcraft.ca
-        </Button>
+        <Stack
+          direction="row"
+          spacing={0}
+          justifyContent="center"
+          flexWrap="wrap"
+          sx={{ maxWidth: "fit-content", margin: "0 auto" }}
+        >
+          <TopChip
+            img={logo}
+            title="AkashCraft"
+            color={orange}
+            link={openMainWebsite}
+          />
+          <TopChip
+            img={linkedinLogo}
+            title="LinkedIn"
+            color={blue}
+            link={openLinkedIn}
+          />
+          <TopChip
+            img={githubLogo}
+            title="GitHub"
+            color={grey}
+            link={openGitHub}
+          />
+          <TopChip
+            img={youtubeLogo}
+            title="YouTube"
+            color={red}
+            link={openYouTube}
+          />
+        </Stack>
+        <Stack
+          direction="column"
+          spacing={3}
+          justifyContent="center"
+          alignItems="center"
+          sx={{ marginTop: "2rem" }}
+        >
+          <MainSection
+            heading="Coding"
+            icon={<DataObject sx={ChipIconStyle} />}
+            genericData={codingData}
+          />
+          <MainSection
+            heading="Work Experience"
+            icon={<Work sx={ChipIconStyle} />}
+            genericData={workData}
+            isDuration
+          />
+          <MainSection
+            heading="Education"
+            icon={<School sx={ChipIconStyle} />}
+            genericData={educationData}
+          />
+          <MainSection
+            heading="Video Editing"
+            icon={<Videocam sx={ChipIconStyle} />}
+            genericData={videoEditingData}
+          />
+          <MainSection
+            heading="Others"
+            icon={<NoteAdd sx={ChipIconStyle} />}
+            genericData={otherData}
+          />
+        </Stack>
       </Box>
     </>
   );
@@ -61,5 +142,7 @@ const StyledImg2 = styled.img`
   width: 6rem;
   animation: logo-spin 20s linear infinite;
 `;
+
+const ChipIconStyle = { color: "white !important", fontSize: "2rem" };
 
 export default App;

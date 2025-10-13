@@ -201,7 +201,7 @@ function Header() {
 }
 
 const StyledAppBar = styled(AppBar)`
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2) !important;
   -webkit-backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
   backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
 `;

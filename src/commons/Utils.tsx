@@ -12,3 +12,15 @@ export function openDonatePageInNewTab() {
 export function openMainWebsite() {
   window.location.href = "https://akashcraft.ca";
 }
+
+export function openGitHub() {
+  window.open("https://github.com/akashcraft", "_blank");
+}
+
+export function openLinkedIn() {
+  window.open("https://www.linkedin.com/in/akashcraft/", "_blank");
+}
+
+export function openYouTube() {
+  window.open("https://www.youtube.com/@akashcraft2", "_blank");
+}

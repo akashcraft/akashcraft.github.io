@@ -18,7 +18,7 @@ const appTheme = createTheme({
         secondary: pink,
         background: {
           default: "#935737",
-          paper: "#935737",
+          paper: "#774517",
           macos: "#fff",
         },
         text: {
@@ -33,7 +33,7 @@ const appTheme = createTheme({
         secondary: pink,
         background: {
           default: "#000000",
-          paper: "#000000",
+          paper: "#2a2a2a",
           macos: "#302f2f",
         },
         text: {

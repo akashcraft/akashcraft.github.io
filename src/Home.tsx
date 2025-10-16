@@ -37,10 +37,21 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 
 function Home() {
+  window.addEventListener("load", () => {
+    const splash = document.getElementById("splash");
+    if (splash) {
+      splash.remove();
+    }
+  });
+
   useEffect(() => {
     const saved = sessionStorage.getItem("homeScroll");
     if (saved) {
       window.scrollTo(0, Number(saved));
+    } else {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     }
 
     const handleScroll = () => {
@@ -60,7 +71,7 @@ function Home() {
         style={{ transformOrigin: "top center" }}
         initial={{ opacity: 0, scale: 0.95, y: 0 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1, ease: [0.05, 0.8, 0.35, 0.99] }}
+        transition={{ duration: 1, delay: 0.2, ease: [0.05, 0.8, 0.35, 0.99] }}
       >
         <Box sx={{ margin: "4rem 0rem" }}>
           <Stack

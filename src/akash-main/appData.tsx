@@ -17,6 +17,7 @@ export type genericAppData = {
   description: string;
   image: string;
   linkText: string;
+  link?: string;
 };
 
 export const aboutMeText: string =
@@ -28,12 +29,14 @@ export const codingData: genericAppData[] = [
     description: "Try some of my web apps and games right from your browser.",
     image: banner1,
     linkText: "Explore",
+    link: "web",
   },
   {
     title: "App Development",
     description: "Try some of my web apps and games right from your browser.",
     image: banner2,
     linkText: "Explore",
+    link: "app",
   },
   {
     title: "Game Development",
@@ -52,13 +55,15 @@ export const workData = [
       "Worked with Marine Institute and MUN to develop an automated eye tracking software.",
     image: banner4,
     linkText: "Learn More",
+    link: "eyeport",
   },
   {
     title: "UI Developer",
     subtitle: "8 months",
     description: "Worked with Nasdaq Verafin in the Front-End Development Team",
     image: banner5,
-    linkText: "Private",
+    linkText: "Learn More",
+    link: "verafin",
   },
   {
     title: "Datalakes Developer",
@@ -66,7 +71,8 @@ export const workData = [
     description:
       "Working with Nasdaq Verafin in the Warehouse Data Preparation Team",
     image: banner6,
-    linkText: "Private",
+    linkText: "Learn More",
+    link: "verafin",
   },
 ];
 
@@ -76,7 +82,8 @@ export const educationData = [
     subtitle: "Current GPA: 4.0/4.0",
     description: "Studying in Memorial University of Newfoundland",
     image: banner7,
-    linkText: "External",
+    linkText: "Learn More",
+    link: "education",
   },
 ];
 
@@ -87,6 +94,7 @@ export const videoEditingData = [
       "Check out some of my documentaries and travel vlogs on YouTube.",
     image: banner8,
     linkText: "Watch Now",
+    link: "https://www.youtube.com/playlist?list=PLtbdWMYTs1LTHcgaZLtqBDS0XfVmMmmdy",
   },
   {
     title: "Rotoscoping",
@@ -94,6 +102,7 @@ export const videoEditingData = [
       "Manual tracing over motion picture using After Effects. Watch now.",
     image: banner9,
     linkText: "Watch Now",
+    link: "https://www.youtube.com/playlist?list=PLtbdWMYTs1LROXrqm7FyspWZHkkSsC8mg",
   },
 ];
 
@@ -104,6 +113,7 @@ export const otherData = [
       "Built ADDS, DNS, RADIUS Server, and Guest Wi-Fi at home. Learn More.",
     image: banner10,
     linkText: "Learn More",
+    link: "networking",
   },
   {
     title: "Arts and Crafts",
@@ -111,6 +121,7 @@ export const otherData = [
       "Sometimes we need a breather from school or work. See my sketches.",
     image: banner11,
     linkText: "Watch Now",
+    link: "https://www.youtube.com/playlist?list=PLtbdWMYTs1LT1OG8O3EiDLtWg_OIxND1k",
   },
   {
     title: "Personal Website",

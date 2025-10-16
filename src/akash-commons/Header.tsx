@@ -28,11 +28,9 @@ import {
 import useMediaQuery from "@mui/material/useMediaQuery";
 import MacDialog from "./MacDialog";
 
-import {
-  openDonatePageInNewTab,
-  openMainWebsite,
-  openResumeInNewTab,
-} from "./Utils";
+import { openDonatePageInNewTab, openResumeInNewTab } from "./Utils";
+
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   // Theme Menu
@@ -85,6 +83,7 @@ function Header() {
   // Media Query
   const phone = useMediaQuery("(min-width:600px)");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -97,7 +96,13 @@ function Header() {
       <StyledAppBar position="fixed">
         <Toolbar variant="dense" disableGutters>
           <StyledImg src={logo} />
-          <StyledH2 onClick={openMainWebsite}>AkashCraft</StyledH2>
+          <StyledH2
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            AkashCraft
+          </StyledH2>
           <Box sx={{ flexGrow: 1 }} />
           {phone ? (
             <Stack

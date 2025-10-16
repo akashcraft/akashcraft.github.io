@@ -14,7 +14,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import BlockIcon from "@mui/icons-material/Block";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { motion } from "framer-motion";
-import MacDialog from "../commons/MacDialog";
+import MacDialog from "../akash-commons/MacDialog";
+import { useNavigate } from "react-router-dom";
 
 type MainCardProps = {
   data: genericAppData;
@@ -27,6 +28,7 @@ function MainCard({ data, isDuration }: MainCardProps) {
   const isPrivate = data.linkText === "Private";
   const isReload = data.linkText === "Reload";
   const [openOpenMacDialog, setOpenMacDialog] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -36,8 +38,18 @@ function MainCard({ data, isDuration }: MainCardProps) {
     setHovered(false);
   };
 
-  function handleNotImplementedClick() {
-    setOpenMacDialog(true);
+  function handleClick() {
+    if (data.link && !isReload) {
+      if (data.link.startsWith("http")) {
+        window.open(data.link, "_blank");
+      } else {
+        navigate(`/${data.link}`);
+      }
+    } else if (isReload) {
+      window.location.reload();
+    } else {
+      setOpenMacDialog(true);
+    }
   }
 
   // Media Query
@@ -59,7 +71,7 @@ function MainCard({ data, isDuration }: MainCardProps) {
         <CardActionArea
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={handleNotImplementedClick}
+          onClick={handleClick}
         >
           <motion.div
             style={{ y: 0 }}

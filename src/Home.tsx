@@ -34,8 +34,25 @@ import {
 } from "@mui/icons-material";
 import Footer from "./akash-commons/Footer";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 function Home() {
+  useEffect(() => {
+    const saved = sessionStorage.getItem("homeScroll");
+    if (saved) {
+      window.scrollTo(0, Number(saved));
+    }
+
+    const handleScroll = () => {
+      sessionStorage.setItem("homeScroll", String(window.scrollY));
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <Header />

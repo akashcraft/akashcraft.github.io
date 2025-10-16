@@ -46,6 +46,7 @@ function MainCard({ data, isDuration }: MainCardProps) {
         navigate(`/${data.link}`);
       }
     } else if (isReload) {
+      sessionStorage.removeItem("homeScroll");
       window.location.reload();
     } else {
       setOpenMacDialog(true);

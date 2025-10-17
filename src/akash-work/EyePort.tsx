@@ -2,7 +2,7 @@ import "./../styles/App.css";
 import HolderBox from "../akash-commons/HolderBox";
 
 function EyePort() {
-  return <HolderBox label="Research and Development"></HolderBox>;
+  return <HolderBox></HolderBox>;
 }
 
 export default EyePort;

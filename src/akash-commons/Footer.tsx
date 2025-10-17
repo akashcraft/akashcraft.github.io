@@ -18,6 +18,7 @@ function Footer() {
 }
 
 const StyledChip = styled(Chip)({
+  zIndex: 1000,
   color: "white",
   justifyContent: "center",
   position: "fixed",

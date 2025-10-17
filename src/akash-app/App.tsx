@@ -2,7 +2,7 @@ import "./../styles/App.css";
 import HolderBox from "../akash-commons/HolderBox";
 
 function App() {
-  return <HolderBox label="App Development"></HolderBox>;
+  return <HolderBox></HolderBox>;
 }
 
 export default App;

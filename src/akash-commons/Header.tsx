@@ -13,6 +13,7 @@ import {
   styled,
   Drawer,
   Stack,
+  Breadcrumbs,
 } from "@mui/material";
 
 import {
@@ -29,8 +30,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import MacDialog from "./MacDialog";
 
 import { openDonatePageInNewTab, openResumeInNewTab } from "./Utils";
+import { motion } from "framer-motion";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   // Theme Menu
@@ -85,6 +87,19 @@ function Header() {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // Breadcrumbs
+  const path = (() => {
+    let p = window.location.hash.replace(/^#!?/, "");
+    if (!p) return "/";
+    if (!p.startsWith("/")) p = "/" + p;
+    const match = p.match(/^[^?#]*/);
+    return match ? match[0] : "/";
+  })();
+  const breadcrumbLabel = (() => {
+    if (path === "/") return "";
+    return path.charAt(1).toUpperCase() + path.slice(2);
+  })();
+
   return (
     <>
       <MacDialog
@@ -93,25 +108,52 @@ function Header() {
         visible={openOpenMacDialog}
         onClose={() => setOpenMacDialog(false)}
       />
-      <StyledAppBar position="fixed">
+      <StyledAppBar
+        position="fixed"
+        sx={{
+          backgroundColor: phone
+            ? "rgba(0, 0, 0, 0.2) !important"
+            : "color-mix(in srgb, var(--mui-palette-background-paper) 95%, transparent)",
+        }}
+      >
         <Toolbar variant="dense" disableGutters>
-          <StyledImg src={logo} />
-          <StyledH2
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            AkashCraft
-          </StyledH2>
+          <Stack direction="row" gap={1} alignItems="center">
+            <StyledImg src={logo} />
+            <StyledH2
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              AkashCraft
+            </StyledH2>
+            <motion.div
+              initial={{ x: 20 }}
+              animate={{ x: 0 }}
+              transition={{ duration: 0.5, ease: [0.05, 0.8, 0.35, 0.99] }}
+            >
+              <Breadcrumbs sx={{ marginTop: "0.5rem" }}>
+                <StyledLink to="/">{breadcrumbLabel}</StyledLink>
+              </Breadcrumbs>
+            </motion.div>
+          </Stack>
           <Box sx={{ flexGrow: 1 }} />
           {phone ? (
             <Stack
               direction="row"
-              spacing={"0.25rem"}
+              spacing={"0.5rem"}
               sx={{ marginRight: "0.6rem" }}
             >
+              <StyledChip label="Resume" onClick={openResumeInNewTab} />
+              <IconChip
+                icon={<VolunteerActivism sx={ChipIconStyle} />}
+                onClick={openDonatePageInNewTab}
+              />
+              <IconChip
+                icon={<Person sx={ChipIconStyle} />}
+                onClick={handleNotImplementedClick}
+              />
               <div>
-                <StyledChip
+                <IconChip
                   icon={
                     themeMode === "Light" ? (
                       <LightMode sx={ChipIconStyle} />
@@ -121,35 +163,22 @@ function Header() {
                       <Computer sx={ChipIconStyle} />
                     )
                   }
-                  label={themeMode}
                   onClick={handleClick}
                 />
                 <Menu
                   anchorEl={anchorEl}
                   open={open}
                   onClose={handleClose}
-                  sx={{ marginTop: "0.5rem", marginLeft: "0.25rem" }}
+                  sx={{
+                    marginTop: "0.6rem",
+                    marginLeft: "0.25rem",
+                  }}
                 >
                   <MenuItem onClick={setLightMode}>Light</MenuItem>
                   <MenuItem onClick={setDarkMode}>Dark</MenuItem>
                   <MenuItem onClick={setSystemMode}>System</MenuItem>
                 </Menu>
               </div>
-              <StyledChip
-                icon={<VolunteerActivism sx={ChipIconStyle} />}
-                label="Donate"
-                onClick={openDonatePageInNewTab}
-              />
-              <StyledChip
-                icon={<Person sx={ChipIconStyle} />}
-                label="Login"
-                onClick={handleNotImplementedClick}
-              />
-              <StyledChip
-                icon={<Description sx={ChipIconStyle} />}
-                label="Resume"
-                onClick={openResumeInNewTab}
-              />
             </Stack>
           ) : (
             <>
@@ -180,14 +209,14 @@ function Header() {
                       onClick={toggleThemeMode}
                     />
                     <StyledChipDrawer
-                      icon={<VolunteerActivism sx={ChipIconStyle} />}
-                      label="Donate"
-                      onClick={openDonatePageInNewTab}
-                    />
-                    <StyledChipDrawer
                       icon={<Person sx={ChipIconStyle} />}
                       label="Login"
                       onClick={handleNotImplementedClick}
+                    />
+                    <StyledChipDrawer
+                      icon={<VolunteerActivism sx={ChipIconStyle} />}
+                      label="Donate"
+                      onClick={openDonatePageInNewTab}
                     />
                     <StyledChipDrawer
                       icon={<Description sx={ChipIconStyle} />}
@@ -206,7 +235,10 @@ function Header() {
 }
 
 const StyledAppBar = styled(AppBar)`
-  background-color: rgba(0, 0, 0, 0.2) !important;
+  top: 0.75rem;
+  width: calc(100dvw - 1rem);
+  left: 0.5rem;
+  border-radius: 1.5rem;
   -webkit-backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
   backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
 `;
@@ -221,13 +253,24 @@ const StyledH2 = styled("h2")`
 const StyledImg = styled("img")`
   width: 30px;
   height: 30px;
-  margin: 0 0.6rem;
+  margin-left: 0.6rem;
 `;
 
 const StyledChip = styled(Chip)({
   color: "white",
   fontSize: "1.2rem",
-  backgroundColor: "transparent",
+});
+
+const IconChip = styled(Chip)({
+  color: "white",
+  fontSize: "1.2rem",
+  width: "2rem",
+  ".MuiChip-label": {
+    display: "none",
+  },
+  ".MuiChip-icon": {
+    margin: 0,
+  },
 });
 
 const StyledChipDrawer = styled(Chip)({
@@ -243,6 +286,11 @@ const StyledChipDrawer = styled(Chip)({
 
 const StyledBox = styled(Box)({
   width: "12rem",
+});
+
+const StyledLink = styled(Link)({
+  textDecoration: "none",
+  color: "white",
 });
 
 const ChipIconStyle = { color: "white !important" };

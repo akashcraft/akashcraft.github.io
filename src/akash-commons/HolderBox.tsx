@@ -1,16 +1,15 @@
 import "./../styles/App.css";
 import Header from "../akash-commons/Header";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import Footer from "../akash-commons/Footer";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 
 type HolderBoxProps = {
-  label: string;
   children?: React.ReactNode;
 };
 
-function HolderBox({ label, children }: HolderBoxProps) {
+function HolderBox({ children }: HolderBoxProps) {
   // Media Query
   const isPhone = useMediaQuery("(min-width:600px)");
   const isMid = useMediaQuery("(min-width:900px)");
@@ -33,11 +32,8 @@ function HolderBox({ label, children }: HolderBoxProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: [0.05, 0.8, 0.35, 0.99] }}
         >
-          <Typography variant="h5" gutterBottom>
-            {label}
-          </Typography>
+          {children}
         </motion.div>
-        {children}
       </StyledBox>
       <Footer />
     </>
@@ -47,7 +43,7 @@ function HolderBox({ label, children }: HolderBoxProps) {
 const StyledBox = styled(Box)({
   width: "100dvw",
   minHeight: "100dvh",
-  marginTop: "3rem",
+  margin: "3rem 0",
   textAlign: "left",
 });
 

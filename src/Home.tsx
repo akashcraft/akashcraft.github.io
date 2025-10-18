@@ -1,6 +1,6 @@
 import "./styles/App.css";
 import Header from "./akash-commons/Header";
-import { Box, Stack } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
 import githubLogo from "./assets/img-app/GitHub.png";
@@ -12,6 +12,7 @@ import {
   aboutMeText,
   codingData,
   educationData,
+  images,
   otherData,
   videoEditingData,
   workData,
@@ -35,16 +36,16 @@ import {
 import Footer from "./akash-commons/Footer";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { GetImages } from "./akash-commons/Hooks";
 
 function Home() {
-  window.addEventListener("load", () => {
-    const splash = document.getElementById("splash");
-    if (splash) {
-      splash.remove();
-    }
-  });
-
   useEffect(() => {
+    window.addEventListener("load", () => {
+      const splash = document.getElementById("splash");
+      if (splash) {
+        splash.remove();
+      }
+    });
     const saved = sessionStorage.getItem("homeScroll");
     if (saved) {
       window.scrollTo(0, Number(saved));
@@ -64,6 +65,8 @@ function Home() {
     };
   }, []);
 
+  const imagesLoaded = GetImages(images);
+
   return (
     <>
       <Header />
@@ -81,8 +84,14 @@ function Home() {
             alignItems="center"
             sx={{ margin: "2rem 0", marginTop: "8rem" }}
           >
-            <StyledImg src={logo} />
-            <StyledImg2 src={reactLogo} />
+            {imagesLoaded ? (
+              <>
+                <StyledImg src={logo} />
+                <StyledImg2 src={reactLogo} />
+              </>
+            ) : (
+              <Skeleton variant="circular" width={88} height={88} />
+            )}
           </Stack>
           <Stack
             direction="column"
@@ -139,27 +148,32 @@ function Home() {
               heading="Coding"
               icon={<DataObject sx={ChipIconStyle} />}
               genericData={codingData}
+              isLoading={!imagesLoaded}
             />
             <MainSection
               heading="Work Experience"
               icon={<Work sx={ChipIconStyle} />}
               genericData={workData}
+              isLoading={!imagesLoaded}
               isDuration
             />
             <MainSection
               heading="Education"
               icon={<School sx={ChipIconStyle} />}
               genericData={educationData}
+              isLoading={!imagesLoaded}
             />
             <MainSection
               heading="Video Editing"
               icon={<Videocam sx={ChipIconStyle} />}
               genericData={videoEditingData}
+              isLoading={!imagesLoaded}
             />
             <MainSection
               heading="Others"
               icon={<NoteAdd sx={ChipIconStyle} />}
               genericData={otherData}
+              isLoading={!imagesLoaded}
             />
           </Stack>
         </Box>

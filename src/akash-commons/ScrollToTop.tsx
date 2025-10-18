@@ -10,6 +10,7 @@ export default function ScrollToTop() {
     if (homeScroll) {
       sessionStorage.setItem("homeScroll", homeScroll);
     }
+    window.removeEventListener("scroll", () => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 

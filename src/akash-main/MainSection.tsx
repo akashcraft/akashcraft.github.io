@@ -9,6 +9,7 @@ type MainSectionProps = {
   icon: ReactElement;
   genericData: genericAppData[];
   isDuration?: boolean;
+  isLoading?: boolean;
 };
 
 function MainSection({
@@ -16,6 +17,7 @@ function MainSection({
   genericData,
   icon,
   isDuration,
+  isLoading = false,
 }: MainSectionProps) {
   return (
     <>
@@ -28,7 +30,12 @@ function MainSection({
         sx={{ maxWidth: "fit-content", margin: "0 auto" }}
       >
         {genericData.map((data: genericAppData, index: number) => (
-          <MainCard data={data} key={index} isDuration={isDuration} />
+          <MainCard
+            data={data}
+            key={index}
+            isDuration={isDuration}
+            isLoading={isLoading}
+          />
         ))}
       </Stack>
     </>

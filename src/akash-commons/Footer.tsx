@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Chip } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import { CopyrightOutlined } from "@mui/icons-material";
 
 function Footer() {
@@ -9,22 +9,23 @@ function Footer() {
   }
 
   return (
-    <StyledChip
-      variant="filled"
-      icon={<CopyrightOutlined sx={{ color: "white !important" }} />}
-      label={`Copyright ${dateYear()} AkashCraft`}
-    />
+    <Stack
+      justifyContent="center"
+      alignItems="center"
+      sx={{ marginBottom: "2rem" }}
+    >
+      <StyledChip
+        variant="filled"
+        icon={<CopyrightOutlined sx={{ color: "white !important" }} />}
+        label={`Copyright ${dateYear()} AkashCraft`}
+      />
+    </Stack>
   );
 }
 
 const StyledChip = styled(Chip)({
-  zIndex: 1000,
   color: "white",
   justifyContent: "center",
-  position: "fixed",
-  bottom: "1rem",
-  left: "50%",
-  transform: "translateX(-50%)",
   borderRadius: "1.5rem",
   fontSize: "1rem",
   backgroundColor:

@@ -4,23 +4,32 @@ export const GetImages = (images: string[]) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
-    const list = images;
+    if (!images || images.length === 0) {
+      setImagesLoaded(true);
+      return;
+    }
+
     let mounted = true;
     let loadedCount = 0;
-    const imgs: HTMLImageElement[] = [];
 
     const checkDone = () => {
       if (!mounted) return;
       loadedCount += 1;
-      if (loadedCount >= list.length) setImagesLoaded(true);
+      if (loadedCount >= images.length) setImagesLoaded(true);
     };
 
-    list.forEach((src) => {
-      const pre = new Image();
-      pre.onload = () => checkDone();
-      pre.onerror = () => checkDone();
-      pre.src = src;
-      imgs.push(pre);
+    const imgs: HTMLImageElement[] = images.map((src) => {
+      const img = new Image();
+
+      if (img.complete && img.naturalWidth !== 0) {
+        checkDone();
+      } else {
+        img.onload = checkDone;
+        img.onerror = checkDone;
+        img.src = src;
+      }
+
+      return img;
     });
 
     return () => {

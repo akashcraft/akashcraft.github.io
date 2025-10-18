@@ -1,16 +1,11 @@
 import "./../styles/App.css";
 import HolderBox from "../akash-commons/HolderBox";
-import munLogo from "./../assets/img-education/mun.png";
-import dpsLogo from "./../assets/img-education/dps.png";
 import {
-  Avatar,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Paper,
   Skeleton,
   Stack,
   Table,
@@ -19,17 +14,24 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
-import SchoolIcon from "@mui/icons-material/School";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/swiper-bundle.css";
 
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { scholarshipData, images } from "./educationData";
+import {
+  scholarshipData,
+  images,
+  munHeaderData,
+  dpsHeaderData,
+  deanListPaperData,
+  scholarshipListData,
+} from "./educationData";
 import { GetImages } from "../akash-commons/Hooks";
+import HeaderRowPaper from "../akash-commons/HeaderRowPaper";
+import { SidePaper } from "../akash-commons/SidePaper";
 
 function Education() {
   const [open, setOpen] = useState(false);
@@ -47,59 +49,12 @@ function Education() {
   return (
     <HolderBox>
       <Stack direction={"column"} gap={1.5}>
-        <Stack direction="row" flexWrap="wrap" gap={1.5}>
-          <Paper
-            elevation={0}
-            sx={{
-              padding: "1rem",
-              borderRadius: "1rem",
-              flexGrow: 2,
-              marginTop: "0.25rem",
-              width: "25rem",
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Bachelor of Engineering
-            </Typography>
-            <Stack direction="row" alignItems="center" flexWrap="wrap">
-              <StyledChip
-                label="Memorial University of Newfoundland"
-                icon={
-                  <Avatar
-                    sx={{ width: "1.4rem", height: "1.4rem" }}
-                    src={munLogo}
-                  />
-                }
-              />
-              <StyledChip
-                label="Computer Engineering"
-                icon={<SchoolIcon sx={{ color: "white !important" }} />}
-              />
-            </Stack>
-          </Paper>
-          <Stack direction={"row"} flexGrow={1} gap={1.5}>
-            <StyledPaper elevation={0}>
-              <Typography variant="body2">Graduation</Typography>
-              <Typography variant="h5">2026</Typography>
-              <Typography variant="body2" sx={{ marginTop: "0.25rem" }}>
-                Since 2021
-              </Typography>
-            </StyledPaper>
-            <StyledPaper elevation={0}>
-              <Typography variant="body2">GPA</Typography>
-              <Typography variant="h5">4.0</Typography>
-              <Typography variant="body2" sx={{ marginTop: "0.25rem" }}>
-                Out of 4.0
-              </Typography>
-            </StyledPaper>
-          </Stack>
-        </Stack>
+        <HeaderRowPaper data={munHeaderData} />
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
           {imagesLoaded ? (
             <StyledSwiper
-              modules={[Pagination, Navigation, Autoplay]}
+              modules={[Pagination, Autoplay]}
               pagination={{ clickable: true }}
-              navigation
               slidesPerView={1}
               autoplay
             >
@@ -112,25 +67,14 @@ function Education() {
           ) : (
             <StyledSkeleton variant="rounded" animation="wave" />
           )}
-          <Paper
-            elevation={0}
-            sx={{
-              padding: "1rem",
-              paddingBottom: "5rem",
-              borderRadius: "1rem",
-              margin: "0.25rem 0",
-              width: { xs: "none", sm: "25rem" },
-              position: "relative",
+          <SidePaper
+            title={scholarshipListData.title}
+            description={scholarshipListData.description}
+            chips={scholarshipListData.chips}
+            style={{
+              paddingBottom: "4.5rem",
             }}
           >
-            <Typography variant="h6" gutterBottom>
-              Scholarships and Awards
-            </Typography>
-            <Stack direction="row" flexWrap="wrap" alignItems="center">
-              <StyledChip label="Work Term Oral Presentation Dean's Award" />
-              <StyledChip label="Verafin Inc. Computer Engineering Scholarship" />
-              <StyledChip label="Innovasea Scholarship for Computer Engineering" />
-            </Stack>
             <StyledButton
               variant="outlined"
               sx={{ margin: "0.25rem 0.5rem", marginLeft: "0rem" }}
@@ -138,18 +82,11 @@ function Education() {
             >
               View All
             </StyledButton>
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title" sx={systemFont}>
-                Scholarships and Awards
-              </DialogTitle>
-              <DialogContent id="alert-dialog-description">
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle sx={systemFont}>Scholarships and Awards</DialogTitle>
+              <DialogContent>
                 <TableContainer>
-                  <Table aria-label="scholarships table">
+                  <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell sx={systemFont}>Award</TableCell>
@@ -172,44 +109,23 @@ function Education() {
                 </TableContainer>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose} autoFocus sx={systemFont}>
+                <Button onClick={handleClose} sx={systemFont}>
                   OK
                 </Button>
               </DialogActions>
             </Dialog>
-          </Paper>
+          </SidePaper>
         </Stack>
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          <Paper
-            elevation={0}
-            sx={{
-              padding: "1rem",
-              borderRadius: "1rem",
-              margin: "0.25rem 0",
-              width: { xs: "none", sm: "70rem" },
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Dean's List
-            </Typography>
-            <Typography variant="body2">
-              The Dean's List recognizes the top academic performers and is an
-              honour that is bestowed on students with academic averages within
-              the top 10% of their class
-            </Typography>
-            <br />
-            <Stack direction="row" flexWrap="wrap" alignItems="center">
-              <StyledChip label="Fall 2023 - Term 3" />
-              <StyledChip label="Winter 2024 - Term 4" />
-              <StyledChip label="Fall 2024 - Term 6" />
-              <StyledChip label="Winter 2025 - Term 7" />
-            </Stack>
-          </Paper>
+          <SidePaper
+            title={deanListPaperData.title}
+            description={deanListPaperData.description}
+            chips={deanListPaperData.chips}
+          />
           {imagesLoaded ? (
             <StyledSwiper
-              modules={[Pagination, Navigation, Autoplay]}
+              modules={[Pagination, Autoplay]}
               pagination={{ clickable: true }}
-              navigation
               slidesPerView={1}
               autoplay
             >
@@ -223,53 +139,7 @@ function Education() {
             <StyledSkeleton variant="rounded" animation="wave" />
           )}
         </Stack>
-        <Stack direction="row" flexWrap="wrap" gap={1.5}>
-          <Paper
-            elevation={0}
-            sx={{
-              padding: "1rem",
-              borderRadius: "1rem",
-              flexGrow: 2,
-              marginTop: "0.25rem",
-              width: "25rem",
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              High School Diploma
-            </Typography>
-            <Stack direction="row" alignItems="center" flexWrap="wrap">
-              <StyledChip
-                label="DPS Modern Indian School"
-                icon={
-                  <Avatar
-                    sx={{ width: "1.4rem", height: "1.4rem" }}
-                    src={dpsLogo}
-                  />
-                }
-              />
-              <StyledChip
-                label="Science Stream"
-                icon={<SchoolIcon sx={{ color: "white !important" }} />}
-              />
-            </Stack>
-          </Paper>
-          <Stack direction={"row"} flexGrow={1} gap={1.5}>
-            <StyledPaper elevation={0}>
-              <Typography variant="body2">Graduated</Typography>
-              <Typography variant="h5">2021</Typography>
-              <Typography variant="body2" sx={{ marginTop: "0.25rem" }}>
-                Since 2014
-              </Typography>
-            </StyledPaper>
-            <StyledPaper elevation={0}>
-              <Typography variant="body2">Grade</Typography>
-              <Typography variant="h5">97</Typography>
-              <Typography variant="body2" sx={{ marginTop: "0.25rem" }}>
-                Out of 100
-              </Typography>
-            </StyledPaper>
-          </Stack>
-        </Stack>
+        <HeaderRowPaper data={dpsHeaderData} />
       </Stack>
     </HolderBox>
   );
@@ -306,11 +176,6 @@ const StyledImg = styled("img")({
   objectFit: "cover",
 });
 
-const StyledChip = styled(Chip)({
-  margin: "0.25rem 0.5rem",
-  marginLeft: "0rem",
-});
-
 const StyledButton = styled(Button)({
   margin: "0.25rem 0.5rem",
   marginLeft: "0rem",
@@ -325,15 +190,6 @@ const systemFont = {
   fontFamily:
     "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;",
 };
-
-const StyledPaper = styled(Paper)({
-  padding: "1rem",
-  borderRadius: "1rem",
-  flexBasis: "fit-content",
-  flexGrow: 1,
-  textWrap: "nowrap",
-  marginTop: "0.25rem",
-});
 
 const StyledSkeleton = styled(Skeleton)({
   borderRadius: "1rem",

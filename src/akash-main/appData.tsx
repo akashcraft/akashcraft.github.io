@@ -11,6 +11,21 @@ import banner10 from "../assets/img-app/banner10.png";
 import banner11 from "../assets/img-app/banner11.png";
 import banner12 from "../assets/img-app/banner12.png";
 
+export const images = [
+  banner1,
+  banner2,
+  banner3,
+  banner4,
+  banner5,
+  banner6,
+  banner7,
+  banner8,
+  banner9,
+  banner10,
+  banner11,
+  banner12,
+];
+
 export type genericAppData = {
   title: string;
   subtitle?: string;

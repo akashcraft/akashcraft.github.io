@@ -6,6 +6,7 @@ import {
   CardMedia,
   Typography,
   useMediaQuery,
+  Skeleton,
 } from "@mui/material";
 import { useState } from "react";
 import type { genericAppData } from "./appData";
@@ -20,9 +21,10 @@ import { useNavigate } from "react-router-dom";
 type MainCardProps = {
   data: genericAppData;
   isDuration?: boolean;
+  isLoading?: boolean;
 };
 
-function MainCard({ data, isDuration }: MainCardProps) {
+function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
   const subtitle = isDuration ? "Duration: " + data.subtitle : data.subtitle;
   const [hovered, setHovered] = useState<boolean>(false);
   const isPrivate = data.linkText === "Private";
@@ -80,7 +82,11 @@ function MainCard({ data, isDuration }: MainCardProps) {
             animate={{ scale: hovered ? 1.05 : 1, y: hovered ? -4 : 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            <CardMedia component="img" height="170" image={data.image} />
+            {isLoading ? (
+              <Skeleton variant="rectangular" animation="wave" height={170} />
+            ) : (
+              <CardMedia component="img" height="170" image={data.image} />
+            )}
           </motion.div>
           <CardContent>
             <div style={{ position: "relative", height: "2rem" }}>
@@ -187,7 +193,7 @@ const StyledCard = styled(Card)({
 });
 
 const StyledStack = styled(Stack)({
-  borderRadius: "1rem",
+  borderRadius: "0.75rem",
   fontFamily: "Trebuchet",
   position: "absolute",
   textWrap: "nowrap",

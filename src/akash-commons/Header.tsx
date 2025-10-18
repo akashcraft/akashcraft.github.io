@@ -97,7 +97,20 @@ function Header() {
   })();
   const breadcrumbLabel = (() => {
     if (path === "/") return "";
-    return path.charAt(1).toUpperCase() + path.slice(2);
+    if (
+      [
+        "/eyeport",
+        "/verafin",
+        "/education",
+        "/networking",
+        "/app",
+        "/web",
+      ].includes(path)
+    ) {
+      return path.charAt(1).toUpperCase() + path.slice(2);
+    } else {
+      return "Not Found";
+    }
   })();
 
   return (
@@ -118,7 +131,12 @@ function Header() {
       >
         <Toolbar variant="dense" disableGutters>
           <Stack direction="row" gap={1} alignItems="center">
-            <StyledImg src={logo} />
+            <StyledImg
+              onClick={() => {
+                navigate("/");
+              }}
+              src={logo}
+            />
             <StyledH2
               onClick={() => {
                 navigate("/");
@@ -127,11 +145,15 @@ function Header() {
               AkashCraft
             </StyledH2>
             <motion.div
-              initial={{ x: 20 }}
-              animate={{ x: 0 }}
-              transition={{ duration: 0.5, ease: [0.05, 0.8, 0.35, 0.99] }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.2,
+                ease: [0.05, 0.8, 0.35, 0.99],
+              }}
             >
-              <Breadcrumbs sx={{ marginTop: "0.5rem" }}>
+              <Breadcrumbs sx={{ marginTop: "0.45rem" }}>
                 <StyledLink to="/">{breadcrumbLabel}</StyledLink>
               </Breadcrumbs>
             </motion.div>

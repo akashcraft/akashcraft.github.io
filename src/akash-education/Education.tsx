@@ -44,29 +44,30 @@ function Education() {
     setOpen(true);
   };
 
-  const imagesLoaded = GetImages(images);
+  const isLoading = GetImages(images);
 
   return (
     <HolderBox>
       <Stack direction={"column"} gap={1.5}>
         <HeaderRowPaper data={munHeaderData} />
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          {imagesLoaded ? (
-            <StyledSwiper
-              modules={[Pagination, Autoplay]}
-              pagination={{ clickable: true }}
-              slidesPerView={1}
-              autoplay
-            >
-              {images.slice(4).map((src, index) => (
-                <SwiperSlide key={index} style={{ height: "auto" }}>
-                  <StyledImg src={src} />
-                </SwiperSlide>
-              ))}
-            </StyledSwiper>
-          ) : (
-            <StyledSkeleton variant="rounded" animation="wave" />
-          )}
+          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
+          <StyledSwiper
+            modules={[Pagination, Autoplay]}
+            pagination={{ clickable: true }}
+            slidesPerView={1}
+            autoplay
+            style={{ display: isLoading ? "none" : "block" }}
+          >
+            {images.slice(4).map((src, index) => (
+              <SwiperSlide key={index} style={{ height: "auto" }}>
+                <StyledImg
+                  src={src}
+                  style={{ display: isLoading ? "none" : "block" }}
+                />
+              </SwiperSlide>
+            ))}
+          </StyledSwiper>
           <SidePaper
             title={scholarshipListData.title}
             description={scholarshipListData.description}
@@ -122,22 +123,23 @@ function Education() {
             description={deanListPaperData.description}
             chips={deanListPaperData.chips}
           />
-          {imagesLoaded ? (
-            <StyledSwiper
-              modules={[Pagination, Autoplay]}
-              pagination={{ clickable: true }}
-              slidesPerView={1}
-              autoplay
-            >
-              {images.slice(0, 4).map((src, index) => (
-                <SwiperSlide key={index} style={{ height: "auto" }}>
-                  <StyledImg src={src} />
-                </SwiperSlide>
-              ))}
-            </StyledSwiper>
-          ) : (
-            <StyledSkeleton variant="rounded" animation="wave" />
-          )}
+          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
+          <StyledSwiper
+            modules={[Pagination, Autoplay]}
+            pagination={{ clickable: true }}
+            slidesPerView={1}
+            autoplay
+            style={{ display: isLoading ? "none" : "block" }}
+          >
+            {images.slice(0, 4).map((src, index) => (
+              <SwiperSlide key={index} style={{ height: "auto" }}>
+                <StyledImg
+                  src={src}
+                  style={{ display: isLoading ? "none" : "block" }}
+                />
+              </SwiperSlide>
+            ))}
+          </StyledSwiper>
         </Stack>
         <HeaderRowPaper data={dpsHeaderData} />
       </Stack>
@@ -195,7 +197,7 @@ const StyledSkeleton = styled(Skeleton)({
   borderRadius: "1rem",
   margin: "0.25rem 0",
   width: "100%",
-  height: 300,
+  height: "auto",
 });
 
 export default Education;

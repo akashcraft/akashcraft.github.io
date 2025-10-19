@@ -9,6 +9,7 @@ type SidePaperProps = {
   children?: ReactElement | ReactElement[];
   width?: string;
   style?: CSSProperties;
+  elevation?: number;
 };
 
 export function SidePaper({
@@ -18,10 +19,11 @@ export function SidePaper({
   children,
   width = "70rem",
   style,
+  elevation = 0,
 }: SidePaperProps) {
   return (
     <Paper
-      elevation={0}
+      elevation={elevation}
       sx={[
         {
           padding: "1rem",

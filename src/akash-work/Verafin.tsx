@@ -16,27 +16,24 @@ import { SidePaper } from "../akash-commons/SidePaper";
 import { GetImages } from "../akash-commons/Hooks";
 
 function Verafin() {
-  const imagesLoaded = GetImages(images);
+  const isLoading = GetImages(images);
   return (
     <HolderBox>
       <Stack direction={"column"} gap={1.5}>
         <HeaderRowPaper data={verafinHeaderData} />
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          {imagesLoaded ? (
-            <StyledPaper>
-              <img
-                src={images[1]}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
-            </StyledPaper>
-          ) : (
-            <StyledSkeleton variant="rounded" animation="wave" />
-          )}
+          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
+          <StyledPaper>
+            <img
+              src={images[1]}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: isLoading ? "none" : "block",
+              }}
+            />
+          </StyledPaper>
           <SidePaper
             title={datalakesPaperData.title}
             description={datalakesPaperData.description}
@@ -50,21 +47,18 @@ function Verafin() {
             description={uiPaperData.description}
             width="30rem"
           />
-          {imagesLoaded ? (
-            <StyledPaper>
-              <img
-                src={images[0]}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
-            </StyledPaper>
-          ) : (
-            <StyledSkeleton variant="rounded" animation="wave" />
-          )}
+          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
+          <StyledPaper>
+            <img
+              src={images[0]}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: isLoading ? "none" : "block",
+              }}
+            />
+          </StyledPaper>
         </Stack>
       </Stack>
     </HolderBox>
@@ -75,7 +69,7 @@ const StyledSkeleton = styled(Skeleton)({
   borderRadius: "1rem",
   margin: "0.25rem 0",
   width: "100%",
-  height: 300,
+  height: "auto",
 });
 
 const StyledPaper = styled(Paper)({

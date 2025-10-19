@@ -15,13 +15,14 @@ export type HeaderRowData = {
 
 type HeaderRowProps = {
   data: HeaderRowData;
+  elevation?: number;
 };
 
-function HeaderRowData({ data }: HeaderRowProps) {
+function HeaderRowData({ data, elevation = 0 }: HeaderRowProps) {
   return (
     <Stack direction="row" flexWrap="wrap" gap={1.5}>
       <Paper
-        elevation={0}
+        elevation={elevation}
         sx={{
           padding: "1rem",
           borderRadius: "1rem",
@@ -48,7 +49,7 @@ function HeaderRowData({ data }: HeaderRowProps) {
           data.statValue &&
           data.statSubLabel &&
           data.statLabel.map((label, index) => (
-            <StyledPaper elevation={0} key={index}>
+            <StyledPaper elevation={elevation} key={index}>
               <Typography variant="body2">{label}</Typography>
               <Typography variant="h5">
                 {data.statValue?.[index] ?? ""}

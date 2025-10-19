@@ -7,21 +7,33 @@ import { motion } from "framer-motion";
 
 type HolderBoxProps = {
   children?: React.ReactNode;
+  isWide?: boolean;
 };
 
-function HolderBox({ children }: HolderBoxProps) {
+function HolderBox({ children, isWide = false }: HolderBoxProps) {
   // Media Query
   const isPhone = useMediaQuery("(min-width:600px)");
   const isMid = useMediaQuery("(min-width:900px)");
   const isLarge = useMediaQuery("(min-width:1200px)");
 
-  const padding = isLarge
-    ? "2rem 20%"
-    : isMid
-      ? "2rem 15%"
-      : isPhone
-        ? "2rem 8%"
-        : "1.5rem";
+  let padding: string;
+  if (isWide) {
+    padding = isLarge
+      ? "2rem 10%"
+      : isMid
+        ? "2rem 5%"
+        : isPhone
+          ? "2rem 4%"
+          : "1.5rem";
+  } else {
+    padding = isLarge
+      ? "2rem 20%"
+      : isMid
+        ? "2rem 15%"
+        : isPhone
+          ? "2rem 8%"
+          : "1.5rem";
+  }
 
   return (
     <>
@@ -46,7 +58,7 @@ function HolderBox({ children }: HolderBoxProps) {
 
 const StyledBox = styled(Box)({
   width: "100dvw",
-  minHeight: "100dvh",
+  minHeight: "calc(100dvh - 6rem)",
   marginTop: "3rem",
   textAlign: "left",
 });

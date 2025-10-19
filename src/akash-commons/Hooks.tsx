@@ -39,7 +39,8 @@ export const GetImages = (images: string[]) => {
         i.onerror = null;
       });
     };
-  }, [images]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return imagesLoaded;
+  return !imagesLoaded;
 };

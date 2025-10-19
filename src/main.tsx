@@ -33,6 +33,7 @@ const appTheme = createTheme({
         text: {
           primary: "#fff",
           secondary: "#000",
+          light: "#aaa",
         },
       },
     },
@@ -48,6 +49,7 @@ const appTheme = createTheme({
         text: {
           primary: "#fff",
           secondary: "#fff",
+          light: "#333",
         },
       },
     },

@@ -34,6 +34,9 @@ import { motion } from "framer-motion";
 
 import { Link, useNavigate } from "react-router-dom";
 
+// eslint-disable-next-line react-refresh/only-export-components
+export const headerContainer = document.createElement("div");
+
 function Header() {
   // Theme Menu
   const [openOpenMacDialog, setOpenMacDialog] = useState<boolean>(false);
@@ -244,6 +247,12 @@ function Header() {
                       icon={<Description sx={ChipIconStyle} />}
                       label="Resume"
                       onClick={openResumeInNewTab}
+                    />
+                    <div
+                      style={{ marginLeft: "0.5rem" }}
+                      ref={(el) => {
+                        if (el) el.appendChild(headerContainer);
+                      }}
                     />
                   </Stack>
                 </StyledBox>

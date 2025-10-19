@@ -82,11 +82,15 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
             animate={{ scale: hovered ? 1.05 : 1, y: hovered ? -4 : 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            {isLoading ? (
+            {isLoading && (
               <Skeleton variant="rectangular" animation="wave" height={170} />
-            ) : (
-              <CardMedia component="img" height="170" image={data.image} />
             )}
+            <CardMedia
+              component="img"
+              style={{ display: isLoading ? "none" : "block" }}
+              height="170"
+              image={data.image}
+            />
           </motion.div>
           <CardContent>
             <div style={{ position: "relative", height: "2rem" }}>

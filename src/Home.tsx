@@ -65,7 +65,7 @@ function Home() {
     };
   }, []);
 
-  const imagesLoaded = GetImages(images);
+  const isLoading = GetImages(images);
 
   return (
     <>
@@ -84,14 +84,17 @@ function Home() {
             alignItems="center"
             sx={{ margin: "2rem 0", marginTop: "8rem" }}
           >
-            {imagesLoaded ? (
-              <>
-                <StyledImg src={logo} />
-                <StyledImg2 src={reactLogo} />
-              </>
-            ) : (
+            {isLoading && (
               <Skeleton variant="circular" width={88} height={88} />
             )}
+            <StyledImg
+              src={logo}
+              style={{ display: isLoading ? "none" : "block" }}
+            />
+            <StyledImg2
+              src={reactLogo}
+              style={{ display: isLoading ? "none" : "block" }}
+            />
           </Stack>
           <Stack
             direction="column"
@@ -148,32 +151,32 @@ function Home() {
               heading="Coding"
               icon={<DataObject sx={ChipIconStyle} />}
               genericData={codingData}
-              isLoading={!imagesLoaded}
+              isLoading={isLoading}
             />
             <MainSection
               heading="Work Experience"
               icon={<Work sx={ChipIconStyle} />}
               genericData={workData}
-              isLoading={!imagesLoaded}
+              isLoading={isLoading}
               isDuration
             />
             <MainSection
               heading="Education"
               icon={<School sx={ChipIconStyle} />}
               genericData={educationData}
-              isLoading={!imagesLoaded}
+              isLoading={isLoading}
             />
             <MainSection
               heading="Video Editing"
               icon={<Videocam sx={ChipIconStyle} />}
               genericData={videoEditingData}
-              isLoading={!imagesLoaded}
+              isLoading={isLoading}
             />
             <MainSection
               heading="Others"
               icon={<NoteAdd sx={ChipIconStyle} />}
               genericData={otherData}
-              isLoading={!imagesLoaded}
+              isLoading={isLoading}
             />
           </Stack>
         </Box>

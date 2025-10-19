@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import logo from "../assets/logo.png";
 
 import {
@@ -55,10 +55,6 @@ function Header() {
     setAnchorEl(null);
   };
 
-  function handleNotImplementedClick() {
-    setOpenMacDialog(true);
-  }
-
   function setLightMode() {
     setMode("light");
     setThemeMode("Light");
@@ -91,30 +87,37 @@ function Header() {
   const navigate = useNavigate();
 
   // Breadcrumbs
-  const path = (() => {
+  const breadcrumbLabel = useMemo(() => {
     let p = window.location.hash.replace(/^#!?/, "");
-    if (!p) return "/";
-    if (!p.startsWith("/")) p = "/" + p;
-    const match = p.match(/^[^?#]*/);
-    return match ? match[0] : "/";
-  })();
-  const breadcrumbLabel = (() => {
+    const path = (() => {
+      if (!p) return "/";
+      if (!p.startsWith("/")) p = "/" + p;
+      const match = p.match(/^[^?#]*/);
+      return match ? match[0] : "/";
+    })();
+
     if (path === "/") return "";
     if (
       [
         "/eyeport",
-        "/verafin",
+        "/verafin/1",
+        "/verafin/2",
         "/education",
         "/networking",
         "/app",
         "/web",
       ].includes(path)
     ) {
+      if (path.includes("/verafin/")) {
+        return "Verafin";
+      } else if (path === "/eyeport") {
+        return "EyePort";
+      }
       return path.charAt(1).toUpperCase() + path.slice(2);
     } else {
       return "Not Found";
     }
-  })();
+  }, []);
 
   return (
     <>
@@ -168,14 +171,22 @@ function Header() {
               spacing={"0.5rem"}
               sx={{ marginRight: "0.6rem" }}
             >
-              <StyledChip label="Resume" onClick={openResumeInNewTab} />
+              <StyledChip
+                icon={<Description sx={ChipIconWithTextStyle} />}
+                label="Resume"
+                onClick={openResumeInNewTab}
+              />
+              <StyledChip
+                color="secondary"
+                icon={<Person sx={ChipIconWithTextStyle} />}
+                label="Login"
+                onClick={() => {
+                  setOpenMacDialog(true);
+                }}
+              />
               <IconChip
                 icon={<VolunteerActivism sx={ChipIconStyle} />}
                 onClick={openDonatePageInNewTab}
-              />
-              <IconChip
-                icon={<Person sx={ChipIconStyle} />}
-                onClick={handleNotImplementedClick}
               />
               <div>
                 <IconChip
@@ -236,7 +247,9 @@ function Header() {
                     <StyledChipDrawer
                       icon={<Person sx={ChipIconStyle} />}
                       label="Login"
-                      onClick={handleNotImplementedClick}
+                      onClick={() => {
+                        setOpenMacDialog(true);
+                      }}
                     />
                     <StyledChipDrawer
                       icon={<VolunteerActivism sx={ChipIconStyle} />}
@@ -306,12 +319,13 @@ const IconChip = styled(Chip)({
 
 const StyledChipDrawer = styled(Chip)({
   color: "white",
-  fontSize: "1.25rem",
+  fontSize: "1.2rem",
   backgroundColor: "transparent",
   width: "100%",
   height: "4rem",
   paddingLeft: "1rem",
   justifyContent: "flex-start",
+  gap: "0.25rem",
   borderRadius: "0",
 });
 
@@ -324,6 +338,12 @@ const StyledLink = styled(Link)({
   color: "white",
 });
 
-const ChipIconStyle = { color: "white !important" };
+const ChipIconStyle = { color: "white !important", fontSize: "1.25rem" };
+
+const ChipIconWithTextStyle = {
+  color: "white !important",
+  marginBottom: "0.1rem",
+  fontSize: "1.25rem",
+};
 
 export default Header;

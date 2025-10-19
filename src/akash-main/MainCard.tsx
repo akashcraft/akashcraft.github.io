@@ -8,14 +8,13 @@ import {
   useMediaQuery,
   Skeleton,
 } from "@mui/material";
-import { useState } from "react";
-import type { genericAppData } from "./appData";
+import { useContext, useState } from "react";
+import { MacDialogContext, type genericAppData } from "./appData";
 import { styled } from "@mui/material/styles";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import BlockIcon from "@mui/icons-material/Block";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { motion } from "framer-motion";
-import MacDialog from "../akash-commons/MacDialog";
 import { useNavigate } from "react-router-dom";
 
 type MainCardProps = {
@@ -29,7 +28,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
   const [hovered, setHovered] = useState<boolean>(false);
   const isPrivate = data.linkText === "Private";
   const isReload = data.linkText === "Reload";
-  const [openOpenMacDialog, setOpenMacDialog] = useState<boolean>(false);
+  const { setOpenMacDialog } = useContext(MacDialogContext);
   const navigate = useNavigate();
 
   const handleMouseEnter = () => {
@@ -48,7 +47,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
         navigate(`/${data.link}`);
       }
     } else if (isReload) {
-      sessionStorage.removeItem("homeScroll");
+      sessionStorage.clear();
       window.location.reload();
     } else {
       setOpenMacDialog(true);
@@ -60,12 +59,6 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
 
   return (
     <>
-      <MacDialog
-        heading="Not Implemented"
-        description="This feature is still under development. You can view the completed website on akashcraft.ca."
-        visible={openOpenMacDialog}
-        onClose={() => setOpenMacDialog(false)}
-      />
       <StyledCard
         sx={{
           margin: phone ? "0.5rem" : "1rem",
@@ -154,7 +147,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
                     ? "green"
                     : isPrivate
                       ? "red"
-                      : "#ed784f",
+                      : "#ff003cff",
                 }}
                 direction="row"
                 spacing={"1rem"}

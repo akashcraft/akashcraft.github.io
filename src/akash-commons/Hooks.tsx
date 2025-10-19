@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const GetImages = (images: string[]) => {
+export const useGetImages = (images: string[]) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
@@ -39,8 +39,7 @@ export const GetImages = (images: string[]) => {
         i.onerror = null;
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [images]);
 
   return !imagesLoaded;
 };

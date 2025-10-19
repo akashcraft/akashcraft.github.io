@@ -7,7 +7,6 @@ type SidePaperProps = {
   description?: string[];
   chips?: string[];
   children?: ReactElement | ReactElement[];
-  width?: string;
   style?: CSSProperties;
   elevation?: number;
 };
@@ -17,7 +16,6 @@ export function SidePaper({
   description,
   chips,
   children,
-  width = "70rem",
   style,
   elevation = 0,
 }: SidePaperProps) {
@@ -30,7 +28,8 @@ export function SidePaper({
           position: "relative",
           borderRadius: "1rem",
           margin: "0.25rem 0",
-          width: { xs: "none", sm: width },
+          flexGrow: 1,
+          overflow: "hidden",
         },
       ]}
       style={style}

@@ -23,7 +23,7 @@ export function NotFound() {
           textAlign={"center"}
           sx={{ fontSize: isPhone ? "1rem" : "0.75rem" }}
         >
-          Error 404 - The page you are looking for does not exist
+          The page you are looking for does not exist
         </Typography>
         <Typography
           textAlign={"center"}

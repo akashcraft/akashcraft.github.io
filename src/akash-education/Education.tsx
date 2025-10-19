@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useMediaQuery,
 } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
@@ -29,12 +30,13 @@ import {
   deanListPaperData,
   scholarshipListData,
 } from "./educationData";
-import { GetImages } from "../akash-commons/Hooks";
+import { useGetImages } from "../akash-commons/Hooks";
 import HeaderRowPaper from "../akash-commons/HeaderRowPaper";
 import { SidePaper } from "../akash-commons/SidePaper";
 
 function Education() {
   const [open, setOpen] = useState(false);
+  const isPhone = useMediaQuery("(min-width:600px)");
 
   const handleClose = () => {
     setOpen(false);
@@ -44,27 +46,33 @@ function Education() {
     setOpen(true);
   };
 
-  const isLoading = GetImages(images);
+  const isLoading = useGetImages(images);
 
   return (
     <HolderBox>
       <Stack direction={"column"} gap={1.5}>
         <HeaderRowPaper data={munHeaderData} />
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
+          {isLoading && (
+            <StyledSkeleton
+              style={{ width: isPhone ? "120%" : "100%" }}
+              variant="rounded"
+              animation="wave"
+            />
+          )}
           <StyledSwiper
             modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
             slidesPerView={1}
             autoplay
-            style={{ display: isLoading ? "none" : "block" }}
+            style={{
+              display: isLoading ? "none" : "block",
+              width: isPhone ? "120%" : "100%",
+            }}
           >
             {images.slice(4).map((src, index) => (
               <SwiperSlide key={index} style={{ height: "auto" }}>
-                <StyledImg
-                  src={src}
-                  style={{ display: isLoading ? "none" : "block" }}
-                />
+                <StyledImg src={src} />
               </SwiperSlide>
             ))}
           </StyledSwiper>
@@ -123,20 +131,26 @@ function Education() {
             description={deanListPaperData.description}
             chips={deanListPaperData.chips}
           />
-          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
+          {isLoading && (
+            <StyledSkeleton
+              style={{ width: isPhone ? "250%" : "100%" }}
+              variant="rounded"
+              animation="wave"
+            />
+          )}
           <StyledSwiper
             modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
             slidesPerView={1}
             autoplay
-            style={{ display: isLoading ? "none" : "block" }}
+            style={{
+              display: isLoading ? "none" : "block",
+              width: isPhone ? "250%" : "100%",
+            }}
           >
             {images.slice(0, 4).map((src, index) => (
               <SwiperSlide key={index} style={{ height: "auto" }}>
-                <StyledImg
-                  src={src}
-                  style={{ display: isLoading ? "none" : "block" }}
-                />
+                <StyledImg src={src} />
               </SwiperSlide>
             ))}
           </StyledSwiper>
@@ -151,6 +165,8 @@ const StyledSwiper = styled(Swiper)`
   border-radius: 1rem;
   overflow: hidden;
   margin: 0.25rem 0;
+  width: 100%;
+  height: auto;
 
   .swiper-pagination-bullet {
     background-color: rgba(255, 165, 0, 0.4);
@@ -158,17 +174,6 @@ const StyledSwiper = styled(Swiper)`
   }
   .swiper-pagination-bullet-active {
     background-color: orange;
-  }
-
-  .swiper-button-next,
-  .swiper-button-prev {
-    color: orange;
-    transition: color 0.2s ease;
-  }
-
-  .swiper-button-next:hover,
-  .swiper-button-prev:hover {
-    color: #ffb347;
   }
 `;
 
@@ -196,7 +201,6 @@ const systemFont = {
 const StyledSkeleton = styled(Skeleton)({
   borderRadius: "1rem",
   margin: "0.25rem 0",
-  width: "100%",
   height: "auto",
 });
 

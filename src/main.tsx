@@ -26,8 +26,8 @@ const appTheme = createTheme({
         primary: orange,
         secondary: pink,
         background: {
-          default: "#935737",
-          paper: "#774517",
+          default: "#9d532f",
+          paper: "#7f4203",
           macos: "#fff",
         },
         text: {
@@ -73,7 +73,7 @@ createRoot(document.getElementById("root")!).render(
           <Route index element={<Home />} />
           <Route path="/education" element={<Education />} />
           <Route path="/networking" element={<Networking />} />
-          <Route path="/verafin" element={<Verafin />} />
+          <Route path="/verafin/:id" element={<Verafin />} />
           <Route path="/eyeport" element={<EyePort />} />
           <Route path="/web" element={<Web />} />
           <Route path="/app" element={<App />} />

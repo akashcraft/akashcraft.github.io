@@ -15,6 +15,7 @@ function HolderBox({ children, isWide = false }: HolderBoxProps) {
   const isPhone = useMediaQuery("(min-width:600px)");
   const isMid = useMediaQuery("(min-width:900px)");
   const isLarge = useMediaQuery("(min-width:1200px)");
+  sessionStorage.setItem("hintShown", "true");
 
   let padding: string;
   if (isWide) {

@@ -16,11 +16,12 @@ export type HeaderRowData = {
 type HeaderRowProps = {
   data: HeaderRowData;
   elevation?: number;
+  style?: React.CSSProperties;
 };
 
-function HeaderRowData({ data, elevation = 0 }: HeaderRowProps) {
+function HeaderRowData({ data, elevation = 0, style }: HeaderRowProps) {
   return (
-    <Stack direction="row" flexWrap="wrap" gap={1.5}>
+    <Stack direction="row" flexWrap="wrap" gap={1.5} style={style}>
       <Paper
         elevation={elevation}
         sx={{

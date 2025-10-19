@@ -16,15 +16,15 @@ import { SidePaper } from "../akash-commons/SidePaper";
 import { Download } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-import { GetImages } from "../akash-commons/Hooks";
-import { NetworkingStyledImg } from "./NetworkStyledimg";
+import { useGetImages } from "../akash-commons/Hooks";
+import { HolderStyledImg } from "../akash-commons/HolderStyledImg";
 import { images } from "./networkingData";
 import { headerContainer } from "../akash-commons/Header";
 
 function Networking() {
-  // Media Query
+  // Media Query and Images
   const isPhone = useMediaQuery("(min-width:600px)");
-  const isLoading = GetImages(images);
+  const isLoading = useGetImages(images);
 
   function handleScrollTo(id: string) {
     const element = document.getElementById(id);
@@ -36,30 +36,32 @@ function Networking() {
   return (
     <HolderBox isWide>
       <Stack direction={{ xs: "column", sm: "row" }} gap={3.5}>
-        <SidePaper
-          title="Table of Contents"
-          width="15rem"
-          elevation={3}
-          style={{
-            minWidth: "15rem",
-            height: "min-content",
-            position: !isPhone ? "static" : "sticky",
-            top: "5rem",
-          }}
-        >
+        <Portal container={headerContainer}>
           <TableOfContentsLink handler={handleScrollTo} />
-          <Portal container={headerContainer}>
+        </Portal>
+        {isPhone && (
+          <SidePaper
+            title="Table of Contents"
+            elevation={3}
+            style={{
+              minWidth: "15rem",
+              height: "min-content",
+              position: !isPhone ? "static" : "sticky",
+              top: "5.5rem",
+              marginTop: "0rem",
+            }}
+          >
             <TableOfContentsLink handler={handleScrollTo} />
-          </Portal>
-        </SidePaper>
+          </SidePaper>
+        )}
         <Box flexGrow={1}>
-          <NetworkingStyledImg
-            imgSrc={images[0]}
+          <HolderStyledImg
+            src={images[0]}
             isWide
             isLoading={isLoading}
             isPhone={isPhone}
           />
-          <p id="link1" style={{ position: "relative", bottom: "1000px" }}></p>
+          <p id="link1" style={{ position: "relative", bottom: "100rem" }}></p>
           <h2>Windows Server</h2>
 
           <p>
@@ -127,13 +129,13 @@ function Networking() {
             (Internet Connection Sharing) from the Server.
           </p>
 
-          <NetworkingStyledImg
-            imgSrc={images[3]}
+          <HolderStyledImg
+            src={images[3]}
             isLoading={isLoading}
             isPhone={isPhone}
           />
-          <NetworkingStyledImg
-            imgSrc={images[4]}
+          <HolderStyledImg
+            src={images[4]}
             isLoading={isLoading}
             isPhone={isPhone}
             isEnd
@@ -150,8 +152,8 @@ function Networking() {
             for Clients if no DHCP (Dynamic Host Configuration Protocol) Server
             is present in the network.
           </p>
-          <NetworkingStyledImg
-            imgSrc={images[2]}
+          <HolderStyledImg
+            src={images[2]}
             isLoading={isLoading}
             isPhone={isPhone}
           />
@@ -161,8 +163,8 @@ function Networking() {
             Administrator Password. Restart your Client and you should see the
             ADDS working.
           </p>
-          <NetworkingStyledImg
-            imgSrc={images[1]}
+          <HolderStyledImg
+            src={images[1]}
             isWide
             isLoading={isLoading}
             isPhone={isPhone}
@@ -175,8 +177,8 @@ function Networking() {
             This also provides backup in case of hardware failure or malware
             attack.
           </p>
-          <NetworkingStyledImg
-            imgSrc={images[5]}
+          <HolderStyledImg
+            src={images[5]}
             isWide
             isEnd
             isLoading={isLoading}
@@ -193,8 +195,8 @@ function Networking() {
             way you can use your Windows Server as a RADIUS (Remote
             Authentication Dial-In User Service) Server.
           </p>
-          <NetworkingStyledImg
-            imgSrc={images[6]}
+          <HolderStyledImg
+            src={images[6]}
             isWide
             isLoading={isLoading}
             isPhone={isPhone}
@@ -214,8 +216,8 @@ function Networking() {
             on Clients.
           </p>
 
-          <NetworkingStyledImg
-            imgSrc={images[7]}
+          <HolderStyledImg
+            src={images[7]}
             isLoading={isLoading}
             isPhone={isPhone}
           />
@@ -257,8 +259,8 @@ function Networking() {
             websites are then allowed.
           </p>
 
-          <NetworkingStyledImg
-            imgSrc={images[8]}
+          <HolderStyledImg
+            src={images[8]}
             isWide
             isLoading={isLoading}
             isPhone={isPhone}

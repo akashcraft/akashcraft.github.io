@@ -1,65 +1,88 @@
 import "./../styles/App.css";
 import HolderBox from "../akash-commons/HolderBox";
-import { Paper, Skeleton, Stack } from "@mui/material";
+import {
+  Container,
+  Paper,
+  Skeleton,
+  Stack,
+  useMediaQuery,
+} from "@mui/material";
 import "swiper/swiper-bundle.css";
 
 import styled from "@emotion/styled";
-import {
-  datalakesPaperData,
-  images,
-  uiPaperData,
-  verafinHeaderData,
-  verafinHeaderData2,
-} from "./verafinData";
+import { images, verafinData } from "./verafinData";
 import HeaderRowPaper from "../akash-commons/HeaderRowPaper";
 import { SidePaper } from "../akash-commons/SidePaper";
-import { GetImages } from "../akash-commons/Hooks";
+import { useGetImages } from "../akash-commons/Hooks";
+import { useParams } from "react-router-dom";
 
 function Verafin() {
-  const isLoading = GetImages(images);
+  // Media Query and Images
+  const isLoading = useGetImages(images);
+  const selectedId = parseInt(useParams().id ?? "1");
+  const isPhone = useMediaQuery("(min-width:600px)");
+
   return (
     <HolderBox>
       <Stack direction={"column"} gap={1.5}>
-        <HeaderRowPaper data={verafinHeaderData} />
-        <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
-          <StyledPaper>
-            <img
-              src={images[1]}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: isLoading ? "none" : "block",
-              }}
-            />
-          </StyledPaper>
-          <SidePaper
-            title={datalakesPaperData.title}
-            description={datalakesPaperData.description}
-            width="35rem"
-          />
-        </Stack>
-        <HeaderRowPaper data={verafinHeaderData2} />
-        <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          <SidePaper
-            title={uiPaperData.title}
-            description={uiPaperData.description}
-            width="30rem"
-          />
-          {isLoading && <StyledSkeleton variant="rounded" animation="wave" />}
-          <StyledPaper>
-            <img
-              src={images[0]}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: isLoading ? "none" : "block",
-              }}
-            />
-          </StyledPaper>
-        </Stack>
+        {verafinData
+          .filter((item) => item.id === selectedId)
+          .map((item) => (
+            <Container key={item.id}>
+              <HeaderRowPaper data={item.headerData} />
+              <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} mt={1.5}>
+                {item.id % 2 === 0 ? (
+                  <>
+                    {isLoading && (
+                      <StyledSkeleton variant="rounded" animation="wave" />
+                    )}
+                    <StyledPaper
+                      style={{ display: isLoading ? "none" : "block" }}
+                    >
+                      <img
+                        src={images[item.id - 1]}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: isLoading ? "none" : "block",
+                        }}
+                      />
+                    </StyledPaper>
+                    <SidePaper
+                      title="Description"
+                      description={item.description}
+                      style={{ width: isPhone ? "80%" : "100%" }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <SidePaper
+                      title="Description"
+                      description={item.description}
+                      style={{ width: isPhone ? "80%" : "100%" }}
+                    />
+                    {isLoading && (
+                      <StyledSkeleton variant="rounded" animation="wave" />
+                    )}
+                    <StyledPaper
+                      style={{ display: isLoading ? "none" : "block" }}
+                    >
+                      <img
+                        src={images[item.id - 1]}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: isLoading ? "none" : "block",
+                        }}
+                      />
+                    </StyledPaper>
+                  </>
+                )}
+              </Stack>
+            </Container>
+          ))}
       </Stack>
     </HolderBox>
   );
@@ -73,9 +96,9 @@ const StyledSkeleton = styled(Skeleton)({
 });
 
 const StyledPaper = styled(Paper)({
-  flexGrow: 1,
   borderRadius: "1rem",
   overflow: "hidden",
+  width: "100%",
   margin: "0.25rem 0",
   height: "20rem",
 });

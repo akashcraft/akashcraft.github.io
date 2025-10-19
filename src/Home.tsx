@@ -1,6 +1,6 @@
 import "./styles/App.css";
 import Header from "./akash-commons/Header";
-import { Box, Skeleton, Stack } from "@mui/material";
+import { Backdrop, Box, Skeleton, Stack, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
 import githubLogo from "./assets/img-app/GitHub.png";
@@ -28,17 +28,23 @@ import TopChip from "./akash-main/TopChip";
 import MainSection from "./akash-main/MainSection";
 import {
   DataObject,
-  Work,
-  School,
-  Videocam,
-  NoteAdd,
+  WorkOutline as Work,
+  SchoolOutlined as School,
+  VideocamOutlined as Videocam,
+  DescriptionOutlined as NoteAdd,
+  TouchApp,
 } from "@mui/icons-material";
 import Footer from "./akash-commons/Footer";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
-import { GetImages } from "./akash-commons/Hooks";
+import { useEffect, useState } from "react";
+import { useGetImages } from "./akash-commons/Hooks";
+import MacDialog from "./akash-commons/MacDialog";
+import { MacDialogContext } from "./akash-main/appData";
 
 function Home() {
+  const [showHint, setShowHint] = useState<boolean>(false);
+  const [openMacDialog, setOpenMacDialog] = useState<boolean>(false);
+
   useEffect(() => {
     window.addEventListener("load", () => {
       const splash = document.getElementById("splash");
@@ -57,18 +63,64 @@ function Home() {
 
     const handleScroll = () => {
       sessionStorage.setItem("homeScroll", String(window.scrollY));
+      if (parseInt(sessionStorage.getItem("homeScroll") || "100") > 600) {
+        if (!sessionStorage.getItem("hintShown")) {
+          sessionStorage.setItem("hintShown", "true");
+          setTimeout(() => setShowHint(true), 8000);
+        }
+      } else {
+        setShowHint(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  const isLoading = GetImages(images);
+  const isLoading = useGetImages(images);
 
   return (
     <>
+      <Backdrop
+        sx={{ zIndex: 100 }}
+        open={showHint}
+        onClick={() => {
+          setShowHint(false);
+        }}
+      >
+        <Stack
+          direction="column"
+          spacing={2}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <motion.div
+            style={{ transformOrigin: "center center" }}
+            initial={{ opacity: 0, scale: 2 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              type: "spring",
+              stiffness: 75,
+              damping: 5,
+              repeat: 999,
+              repeatType: "loop",
+            }}
+          >
+            <TouchApp
+              sx={{
+                color: "white !important",
+                fontSize: "10rem",
+              }}
+            />
+          </motion.div>
+          <Typography variant="h6" sx={{ color: "white", textAlign: "center" }}>
+            Click Cards to Learn More
+          </Typography>
+        </Stack>
+      </Backdrop>
       <Header />
       <motion.div
         style={{ transformOrigin: "top center" }}
@@ -140,45 +192,55 @@ function Home() {
               link={openYouTube}
             />
           </Stack>
-          <Stack
-            direction="column"
-            spacing={3}
-            justifyContent="center"
-            alignItems="center"
-            sx={{ marginTop: "2rem" }}
+          <MacDialogContext.Provider
+            value={{ openMacDialog, setOpenMacDialog }}
           >
-            <MainSection
-              heading="Coding"
-              icon={<DataObject sx={ChipIconStyle} />}
-              genericData={codingData}
-              isLoading={isLoading}
+            <MacDialog
+              heading="Not Implemented"
+              description="This feature is still under development. You can view the completed website on akashcraft.ca."
+              visible={openMacDialog}
+              onClose={() => setOpenMacDialog(false)}
             />
-            <MainSection
-              heading="Work Experience"
-              icon={<Work sx={ChipIconStyle} />}
-              genericData={workData}
-              isLoading={isLoading}
-              isDuration
-            />
-            <MainSection
-              heading="Education"
-              icon={<School sx={ChipIconStyle} />}
-              genericData={educationData}
-              isLoading={isLoading}
-            />
-            <MainSection
-              heading="Video Editing"
-              icon={<Videocam sx={ChipIconStyle} />}
-              genericData={videoEditingData}
-              isLoading={isLoading}
-            />
-            <MainSection
-              heading="Others"
-              icon={<NoteAdd sx={ChipIconStyle} />}
-              genericData={otherData}
-              isLoading={isLoading}
-            />
-          </Stack>
+            <Stack
+              direction="column"
+              spacing={3}
+              justifyContent="center"
+              alignItems="center"
+              sx={{ marginTop: "2rem" }}
+            >
+              <MainSection
+                heading="Coding"
+                icon={<DataObject sx={ChipIconStyle} />}
+                genericData={codingData}
+                isLoading={isLoading}
+              />
+              <MainSection
+                heading="Work Experience"
+                icon={<Work sx={ChipIconStyle} />}
+                genericData={workData}
+                isLoading={isLoading}
+                isDuration
+              />
+              <MainSection
+                heading="Education"
+                icon={<School sx={ChipIconStyle} />}
+                genericData={educationData}
+                isLoading={isLoading}
+              />
+              <MainSection
+                heading="Others"
+                icon={<NoteAdd sx={ChipIconStyle} />}
+                genericData={otherData}
+                isLoading={isLoading}
+              />
+              <MainSection
+                heading="YouTube"
+                icon={<Videocam sx={ChipIconStyle} />}
+                genericData={videoEditingData}
+                isLoading={isLoading}
+              />
+            </Stack>
+          </MacDialogContext.Provider>
         </Box>
       </motion.div>
       <Footer />

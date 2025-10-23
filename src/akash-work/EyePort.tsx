@@ -1,6 +1,7 @@
 import "./../styles/App.css";
 import HolderBox from "../akash-commons/HolderBox";
 import {
+  Avatar,
   Box,
   Chip,
   Divider,
@@ -12,8 +13,9 @@ import {
   Stack,
   useMediaQuery,
 } from "@mui/material";
+import githubLogo from "./../assets/img-main/Github.png";
 import { SidePaper } from "../akash-commons/SidePaper";
-import { Download, Code, Description, OpenInNew } from "@mui/icons-material";
+import { Download, Description, OpenInNew } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { useGetImages } from "../akash-commons/Hooks";
@@ -146,7 +148,7 @@ function EyePort() {
                 window.open("https://github.com/akashcraft/EyePort", "_blank")
               }
               label="View Source Code"
-              icon={<Code sx={{ color: "white !important" }} />}
+              icon={<StyledAvatar src={githubLogo} />}
             />
           </Stack>
           <Divider
@@ -473,6 +475,14 @@ const StyledImg = styled("img")({
   width: "100%",
   height: "100%",
   objectFit: "cover",
+});
+
+const StyledAvatar = styled(Avatar)({
+  width: 24,
+  height: 24,
+  position: "relative",
+  bottom: "0.1rem",
+  right: "0.1rem",
 });
 
 export default EyePort;

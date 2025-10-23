@@ -29,6 +29,7 @@ const appTheme = createTheme({
           default: "#9d532f",
           paper: "#7f4203",
           macos: "#fff",
+          light: "#693d14",
         },
         text: {
           primary: "#fff",
@@ -45,6 +46,7 @@ const appTheme = createTheme({
           default: "#000000",
           paper: "#2a2a2a",
           macos: "#302f2f",
+          light: "#434343ff",
         },
         text: {
           primary: "#fff",

@@ -1,15 +1,15 @@
-import banner1 from "../assets/img-app/banner1.png";
-import banner2 from "../assets/img-app/banner2.png";
-import banner3 from "../assets/img-app/banner3.png";
-import banner4 from "../assets/img-app/banner4.png";
-import banner5 from "../assets/img-app/banner5.png";
-import banner6 from "../assets/img-app/banner6.png";
-import banner7 from "../assets/img-app/banner7.png";
-import banner8 from "../assets/img-app/banner8.png";
-import banner9 from "../assets/img-app/banner9.png";
-import banner10 from "../assets/img-app/banner10.png";
-import banner11 from "../assets/img-app/banner11.png";
-import banner12 from "../assets/img-app/banner12.png";
+import banner1 from "../assets/img-main/banner1.png";
+import banner2 from "../assets/img-main/banner2.png";
+import banner3 from "../assets/img-main/banner3.png";
+import banner4 from "../assets/img-main/banner4.png";
+import banner5 from "../assets/img-main/banner5.png";
+import banner6 from "../assets/img-main/banner6.png";
+import banner7 from "../assets/img-main/banner7.png";
+import banner8 from "../assets/img-main/banner8.png";
+import banner9 from "../assets/img-main/banner9.png";
+import banner10 from "../assets/img-main/banner10.png";
+import banner11 from "../assets/img-main/banner11.png";
+import banner12 from "../assets/img-main/banner12.png";
 import { createContext } from "react";
 
 export const images = [
@@ -51,6 +51,7 @@ export const codingData: genericAppData[] = [
     description: "Try some of my web apps and games right from your browser.",
     image: banner2,
     linkText: "Explore",
+    link: "app",
   },
   {
     title: "Game Development",

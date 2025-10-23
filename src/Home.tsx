@@ -3,9 +3,9 @@ import Header from "./akash-commons/Header";
 import { Backdrop, Box, Skeleton, Stack, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
-import githubLogo from "./assets/img-app/GitHub.png";
-import youtubeLogo from "./assets/img-app/Youtube.png";
-import linkedinLogo from "./assets/img-app/Linkedin.png";
+import githubLogo from "./assets/img-main/GitHub.png";
+import youtubeLogo from "./assets/img-main/Youtube.png";
+import linkedinLogo from "./assets/img-main/Linkedin.png";
 import reactLogo from "./assets/reactLogo.png";
 import packageJson from "../package.json";
 import {

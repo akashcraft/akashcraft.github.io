@@ -3,7 +3,7 @@ import "@mui/material/styles";
 declare module "@mui/material/styles" {
   interface TypeBackground {
     macos?: string;
-    flush?: string;
+    light?: string;
   }
 
   interface TypeText {

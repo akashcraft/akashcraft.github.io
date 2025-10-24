@@ -45,6 +45,7 @@ export const codingData: genericAppData[] = [
     description: "Try some of my web apps and games right from your browser.",
     image: banner1,
     linkText: "Explore",
+    link: "web",
   },
   {
     title: "App Development",

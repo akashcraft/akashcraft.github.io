@@ -3,9 +3,6 @@ import Header from "./akash-commons/Header";
 import { Backdrop, Box, Skeleton, Stack, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
-import githubLogo from "./assets/img-main/GitHub.png";
-import youtubeLogo from "./assets/img-main/Youtube.png";
-import linkedinLogo from "./assets/img-main/Linkedin.png";
 import reactLogo from "./assets/reactLogo.png";
 import packageJson from "../package.json";
 import {
@@ -173,24 +170,9 @@ function Home() {
               color={orange}
               link={openMainWebsite}
             />
-            <TopChip
-              img={linkedinLogo}
-              title="LinkedIn"
-              color={blue}
-              link={openLinkedIn}
-            />
-            <TopChip
-              img={githubLogo}
-              title="GitHub"
-              color={grey}
-              link={openGitHub}
-            />
-            <TopChip
-              img={youtubeLogo}
-              title="YouTube"
-              color={red}
-              link={openYouTube}
-            />
+            <TopChip title="LinkedIn" color={blue} link={openLinkedIn} />
+            <TopChip title="GitHub" color={grey} link={openGitHub} />
+            <TopChip title="YouTube" color={red} link={openYouTube} />
           </Stack>
           <MacDialogContext.Provider
             value={{ openMacDialog, setOpenMacDialog }}

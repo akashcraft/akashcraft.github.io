@@ -24,8 +24,8 @@ export const appData: AppData[] = [
     appName: "LightCraft",
     image: images[0],
     description:
-      "Software to control Bluetooth LED Strips like QHM-0A9E. Click to open Manual or GitHub.",
-    smallChipLabel: ["Read Manual", "View Source Code"],
+      "Software to control Bluetooth LED Strips like QHM-0A9E. Click to open Wiki or GitHub.",
+    smallChipLabel: ["Open Wiki", "View Source Code"],
     smallChipIcons: ["Description", "GitHub"],
     smallChipLinks: [
       "https://github.com/akashcraft/LED-Controller/wiki",

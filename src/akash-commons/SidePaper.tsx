@@ -28,7 +28,6 @@ export function SidePaper({
           position: "relative",
           borderRadius: "1rem",
           margin: "0.25rem 0",
-          flexGrow: 1,
           overflow: "hidden",
         },
       ]}

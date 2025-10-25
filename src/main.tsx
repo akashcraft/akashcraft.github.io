@@ -14,6 +14,7 @@ import Web from "./akash-web/Web.tsx";
 import App from "./akash-app/App.tsx";
 import ScrollToTop from "./akash-commons/ScrollToTop.tsx";
 import { NotFound } from "./NotFound.tsx";
+import Mahjong from "./akash-web/Mahjong.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -79,6 +80,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/eyeport" element={<EyePort />} />
           <Route path="/web" element={<Web />} />
           <Route path="/app" element={<App />} />
+          <Route path="/mahjong" element={<Mahjong />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

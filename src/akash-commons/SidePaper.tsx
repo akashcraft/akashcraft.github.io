@@ -4,6 +4,7 @@ import type { ReactElement } from "react";
 
 type SidePaperProps = {
   title: string;
+  icon?: ReactElement;
   description?: string[];
   chips?: string[];
   children?: ReactElement | ReactElement[];
@@ -13,6 +14,7 @@ type SidePaperProps = {
 
 export function SidePaper({
   title,
+  icon,
   description,
   chips,
   children,
@@ -34,7 +36,10 @@ export function SidePaper({
       style={style}
     >
       <Stack direction="column" spacing={1}>
-        <Typography variant="h6">{title}</Typography>
+        <Stack direction="row" alignItems="center" spacing={1}>
+          {icon && <>{icon}</>}
+          <Typography variant="h6">{title}</Typography>
+        </Stack>
         {description &&
           description.map((desc, index) => (
             <Typography key={index} variant="body2">

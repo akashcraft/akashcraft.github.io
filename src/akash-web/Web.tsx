@@ -6,7 +6,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  ListItemSecondaryAction,
   Box,
   MenuItem,
   Menu,
@@ -52,6 +51,7 @@ function Web() {
         {isPhone && (
           <SidePaper
             title="Filters"
+            icon={<FilterAlt />}
             elevation={3}
             style={{
               width: "15rem",
@@ -63,7 +63,7 @@ function Web() {
               position: !isPhone ? "static" : "sticky",
             }}
           >
-            <List sx={{ marginTop: "0.5rem" }}>
+            <List sx={{ marginTop: "0.5rem", paddingBottom: "0" }}>
               <ListItem disablePadding>
                 <StyledListItemButton
                   sx={{
@@ -79,11 +79,7 @@ function Web() {
                   }}
                 >
                   <ListItemText primary="All" />
-                  {filterState.isAllSelected && (
-                    <ListItemSecondaryAction>
-                      <StyledCheck />
-                    </ListItemSecondaryAction>
-                  )}
+                  {filterState.isAllSelected && <Check />}
                 </StyledListItemButton>
               </ListItem>
               {WebTypeFilters.map((type, index) => (
@@ -112,11 +108,7 @@ function Web() {
                   >
                     <ListItemText primary={type} />
                     {filterState.selectedTypes.includes(type) &&
-                      !filterState.isAllSelected && (
-                        <ListItemSecondaryAction>
-                          <StyledCheck />
-                        </ListItemSecondaryAction>
-                      )}
+                      !filterState.isAllSelected && <Check />}
                   </StyledListItemButton>
                 </ListItem>
               ))}
@@ -199,7 +191,8 @@ function Web() {
             direction={isPhone ? "row" : "column"}
             alignItems={isPhone ? "flex-start" : "center"}
             flexWrap="wrap"
-            gap={"1.5rem"}
+            padding={isPhone ? 0 : "0.25rem"}
+            gap={isPhone ? "1.5rem" : "2rem"}
           >
             {filterState.filteredData.map((item, index) => (
               <WebCard
@@ -220,11 +213,6 @@ const StyledListItemButton = styled(ListItemButton)({
   cursor: "pointer",
   borderRadius: "1rem",
   margin: "0.25rem 0",
-});
-
-const StyledCheck = styled(Check)({
-  position: "relative",
-  top: "0.15rem",
 });
 
 export default Web;

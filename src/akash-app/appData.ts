@@ -38,7 +38,7 @@ export const appData: AppData[] = [
     description:
       "Software to collect, analyze, and export Eye-Tracking Data from TOBII Pro Glasses 3",
     smallChipLabel: ["Learn More", "View Source Code"],
-    smallChipIcons: ["Work", "GitHub"],
+    smallChipIcons: ["Visibility", "GitHub"],
     smallChipLinks: ["/eyeport", "https://github.com/akashCraft/eyeport"],
   },
 ];

@@ -1,4 +1,4 @@
-import { Work, Description, GitHub } from "@mui/icons-material";
+import { Visibility, Description, GitHub } from "@mui/icons-material";
 import { Typography, Box, Skeleton, styled, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Pagination, Autoplay } from "swiper/modules";
@@ -69,15 +69,28 @@ function FeaturedCard({
                 <Typography>{app.description}</Typography>
                 <Box flexGrow={1} />
                 {appData[index].smallChipLabel.map((label, idx) => (
-                  <StyledChip
+                  <Chip
                     key={idx}
                     label={label}
-                    sx={{ width: isPhone ? "fit-content" : "100%" }}
+                    sx={{
+                      width: isPhone ? "fit-content" : "100%",
+                      backgroundColor:
+                        idx === 0
+                          ? "var(--mui-palette-secondary-main)"
+                          : "none",
+                      ":hover": {
+                        backgroundColor:
+                          idx === 0
+                            ? "var(--mui-palette-secondary-dark)"
+                            : "none",
+                      },
+                    }}
                     icon={
                       appData[index].smallChipIcons[idx] === "GitHub" ? (
                         <GitHub sx={IconStyle} />
-                      ) : appData[index].smallChipIcons[idx] === "Work" ? (
-                        <Work sx={IconStyle} />
+                      ) : appData[index].smallChipIcons[idx] ===
+                        "Visibility" ? (
+                        <Visibility sx={IconStyle} />
                       ) : (
                         <Description sx={IconStyle} />
                       )
@@ -168,17 +181,8 @@ const ContentBox = styled(Box)({
   height: "15rem",
 });
 
-const StyledChip = styled(Chip)({
-  fontSize: "1rem",
-  padding: "1.25rem 1rem",
-  borderRadius: "1.5rem",
-  gap: "0.25rem",
-});
-
 const IconStyle = {
   color: "white !important",
-  position: "relative",
-  bottom: "0.1rem",
 };
 
 export default FeaturedCard;

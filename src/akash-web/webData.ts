@@ -12,7 +12,7 @@ export type WebDataType = {
   description: string;
   logo?: string;
   type?: WebFilterType;
-  isNew?: boolean;
+  isWideOnly?: boolean;
   smallChipLabel: string[];
   smallChipLinks: string[];
 };
@@ -37,10 +37,13 @@ export const webData: WebDataType[] = [
     appName: "Air Canada In-Flight Map",
     image: images[0],
     type: "Aviation",
-    isNew: true,
+    isWideOnly: true,
     description: "Interactive Aircraft Progress Map",
     smallChipLabel: ["Start", "View Source Code"],
-    smallChipLinks: ["/mapcraft", "https://github.com/akashCraft/MapCraft"],
+    smallChipLinks: [
+      "/mapcraft.html",
+      "https://github.com/akashCraft/MapCraft",
+    ],
   },
   {
     appName: "Live Airport Schedules",
@@ -63,9 +66,10 @@ export const webData: WebDataType[] = [
     appName: "Windows 8.1 Replica",
     image: images[3],
     type: "Replicas",
+    isWideOnly: true,
     description: "A limited replica of the Windows 8.1 interface.",
     smallChipLabel: ["Start"],
-    smallChipLinks: ["/windows8"],
+    smallChipLinks: ["/windows8.html"],
   },
   {
     appName: "GradePlus",

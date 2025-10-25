@@ -1,0 +1,738 @@
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+    overflow-y: hidden;
+}
+
+@font-face {
+    font-family: 'Segoe UI';
+    src:
+        local("Segoe UI Light"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff2) format("woff2"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff) format("woff"),
+        url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.ttf) format("truetype");
+    font-weight: 100;
+}
+
+body {
+    color: white;
+    font-family: 'Segoe UI';
+    background-color: black;
+    margin: 0;
+    height: 100%;
+}
+
+/* Loading */
+div.mainapp {
+    display: none;
+    height: 100vh;
+    width: 100%;
+}
+
+div.loading {
+    background-color: #180050;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Pages */
+div.charmshint {
+    position: fixed;
+    bottom: -4px;
+    right: 0px;
+    z-index: 1;
+}
+
+div.minwidth {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100dvh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    background-color: rgb(24, 24, 24);
+    color: white;
+    font-weight: lighter;
+
+    div {
+        i {
+            font-size: 2.5rem;
+            color: gray;
+        }
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+i.panel-close {
+    font-size: 1.5rem;
+    color: gray;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+}
+
+div.no-left-panel-text {
+    margin-top: 10dvh;
+}
+
+p.no-left-panel-small {
+    color: gray;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 0.4rem;
+}
+
+div.desktop {
+    display: none;
+}
+
+div.shutdown {
+    padding-top: 45vh;
+    background-color: #180050;
+    display: none;
+    height: 100%;
+    text-align: center;
+}
+
+
+/* Start Menu */
+img.startwall {
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    position: fixed;
+    z-index: -1;
+}
+
+h2.start {
+    display: inline-block;
+    margin-top: 60px;
+    margin-left: 60px;
+    font-size: 3.5em;
+    font-weight: 100;
+    animation: fade 1s 0s ease both;
+}
+
+div.start {
+    position: relative;
+}
+
+a#power {
+    position: absolute;
+    padding: 7px;
+    padding-bottom: 3px;
+    top: 84px;
+    right: 114px;
+    animation: fade 1s 0s ease both;
+}
+
+img#search {
+    position: absolute;
+    top: 92px;
+    right: 60px;
+    animation: fade 1s 0s ease both;
+}
+
+a#accountstart {
+    position: absolute;
+    top: 85px;
+    right: 165px;
+    animation: fade 1s 0s ease both;
+}
+
+div.main-main {
+    width: 100vw;
+    height: fit-content;
+    overflow-x: auto;
+}
+
+div.main-tile {
+    position: relative;
+    width: max-content;
+    left: 60px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+div.tile,
+div.tile2,
+div.tile3 {
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    flex-wrap: wrap;
+}
+
+img#mahjongtile,
+img#githubtile {
+    margin-right: 1px;
+}
+
+img.tile {
+    margin: 5px;
+    animation: smooth2 0.7s 0s cubic-bezier(0, .62, .71, .85);
+}
+
+img.tile2 {
+    margin: 5px;
+    animation: smooth2 0.6s 0.1s cubic-bezier(0, .62, .71, .85) both;
+}
+
+img.tile3 {
+    margin: 5px;
+    animation: smooth2 0.5s 0.2s cubic-bezier(0, .62, .71, .85) both;
+}
+
+img.tile2,
+img.tile3 {
+    margin-left: 3px;
+}
+
+img#newstile,
+img#newstile2,
+img#storetile,
+img#storetile2,
+img#calendartile,
+img#phototile {
+    margin: 0px;
+}
+
+div.storetilediv {
+    position: relative;
+    width: 253px;
+    height: 253px;
+    margin: 5px;
+    margin-left: 2px;
+    margin-bottom: 7px;
+}
+
+div.newstilediv {
+    position: relative;
+    width: 253px;
+    height: 123px;
+    margin: 5px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+img#newstile2 {
+    position: absolute;
+    bottom: -130px;
+    z-index: 0;
+}
+
+img#storetile2 {
+    position: absolute;
+    bottom: 0px;
+    z-index: -1;
+}
+
+div.phototile {
+    position: relative;
+    height: 254px;
+    margin: 5px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+div.calendartile {
+    position: relative;
+    height: 123px;
+    margin: 5px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+h2#calendar {
+    display: none;
+    font-size: small;
+    font-weight: 100;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 2;
+    bottom: 7.4px;
+    left: 11.8px;
+}
+
+
+h2#photos {
+    display: none;
+    font-size: small;
+    font-weight: 100;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 5.8px;
+    left: 12.5px;
+}
+
+div.phototiles {
+    width: 253px;
+    position: relative;
+}
+
+div.phototile1 {
+    position: absolute;
+    height: 253px;
+    width: inherit;
+}
+
+div.datetile {
+    background-color: #5337ad;
+    width: inherit;
+    height: inherit;
+    position: relative;
+}
+
+span#calendarday {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+span#calendardate {
+    position: absolute;
+    right: 10px;
+    font-size: 60px;
+    top: 20px;
+}
+
+div.appsdown {
+    opacity: 0;
+    position: absolute;
+    bottom: 30px;
+    left: 65px;
+    animation: fade 0.3s 0s ease forwards;
+}
+
+/* Apps Screen */
+div.apps {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #180151;
+    display: none;
+    width: 100vw;
+    height: 100vh;
+}
+
+div.apps-main {
+    display: flex;
+    width: min-content;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 55vh;
+}
+
+h2.apps {
+    display: inline-block;
+    margin-top: 60px;
+    margin-bottom: 10px;
+    margin-left: 60px;
+    font-size: 3.5em;
+    font-weight: 100;
+}
+
+div.appsup {
+    opacity: 0;
+    position: absolute;
+    bottom: 30px;
+    left: 65px;
+    animation: fade 0.3s 0s ease forwards;
+}
+
+h2#apphead {
+    width: 200px;
+    margin-left: 60px;
+    margin-bottom: 10px;
+    color: #986aff;
+    font-size: 2.2em;
+}
+
+div.app {
+    margin-left: 60px;
+    display: inline-block;
+    width: 250px;
+    padding-top: 4px;
+    padding-left: 4px;
+}
+
+div.app img {
+    width: 42px;
+}
+
+div.app span {
+    position: relative;
+    left: 8px;
+    bottom: 15px;
+}
+
+/* Desktop */
+div#taskbar {
+    display: block;
+    position: fixed;
+    bottom: -4px;
+    width: 100%;
+    background-color: hsla(0, 0%, 0%, 0.2);
+}
+
+img.startwall2 {
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+}
+
+img#start {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 4px;
+    width: 35px;
+}
+
+img#task-ethernet {
+    position: absolute;
+    right: 80px;
+    bottom: 12.5px;
+    display: inline-block;
+    width: 20px;
+}
+
+div.taskbar-clock {
+    position: absolute;
+    right: 10px;
+    bottom: 11.7px;
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+}
+
+div.taskbar-clock h2 {
+    display: inline;
+    font-weight: 100;
+    font-size: 12px;
+    color: rgb(233, 233, 233);
+    text-shadow: 0.5px 0.5px 5px black;
+}
+
+/* Shutdown Screen */
+h2.shutdown {
+    display: inline-block;
+    position: relative;
+    bottom: 3px;
+    margin-left: 15px;
+    font-size: 1.65em;
+    font-weight: 100;
+}
+
+/* Charms Bar */
+img#charmsarrow {
+    animation: charmshint 1s 0s cubic-bezier(0, 1.08, .55, 1);
+}
+
+div.charms-time {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    left: 65px;
+    background-color: #111111;
+    width: 560px;
+    height: 175px;
+    z-index: 4;
+}
+
+div.charms {
+    width: 20px;
+    height: 40px;
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    z-index: 5;
+}
+
+div.charmsbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #111111;
+    width: 70px;
+    height: 100vh;
+    position: fixed;
+    bottom: 0px;
+    right: -70px;
+    z-index: 4;
+}
+
+/* App Warning */
+div.appwarn {
+    display: none;
+    justify-content: center;
+    background-color: #3100a3;
+    position: fixed;
+    top: 30vh;
+    width: 100vw;
+    z-index: 3;
+}
+
+div.appwarn h2 {
+    margin-top: 40px;
+    font-weight: 500;
+}
+
+div.close {
+    position: absolute;
+    right: 0px;
+    bottom: 20px;
+    background-color: #4a24a3;
+    width: fit-content;
+    padding: 4px 20px;
+    border: white solid 2.5px;
+}
+
+/* Pseudo Classes */
+body {
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+div.app:hover {
+    background-color: rgb(64, 0, 128);
+    cursor: pointer;
+}
+
+img.tile:hover,
+img.tile2:hover,
+img.tile3:hover,
+.noopen {
+    cursor: pointer;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+a#power:hover,
+a#accountstart:hover {
+    background-color: rgba(255, 255, 255, 0.142);
+    cursor: pointer;
+}
+
+div.close:hover {
+    cursor: pointer;
+    background-color: #6e3be6;
+}
+
+/* Animations */
+@keyframes smooth1 {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+@keyframes smooth2 {
+    0% {
+        opacity: 0;
+        transform: translateX(120px) scale(0.5);
+    }
+
+    40% {
+        transform: translateX(10px) scale(1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0px) scale(1);
+    }
+
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeoutzoom {
+    from {
+        opacity: 1;
+        scale: 1;
+    }
+
+    to {
+        opacity: 0.2;
+        scale: 0.7;
+        display: none;
+    }
+}
+
+@keyframes slidein {
+    from {
+        transform: translateX(0px);
+    }
+
+    to {
+        transform: translateX(-70px);
+    }
+}
+
+@keyframes slidein1 {
+    from {
+        transform: translateX(100px);
+    }
+
+    to {
+        transform: translateX(0px);
+    }
+}
+
+@keyframes tiltback {
+    from {
+        transform: rotateX(0deg) scale(1);
+    }
+
+    to {
+        transform: rotateX(-20deg) scale(0.95);
+    }
+}
+
+@keyframes charmshint {
+    from {
+        transform: translateX(-80px) translateY(-80px);
+    }
+
+    to {
+        transform: translateX(0px) translateY(0px);
+    }
+}
+
+@keyframes slideout {
+    from {
+        transform: translateY(0vh);
+    }
+
+    to {
+        transform: translateY(-100vh);
+    }
+}
+
+@keyframes slideout1 {
+    from {
+        transform: translateY(100vh);
+    }
+
+    to {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes slidein2 {
+    from {
+        bottom: 0px;
+    }
+
+    to {
+        bottom: 140px;
+    }
+}
+
+@keyframes slidein3 {
+    from {
+        bottom: -250px;
+    }
+
+    to {
+        bottom: 4px;
+    }
+}
+
+@keyframes slidein4 {
+    from {
+        bottom: -130px;
+    }
+
+    to {
+        bottom: 0px;
+    }
+}
+
+/* Media Queries */
+@media only screen and (max-width: 750px) {
+
+    div.appwarn,
+    div.main,
+    div.charms,
+    div.desktop,
+    div.shutdown,
+    div.charmshint {
+        display: none !important;
+    }
+
+    div.minwidth {
+        display: flex;
+    }
+}
+
+div.main-main::-webkit-scrollbar {
+    width: 2px;
+    /* Width of the vertical scrollbar */
+    height: 5px;
+    /* Height for horizontal scrollbars if present */
+    background-color: gray;
+    /* Optional: Color of the scrollbar track */
+}
+
+div.main-main::-webkit-scrollbar-thumb {
+    background-color: #F5F5F5;
+    /* Color of the draggable part */
+    border-radius: 1px;
+    /* If you want a slight rounding */
+}
+
+/* Styling the scrollbar for Firefox */
+div.main-main {
+    scrollbar-width: thin;
+    scrollbar-color: #F5F5F5 gray;
+}

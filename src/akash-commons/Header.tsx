@@ -106,18 +106,30 @@ function Header() {
         "/networking",
         "/app",
         "/web",
+        "/mahjong",
       ].includes(path)
     ) {
       if (path.includes("/verafin/")) {
         return "Verafin";
       } else if (path === "/eyeport") {
         return "EyePort";
+      } else if (path === "/mahjong") {
+        return "Mahjong";
       }
       return path.charAt(1).toUpperCase() + path.slice(2);
     } else {
       return "Not Found";
     }
   }, []);
+
+  const handleHomeClick = () => {
+    const p = window.location.hash.replace(/^#!?/, "");
+    if (["/mahjong"].includes(p)) {
+      navigate("/web");
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <>
@@ -137,19 +149,8 @@ function Header() {
       >
         <Toolbar variant="dense" disableGutters>
           <Stack direction="row" gap={1} alignItems="center">
-            <StyledImg
-              onClick={() => {
-                navigate("/");
-              }}
-              src={logo}
-            />
-            <StyledH2
-              onClick={() => {
-                navigate("/");
-              }}
-            >
-              AkashCraft
-            </StyledH2>
+            <StyledImg onClick={handleHomeClick} src={logo} />
+            <StyledH2 onClick={handleHomeClick}>AkashCraft</StyledH2>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}

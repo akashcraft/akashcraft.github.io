@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import type { WebDataType } from "./webData";
 import { useState } from "react";
-import { GitHub, PlayArrow } from "@mui/icons-material";
+import { GitHub, PlayArrow, WarningAmberOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 
@@ -39,6 +39,13 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
       <CardActionArea
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={() => {
+          if (data.smallChipLinks[0].includes(".html")) {
+            window.location.href = data.smallChipLinks[0];
+          } else if (!data.smallChipLinks[0].includes("https://")) {
+            navigate(data.smallChipLinks[0]);
+          }
+        }}
       >
         <motion.div
           style={{ y: 0 }}
@@ -66,30 +73,54 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" flexWrap="wrap" gap={1}>
-            {data.smallChipLabel.map((label, index) => (
-              <Chip
-                sx={{
-                  cursor: "pointer",
-                  width: !isPhone ? "100%" : "fit-content",
-                }}
-                key={index}
-                label={label}
-                onClick={() => {
-                  if (data.smallChipLinks[index].includes("https://")) {
-                    window.open(data.smallChipLinks[index], "_blank");
-                  } else {
-                    navigate(data.smallChipLinks[index]);
+            {data.smallChipLabel.map((label, index) => {
+              const isStartChip = data.smallChipLabel[index].includes("Start");
+              const isWarningChip = (data.isWideOnly ?? false) && !isPhone;
+              return (
+                <Chip
+                  sx={{
+                    cursor: "pointer",
+                    width: !isPhone ? "100%" : "fit-content",
+                    backgroundColor: isStartChip
+                      ? isWarningChip
+                        ? "#d29914ff"
+                        : "var(--mui-palette-secondary-main)"
+                      : "none",
+                    "&:hover": {
+                      backgroundColor: isStartChip
+                        ? isWarningChip
+                          ? "#8c660cff"
+                          : "var(--mui-palette-secondary-dark)"
+                        : "none",
+                    },
+                  }}
+                  key={index}
+                  label={
+                    isWarningChip && label == "Start"
+                      ? "Screen Width Low"
+                      : label
                   }
-                }}
-                icon={
-                  data.smallChipLabel[index].includes("Start") ? (
-                    <PlayArrow sx={{ color: "white!important" }} />
-                  ) : (
-                    <GitHub sx={{ color: "white!important" }} />
-                  )
-                }
-              />
-            ))}
+                  onClick={() => {
+                    if (data.smallChipLinks[index].includes("https://")) {
+                      window.open(data.smallChipLinks[index], "_blank");
+                    } else if (data.smallChipLinks[index].includes(".html")) {
+                      window.location.href = data.smallChipLinks[index];
+                    } else {
+                      navigate(data.smallChipLinks[index]);
+                    }
+                  }}
+                  icon={
+                    !isStartChip ? (
+                      <GitHub sx={{ color: "white!important" }} />
+                    ) : isWarningChip ? (
+                      <WarningAmberOutlined sx={{ color: "white!important" }} />
+                    ) : (
+                      <PlayArrow sx={{ color: "white!important" }} />
+                    )
+                  }
+                />
+              );
+            })}
           </Stack>
         </CardContent>
       </CardActionArea>

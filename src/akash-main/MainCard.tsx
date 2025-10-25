@@ -147,7 +147,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
                     ? "green"
                     : isPrivate
                       ? "red"
-                      : "#ff003cff",
+                      : "var(--mui-palette-secondary-main)",
                 }}
                 direction="row"
                 spacing={"1rem"}

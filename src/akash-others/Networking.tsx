@@ -313,7 +313,7 @@ const TableOfContentsLink = ({
 }: {
   handler: (link: string) => void;
 }) => (
-  <List sx={{ marginTop: "0.5rem" }}>
+  <List sx={{ marginTop: "0.5rem", paddingBottom: "0" }}>
     <ListItem disablePadding onClick={() => handler("link1")}>
       <ListItemButton>
         <ListItemText primary="Windows Server" />

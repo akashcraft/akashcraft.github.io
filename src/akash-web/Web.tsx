@@ -191,7 +191,6 @@ function Web() {
             direction={isPhone ? "row" : "column"}
             alignItems={isPhone ? "flex-start" : "center"}
             flexWrap="wrap"
-            padding={isPhone ? 0 : "0.25rem"}
             gap={isPhone ? "1.5rem" : "2rem"}
           >
             {filterState.filteredData.map((item, index) => (

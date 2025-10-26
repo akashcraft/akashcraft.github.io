@@ -37,6 +37,7 @@ import { useEffect, useState } from "react";
 import { useGetImages } from "./akash-commons/Hooks";
 import MacDialog from "./akash-commons/MacDialog";
 import { MacDialogContext } from "./akash-main/appData";
+import MacDock from "./akash-macos/MacDock";
 
 function Home() {
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -174,12 +175,14 @@ function Home() {
             <TopChip title="GitHub" color={grey} link={openGitHub} />
             <TopChip title="YouTube" color={red} link={openYouTube} />
           </Stack>
+          <MacDock />
           <MacDialogContext.Provider
             value={{ openMacDialog, setOpenMacDialog }}
           >
             <MacDialog
               heading="Not Implemented"
               description="This feature is still under development. You can view the completed website on akashcraft.ca."
+              imageSrc={images[images.length - 1]}
               visible={openMacDialog}
               onClose={() => setOpenMacDialog(false)}
             />

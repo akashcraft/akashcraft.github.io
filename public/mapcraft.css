@@ -136,20 +136,15 @@ a.play:hover {
     transition: 0.25s;
 }
 
-img.headerimg {
-    width: 30px;
-    height: 31.2px;
-    margin-left: 0.6rem;
+i.home {
+    cursor: pointer;
+    color: white;
+    padding: 1rem;
 }
 
-a.title {
-    color: white;
-    font-weight: bold;
-    font-size: 1.55rem;
-    margin-left: 0.7rem;
-    text-align: center;
-    color: white;
-    text-decoration: none;
+i.home:hover {
+    background-color: rgb(35, 35, 35);
+    transition: 0.25s;
 }
 
 div.loading {

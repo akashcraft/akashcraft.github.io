@@ -64,15 +64,27 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
           />
         </motion.div>
         <CardContent
-          sx={{ minHeight: "12rem", display: "flex", flexDirection: "column" }}
+          sx={{
+            minHeight: "12rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: !isPhone ? "center" : "flex-start",
+            gap: "0.5rem",
+          }}
         >
-          <Typography variant="h6">{data.appName}</Typography>
+          <Typography variant="h6" sx={{ alignSelf: "flex-start" }}>
+            {data.appName}
+          </Typography>
 
-          <Typography variant="body2" color="text.primary" mt={1} mb={1}>
+          <Typography
+            color="text.primary"
+            variant="body2"
+            sx={{ alignSelf: "flex-start" }}
+          >
             {data.description}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Stack direction="row" flexWrap="wrap" gap={1}>
+          <Stack direction={isPhone ? "row" : "column"} gap={1}>
             {data.smallChipLabel.map((label, index) => {
               const isStartChip = data.smallChipLabel[index].includes("Start");
               const isWarningChip = (data.isWideOnly ?? false) && !isPhone;
@@ -80,7 +92,10 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
                 <Chip
                   sx={{
                     cursor: "pointer",
-                    width: !isPhone ? "100%" : "fit-content",
+                    minWidth: !isPhone ? "60%" : "fit-content",
+                    padding: !isPhone ? "1.2rem" : "none",
+                    fontSize: !isPhone ? "1rem" : "0.8rem",
+                    borderRadius: !isPhone ? "2rem" : "1rem",
                     backgroundColor: isStartChip
                       ? isWarningChip
                         ? "#d29914ff"

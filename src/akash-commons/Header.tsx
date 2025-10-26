@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import logo from "../assets/logo.png";
+import "../styles/Image.css";
 
 import {
   AppBar,
@@ -14,6 +14,10 @@ import {
   Drawer,
   Stack,
   Breadcrumbs,
+  Skeleton,
+  Tooltip,
+  tooltipClasses,
+  type TooltipProps,
 } from "@mui/material";
 
 import {
@@ -33,6 +37,8 @@ import { openDonatePageInNewTab, openResumeInNewTab } from "./Utils";
 import { motion } from "framer-motion";
 
 import { Link, useNavigate } from "react-router-dom";
+import { useGetImages } from "./Hooks";
+import { headerImages } from "./headerData";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const headerContainer = document.createElement("div");
@@ -122,6 +128,9 @@ function Header() {
     }
   }, []);
 
+  // Get Images
+  const isLoading = useGetImages(headerImages);
+
   const handleHomeClick = () => {
     const p = window.location.hash.replace(/^#!?/, "");
     if (["/mahjong"].includes(p)) {
@@ -136,6 +145,7 @@ function Header() {
       <MacDialog
         heading="Not Implemented"
         description="This feature is still under development. You can view the completed website on akashcraft.ca."
+        imageSrc={headerImages[headerImages.length - 1]}
         visible={openOpenMacDialog}
         onClose={() => setOpenMacDialog(false)}
       />
@@ -149,8 +159,27 @@ function Header() {
       >
         <Toolbar variant="dense" disableGutters>
           <Stack direction="row" gap={1} alignItems="center">
-            <StyledImg onClick={handleHomeClick} src={logo} />
-            <StyledH2 onClick={handleHomeClick}>AkashCraft</StyledH2>
+            {isLoading ? (
+              <Skeleton
+                variant="rounded"
+                sx={{
+                  width: "2rem",
+                  height: "2rem",
+                  borderRadius: "1rem",
+                  marginLeft: "0.6rem",
+                }}
+              />
+            ) : (
+              <StyledImg onClick={handleHomeClick} src={headerImages[0]} />
+            )}
+
+            <StyledTooltip
+              title="Navigate Back"
+              placement="bottom"
+              enterDelay={1500}
+            >
+              <StyledH2 onClick={handleHomeClick}>AkashCraft</StyledH2>
+            </StyledTooltip>
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -185,23 +214,27 @@ function Header() {
                   setOpenMacDialog(true);
                 }}
               />
-              <IconChip
-                icon={<VolunteerActivism sx={ChipIconStyle} />}
-                onClick={openDonatePageInNewTab}
-              />
-              <div>
+              <StyledTooltip title="Donate" placement="bottom">
                 <IconChip
-                  icon={
-                    themeMode === "Light" ? (
-                      <LightMode sx={ChipIconStyle} />
-                    ) : themeMode === "Dark" ? (
-                      <DarkMode sx={ChipIconStyle} />
-                    ) : (
-                      <Computer sx={ChipIconStyle} />
-                    )
-                  }
-                  onClick={handleClick}
+                  icon={<VolunteerActivism sx={ChipIconStyle} />}
+                  onClick={openDonatePageInNewTab}
                 />
+              </StyledTooltip>
+              <div>
+                <StyledTooltip title="Theme" placement="bottom">
+                  <IconChip
+                    icon={
+                      themeMode === "Light" ? (
+                        <LightMode sx={ChipIconStyle} />
+                      ) : themeMode === "Dark" ? (
+                        <DarkMode sx={ChipIconStyle} />
+                      ) : (
+                        <Computer sx={ChipIconStyle} />
+                      )
+                    }
+                    onClick={handleClick}
+                  />
+                </StyledTooltip>
                 <Menu
                   anchorEl={anchorEl}
                   open={open}
@@ -278,6 +311,15 @@ function Header() {
     </>
   );
 }
+
+const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(() => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    borderRadius: "1rem",
+    fontSize: "0.85rem",
+  },
+}));
 
 const StyledAppBar = styled(AppBar)`
   top: 0.75rem;

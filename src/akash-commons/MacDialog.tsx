@@ -1,15 +1,28 @@
 import styled from "@emotion/styled";
-import macLogo from "../assets/img-macos/macSetup.png";
 import { motion, AnimatePresence } from "framer-motion";
+import { Stack } from "@mui/material";
 
 type MacDialogProps = {
   heading: string;
   description: string;
   visible: boolean;
+  imageSrc: string;
+  primaryButtonText?: string;
+  secondaryButtonText?: string;
   onClose: () => void;
+  onCloseSecondary?: () => void;
 };
 
-function MacDialog({ heading, description, visible, onClose }: MacDialogProps) {
+function MacDialog({
+  heading,
+  description,
+  visible,
+  imageSrc,
+  onClose,
+  onCloseSecondary,
+  primaryButtonText,
+  secondaryButtonText,
+}: MacDialogProps) {
   return (
     <AnimatePresence>
       {visible && (
@@ -29,13 +42,28 @@ function MacDialog({ heading, description, visible, onClose }: MacDialogProps) {
         >
           <StyledMacDialog>
             <LeftAlign>
-              <img src={macLogo} style={{ width: "5rem" }} />
+              <img src={imageSrc} style={{ width: "5rem" }} />
               <p className="macos-header">{heading}</p>
               <p className="macos-description">{description}</p>
             </LeftAlign>
-            <div className="macos-ok macos-button" onClick={onClose}>
-              OK
-            </div>
+            <Stack
+              direction="column"
+              alignItems="center"
+              gap={1.5}
+              style={{ marginBottom: "1.5rem", width: "100%" }}
+            >
+              <div className="macos-ok macos-button" onClick={onClose}>
+                {primaryButtonText ?? "OK"}
+              </div>
+              {secondaryButtonText && (
+                <div
+                  className="macos-secondary macos-button"
+                  onClick={onCloseSecondary}
+                >
+                  {secondaryButtonText ?? "Cancel"}
+                </div>
+              )}
+            </Stack>
           </StyledMacDialog>
         </motion.div>
       )}
@@ -74,7 +102,7 @@ const StyledMacDialog = styled.div`
   font-family: "San Francisco";
   transform-origin: center;
   text-align: center;
-  width: 18rem;
+  width: 17rem;
   z-index: 5;
 
   img {
@@ -86,20 +114,22 @@ const StyledMacDialog = styled.div`
   p.macos-header {
     margin: 0;
     font-weight: 800;
+    font-size: 0.9rem;
     font-family: "San Francisco Bold";
   }
 
   p.macos-description {
     margin: 1rem 2rem;
-    font-size: small;
+    font-size: 0.7rem;
     margin-left: 0;
     margin-right: 0;
   }
 
   div.macos-button {
-    width: 80%;
-    padding: 0.5rem;
-    margin-bottom: 1.5rem;
+    width: 85%;
+    padding: 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 800;
     border-radius: 3rem;
   }
 
@@ -108,8 +138,17 @@ const StyledMacDialog = styled.div`
     color: white;
   }
 
+  div.macos-secondary {
+    background-color: #877c72;
+    color: white;
+  }
+
   div.macos-ok:active {
     background-color: #c96c08;
+  }
+
+  div.macos-secondary:active {
+    background-color: #6e665e;
   }
 
   div.macos-button:hover {

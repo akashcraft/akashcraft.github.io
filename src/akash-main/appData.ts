@@ -10,6 +10,7 @@ import banner9 from "../assets/img-main/banner9.png";
 import banner10 from "../assets/img-main/banner10.png";
 import banner11 from "../assets/img-main/banner11.png";
 import banner12 from "../assets/img-main/banner12.png";
+import macSetupLogo from "../assets/img-macos/macSetup.png";
 import { createContext } from "react";
 
 export const images = [
@@ -25,6 +26,7 @@ export const images = [
   banner10,
   banner11,
   banner12,
+  macSetupLogo,
 ];
 
 export type genericAppData = {

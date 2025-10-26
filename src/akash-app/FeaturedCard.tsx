@@ -60,12 +60,14 @@ function FeaturedCard({
 
               <ContentBox
                 sx={{
-                  marginBottom: isPhone ? "0" : "1.5rem",
+                  alignItems: !isPhone ? "center" : "flex-start",
                   position: "relative",
                   bottom: isPhone ? "0" : isLoading ? "6rem" : "0",
                 }}
               >
-                <Typography variant="h5">{app.appName}</Typography>
+                <Typography variant="h5" sx={{ alignSelf: "flex-start" }}>
+                  {app.appName}
+                </Typography>
                 <Typography>{app.description}</Typography>
                 <Box flexGrow={1} />
                 {appData[index].smallChipLabel.map((label, idx) => (
@@ -73,7 +75,10 @@ function FeaturedCard({
                     key={idx}
                     label={label}
                     sx={{
-                      width: isPhone ? "fit-content" : "100%",
+                      minWidth: !isPhone ? "60%" : "fit-content",
+                      padding: !isPhone ? "1.2rem" : "none",
+                      fontSize: !isPhone ? "1rem" : "0.8rem",
+                      borderRadius: !isPhone ? "2rem" : "1rem",
                       backgroundColor:
                         idx === 0
                           ? "var(--mui-palette-secondary-main)"
@@ -105,6 +110,7 @@ function FeaturedCard({
                     }}
                   />
                 ))}
+                <Box flexGrow={isPhone ? 0 : 1} />
               </ContentBox>
             </StyledBox>
           </SwiperSlide>

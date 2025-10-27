@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useReducer, type CSSProperties } from "react";
 import {
   Divider,
   Skeleton,
@@ -16,53 +16,46 @@ import { motion } from "framer-motion";
 import MacDialog from "../akash-commons/MacDialog";
 import "../styles/Image.css";
 import { useGetImages } from "../akash-commons/Hooks";
-
-type selectedProps = {
-  heading: string;
-  description: string;
-  externalLink?: string;
-};
+import { MacFinder } from "./MacFinder";
+import { MacContext } from "./MacContext";
+import { reducerMacSystem } from "./MacHook";
 
 function MacDock() {
   const isPhone = useMediaQuery("(min-width:900px)");
   const { mode } = useColorScheme();
   const isLight = mode === "light";
-  const [selected, setSelected] = useState<number[]>([0]);
   const isLoading = useGetImages(dockImages);
-
-  const [dialogProps, setDialogProps] = useState<selectedProps>({
-    heading: "Dock Item Opened",
-    description:
-      "You have opened a dock item. This is a demo dialog to showcase the Mac Dock functionality.",
+  const [macSystemState, dispatch] = useReducer(reducerMacSystem, {
+    selectedDockItems: [0],
+    isFinderOpen: false,
+    finderPath: "Handcrafted by Akash",
+    isFinderExpanded: false,
+    isMacAlertOpen: false,
+    dialogProps: {
+      heading: "",
+      description: "",
+      externalLink: undefined,
+    },
   });
 
   const handleClick = (index: number) => {
-    setDialogProps({
-      heading: `macOS cannot open this app`,
-      description: `You are trying to open the ${dockData[index].title} dock item. Would you like to search the web instead?`,
-      externalLink: `https://www.google.com/search?q=${dockData[index].title}`,
-    });
-    setSelected((prevSelected) => {
-      return [...prevSelected, index];
+    dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: true });
+    dispatch({ type: "SET_SELECTED", index: index });
+    dispatch({
+      type: "SET_DIALOG_PROPS",
+      dialogProps: {
+        heading: `macOS cannot open this app`,
+        description: `You are trying to open the ${dockData[index].title} dock item. Would you like to search the web instead?`,
+        externalLink: `https://www.google.com/search?q=${dockData[index].title}`,
+      },
     });
   };
 
+  const isDockDialog =
+    macSystemState.dialogProps?.heading === "macOS cannot open this app";
+
   return (
     <>
-      <MacDialog
-        heading={dialogProps.heading}
-        description={dialogProps.description}
-        primaryButtonText="Stay on akashcraft.ca"
-        secondaryButtonText="Search Safari"
-        imageSrc={dockImages[dockImages.length - 2]}
-        visible={selected.length > 1}
-        onClose={() => setSelected([0])}
-        onCloseSecondary={() => {
-          if (dialogProps.externalLink) {
-            window.location.href = dialogProps.externalLink;
-          }
-        }}
-      />
       {isPhone && (
         <>
           {isLoading && (
@@ -74,9 +67,34 @@ function MacDock() {
               height="2.5rem"
             />
           )}
+          <MacDialog
+            heading={macSystemState.dialogProps?.heading ?? ""}
+            description={macSystemState.dialogProps?.description ?? ""}
+            primaryButtonText={isDockDialog ? "Stay on akashcraft.ca" : "OK"}
+            secondaryButtonText={isDockDialog ? "Search Safari" : undefined}
+            imageSrc={
+              isDockDialog
+                ? dockImages[dockImages.length - 2]
+                : dockImages[dockImages.length - 3]
+            }
+            visible={macSystemState.isMacAlertOpen ?? false}
+            onClose={() => {
+              dispatch({ type: "CLEAR_SELECTED" });
+              dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: false });
+            }}
+            onCloseSecondary={() => {
+              if (macSystemState.dialogProps?.externalLink) {
+                window.location.href = macSystemState.dialogProps.externalLink;
+              }
+            }}
+          />
+          <MacContext.Provider value={{ macSystemState, dispatch }}>
+            {macSystemState.isFinderOpen && <MacFinder />}
+          </MacContext.Provider>
           <StyledStack sx={{ display: isLoading ? "none" : "flex" }}>
             {dockData.map((item, index) => {
-              const isSelected = selected.includes(index);
+              const isSelected =
+                macSystemState.selectedDockItems.includes(index);
               if (item.title === "Trash") {
                 return (
                   <Stack direction="row" key={index}>
@@ -93,6 +111,13 @@ function MacDock() {
                             filter: isLight ? "none" : "brightness(0.5)",
                           }}
                           src={item.image}
+                          onClick={() => {
+                            dispatch({
+                              type: "SET_FINDER_OPEN",
+                              booleanValue: true,
+                            });
+                            dispatch({ type: "SET_FIND_PATH", path: "Trash" });
+                          }}
                         />
                       </StyledTooltip>
                     </StyledHolder>
@@ -110,6 +135,16 @@ function MacDock() {
                               ? item.image
                               : dockImages[dockImages.length - 1]
                           }
+                          onClick={() => {
+                            dispatch({
+                              type: "SET_FINDER_OPEN",
+                              booleanValue: true,
+                            });
+                            dispatch({
+                              type: "SET_FIND_PATH",
+                              path: "Handcrafted by Akash",
+                            });
+                          }}
                         />
                       </StyledTooltip>
                       <Typography color="text.secondary">.</Typography>

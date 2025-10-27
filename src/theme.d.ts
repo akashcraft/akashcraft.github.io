@@ -3,11 +3,14 @@ import "@mui/material/styles";
 declare module "@mui/material/styles" {
   interface TypeBackground {
     macos?: string;
+    macosfinder?: string;
+    macosfinder2?: string;
     light?: string;
   }
 
   interface TypeText {
     muted?: string;
     light?: string;
+    dark?: string;
   }
 }

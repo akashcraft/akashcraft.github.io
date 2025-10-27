@@ -108,7 +108,8 @@ const StyledMacDialog = styled.div`
   img {
     width: 5rem;
     margin: 2rem;
-    margin-left: 0;
+    position: relative;
+    left: -2.5rem;
   }
 
   p.macos-header {

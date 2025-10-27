@@ -23,6 +23,14 @@ import finderLogo from "../assets/img-macos/finderLogo.svg";
 import finderLogoDark from "../assets/img-macos/finderLogoDark.svg";
 import trashLogo from "../assets/img-macos/trashEmpty.png";
 import macSetupLogo from "../assets/img-macos/macSetup.png";
+import macbookLogo from "../assets/img-macos/macbook.png";
+import icloudLogo from "../assets/img-macos/icloud.png";
+import windowsDriveLogo from "../assets/img-macos/win8startcolor.png";
+import akashcraftMacLogo from "../assets/img-macos/macSetup2.svg";
+import banner1 from "../assets/img-main/banner1.png";
+import banner2 from "../assets/img-main/banner2.png";
+import banner3 from "../assets/img-main/banner3.png";
+import resume from "../assets/img-main/resume.png";
 
 export const dockImages = [
   htmlLogo,
@@ -48,8 +56,20 @@ export const dockImages = [
   firebaseLogo,
   trashLogo,
   finderLogo,
+  akashcraftMacLogo,
   macSetupLogo,
   finderLogoDark,
+];
+
+export const finderImages = [
+  macbookLogo,
+  icloudLogo,
+  windowsDriveLogo,
+  trashLogo,
+  banner1,
+  banner2,
+  banner3,
+  resume,
 ];
 
 export const dockData = [
@@ -146,3 +166,9 @@ export const dockData = [
     image: trashLogo,
   },
 ];
+
+export const macFinderContent = {
+  names: ["Web Developement", "App Development", "Game Development", "Resume"],
+  imgSrc: [banner1, banner2, banner3, resume],
+  links: ["/#/web", "/#/app", "/#/game", "/Resume.pdf"],
+};

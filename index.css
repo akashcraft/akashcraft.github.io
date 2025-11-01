@@ -13,10 +13,6 @@
   src: local('San Francisco Bold'), url('/fonts/SF-Pro-Display-Bold.otf') format('opentype');
 }
 
-:root {
-  font-family: 'Trebuchet';
-}
-
 body {
   margin: 0;
   display: flex;

@@ -79,7 +79,11 @@ function MacDock() {
             <Skeleton
               variant="rounded"
               animation="wave"
-              sx={{ margin: "4rem auto", borderRadius: "1rem" }}
+              sx={{
+                margin: "4rem auto",
+                borderRadius: "1rem",
+                maxWidth: "60rem",
+              }}
               width="80%"
               height="2.5rem"
             />

@@ -68,7 +68,7 @@ const appTheme = createTheme({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={appTheme}>
+    <ThemeProvider theme={appTheme} defaultMode="light">
       <CssBaseline />
       <GlobalStyles
         styles={{

@@ -249,9 +249,15 @@ function Header() {
                   open={open}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={setLightMode}>Light</MenuItem>
-                  <MenuItem onClick={setDarkMode}>Dark</MenuItem>
-                  <MenuItem onClick={setSystemMode}>System</MenuItem>
+                  <MenuItem sx={{ fontSize: "0.9rem" }} onClick={setLightMode}>
+                    Light
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: "0.9rem" }} onClick={setDarkMode}>
+                    Dark
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: "0.9rem" }} onClick={setSystemMode}>
+                    System
+                  </MenuItem>
                 </Menu>
               </div>
             </Stack>
@@ -321,6 +327,7 @@ const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(() => ({
   [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "var(--mui-palette-background-paper)",
     borderRadius: "1rem",
     fontSize: "0.85rem",
   },

@@ -48,18 +48,17 @@ export function MacFinder() {
       window.scrollTo(0, 0);
       setPreviousPosition(position);
       setPosition({ x: 0, y: 30 });
-      (
-        document.getElementsByClassName("Header")[0] as HTMLElement
-      ).style.animation = "go-left 0.6s forwards ease-in-out";
+      document.querySelectorAll(".Header").forEach((el) => {
+        (el as HTMLElement).style.animation =
+          "go-left 0.6s forwards ease-in-out";
+      });
     } else {
       if (previousPosition) {
         setPosition(previousPosition);
-      } else {
-        setPosition({ x: 395, y: 184 });
       }
-      (
-        document.getElementsByClassName("Header")[0] as HTMLElement
-      ).style.animation = "none";
+      document.querySelectorAll(".Header").forEach((el) => {
+        (el as HTMLElement).style.animation = "none";
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [macSystemState.isFinderExpanded, macSystemState.isFinderOpen]);

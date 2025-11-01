@@ -38,6 +38,7 @@ import { useGetImages } from "./akash-commons/Hooks";
 import MacDialog from "./akash-commons/MacDialog";
 import { MacDialogContext } from "./akash-main/appData";
 import MacDock from "./akash-macos/MacDock";
+import Background from "./Background";
 
 function Home() {
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -52,7 +53,7 @@ function Home() {
     });
     const saved = sessionStorage.getItem("homeScroll");
     if (saved) {
-      window.scrollTo(0, Number(saved));
+      window.scrollTo(0, Number(saved) - window.innerHeight);
     } else {
       setTimeout(() => {
         window.scrollTo(0, 0);
@@ -61,7 +62,7 @@ function Home() {
 
     const handleScroll = () => {
       sessionStorage.setItem("homeScroll", String(window.scrollY));
-      if (parseInt(sessionStorage.getItem("homeScroll") || "100") > 600) {
+      if (parseInt(sessionStorage.getItem("homeScroll") || "100") > 1000) {
         if (!sessionStorage.getItem("hintShown")) {
           sessionStorage.setItem("hintShown", "true");
           setTimeout(() => setShowHint(true), 8000);
@@ -126,13 +127,14 @@ function Home() {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2, ease: [0.05, 0.8, 0.35, 0.99] }}
       >
-        <Box sx={{ margin: "4rem 0rem" }}>
+        <Box sx={{ marginBottom: "4rem" }}>
+          <Background />
           <Stack
             direction="row"
             spacing={3}
             justifyContent="center"
             alignItems="center"
-            sx={{ margin: "2rem 0", marginTop: "8rem" }}
+            sx={{ margin: "2rem 0", marginTop: "4rem" }}
           >
             {isLoading && (
               <Skeleton variant="circular" width={88} height={88} />
@@ -150,7 +152,12 @@ function Home() {
             direction="column"
             spacing={1}
             alignItems="center"
-            sx={{ maxWidth: "65rem", textAlign: "center", margin: "0 2rem" }}
+            sx={{
+              maxWidth: "65rem",
+              width: "80%",
+              textAlign: "center",
+              margin: "0 auto",
+            }}
           >
             <h2 className="about">
               Canary Build <StyledSpan>{packageJson.version}</StyledSpan>

@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./styles/index.css";
 import Home from "./Home.tsx";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { orange, pink } from "@mui/material/colors";
@@ -28,6 +27,7 @@ const appTheme = createTheme({
         secondary: pink,
         background: {
           default: "#9d532f",
+          normal: "#fff",
           paper: "#7f4203",
           macos: "#fff",
           macosfinder: "#fff",
@@ -48,6 +48,7 @@ const appTheme = createTheme({
         secondary: pink,
         background: {
           default: "#000000",
+          normal: "#000",
           paper: "#2a2a2a",
           macos: "#302f2f",
           macosfinder: "#1e1e1e",

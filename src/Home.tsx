@@ -103,7 +103,7 @@ function Home() {
               type: "spring",
               stiffness: 75,
               damping: 5,
-              repeat: 999,
+              repeat: Infinity,
               repeatType: "loop",
             }}
           >
@@ -182,7 +182,6 @@ function Home() {
             <MacDialog
               heading="Not Implemented"
               description="This feature is still under development. You can view the completed website on akashcraft.ca."
-              imageSrc={images[images.length - 1]}
               visible={openMacDialog}
               onClose={() => setOpenMacDialog(false)}
             />

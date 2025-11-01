@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import { useContext } from "react";
 import { MacContext } from "./MacContext";
+import { motion } from "framer-motion";
 
 export function NavChip({ type, visible }: { type: string; visible: boolean }) {
   const color =
@@ -21,33 +22,50 @@ export function NavChip({ type, visible }: { type: string; visible: boolean }) {
   const { macSystemState, dispatch } = useContext(MacContext);
 
   return (
-    <StyledNavChip color={color}>
-      {type === "close" && visible && (
-        <CloseIcon
-          sx={IconStyle}
-          onClick={() => {
-            dispatch({ type: "SET_FINDER_OPEN", booleanValue: false });
-          }}
-        />
-      )}
-      {type === "minimize" && visible && <MinimizeIcon sx={IconStyle} />}
-      {type === "maximize" && visible && macSystemState.isFinderExpanded && (
-        <CloseFullscreenOutlined
-          sx={IconStyle}
-          onClick={() => {
-            dispatch({ type: "TOGGLE_FINDER_EXPANDED" });
-          }}
-        />
-      )}
-      {type === "maximize" && visible && !macSystemState.isFinderExpanded && (
-        <MaximizeIcon
-          sx={IconStyle}
-          onClick={() => {
-            dispatch({ type: "TOGGLE_FINDER_EXPANDED" });
-          }}
-        />
-      )}
-    </StyledNavChip>
+    <motion.div
+      animate={{
+        opacity:
+          macSystemState.isMacMenuHovered || !macSystemState.isFinderExpanded
+            ? 1
+            : 0,
+      }}
+      transition={{ duration: 0.15, ease: "easeInOut" }}
+    >
+      <StyledNavChip color={color}>
+        {type === "close" && visible && (
+          <CloseIcon
+            sx={IconStyle}
+            onClick={() => {
+              if (macSystemState.isFinderExpanded) {
+                dispatch({ type: "TOGGLE_FINDER_EXPANDED" });
+                setTimeout(() => {
+                  dispatch({ type: "SET_FINDER_OPEN", booleanValue: false });
+                }, 10);
+              } else {
+                dispatch({ type: "SET_FINDER_OPEN", booleanValue: false });
+              }
+            }}
+          />
+        )}
+        {type === "minimize" && visible && <MinimizeIcon sx={IconStyle} />}
+        {type === "maximize" && visible && macSystemState.isFinderExpanded && (
+          <CloseFullscreenOutlined
+            sx={IconStyle}
+            onClick={() => {
+              dispatch({ type: "TOGGLE_FINDER_EXPANDED" });
+            }}
+          />
+        )}
+        {type === "maximize" && visible && !macSystemState.isFinderExpanded && (
+          <MaximizeIcon
+            sx={IconStyle}
+            onClick={() => {
+              dispatch({ type: "TOGGLE_FINDER_EXPANDED" });
+            }}
+          />
+        )}
+      </StyledNavChip>
+    </motion.div>
   );
 }
 

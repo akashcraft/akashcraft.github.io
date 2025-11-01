@@ -1,4 +1,4 @@
-import { Stack, Typography, styled } from "@mui/material";
+import { Skeleton, Stack, Typography, styled } from "@mui/material";
 import { FolderOutlined } from "@mui/icons-material";
 import { useContext } from "react";
 import { MacContext } from "./MacContext";
@@ -7,9 +7,15 @@ type LeftItemsProps = {
   title: string;
   items: string[];
   imgSrc: string[];
+  isLoading?: boolean;
 };
 
-export function LeftItems({ title, items, imgSrc }: LeftItemsProps) {
+export function LeftItems({
+  title,
+  items,
+  imgSrc,
+  isLoading = false,
+}: LeftItemsProps) {
   const { dispatch } = useContext(MacContext);
 
   function handleClick(item: string) {
@@ -27,6 +33,12 @@ export function LeftItems({ title, items, imgSrc }: LeftItemsProps) {
           heading: "You don't have permission",
           description:
             "At this rate, we would be replicating the entire macOS on my website and Apple will soon have a lawsuit against me lol.",
+          imgCode: 1,
+          primaryButtonText: "OK",
+          primaryAction: () => {
+            dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: false });
+            dispatch({ type: "CLEAR_SELECTED" });
+          },
         },
       });
     }
@@ -43,7 +55,25 @@ export function LeftItems({ title, items, imgSrc }: LeftItemsProps) {
             }}
           >
             {imgSrc[index] !== "" ? (
-              <img src={imgSrc[index]} style={imageStyle} />
+              <>
+                <Skeleton
+                  variant="rectangular"
+                  width={19}
+                  height={19}
+                  sx={{
+                    borderRadius: "0.3rem",
+                    marginLeft: "0.5rem",
+                    display: isLoading ? "block" : "none",
+                  }}
+                />
+                <img
+                  src={imgSrc[index]}
+                  style={{
+                    ...imageStyle,
+                    display: isLoading ? "none" : "block",
+                  }}
+                />
+              </>
             ) : (
               <FolderOutlined style={imageStyle} />
             )}

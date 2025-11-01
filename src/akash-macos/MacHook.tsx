@@ -3,7 +3,11 @@ import type { Reducer } from "react";
 type selectedProps = {
   heading: string;
   description: string;
-  externalLink?: string;
+  imgCode?: number;
+  primaryButtonText?: string;
+  secondaryButtonText?: string;
+  primaryAction?: () => void;
+  secondaryAction?: () => void;
 };
 
 export type MacSystemState = {
@@ -13,6 +17,7 @@ export type MacSystemState = {
   isFinderExpanded: boolean | undefined;
   isMacAlertOpen: boolean | undefined;
   dialogProps: selectedProps | undefined;
+  isMacMenuHovered?: boolean;
 };
 
 export type MacActions = {
@@ -62,6 +67,20 @@ export const reducerMacSystem: Reducer<MacSystemState, MacActions> = (
       return {
         ...state,
         dialogProps: action.dialogProps,
+      };
+    case "SET_MAC_MENU_HOVERED":
+      return {
+        ...state,
+        isMacMenuHovered: action.booleanValue,
+      };
+    case "SET_TIMER":
+      return {
+        ...state,
+        dialogProps: {
+          ...state.dialogProps,
+          heading: action.dialogProps?.heading ?? "",
+          description: action.dialogProps?.description ?? "",
+        },
       };
     default:
       return state;

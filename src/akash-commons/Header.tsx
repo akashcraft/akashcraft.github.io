@@ -141,11 +141,10 @@ function Header() {
   };
 
   return (
-    <>
+    <Box className="Header">
       <MacDialog
         heading="Not Implemented"
         description="This feature is still under development. You can view the completed website on akashcraft.ca."
-        imageSrc={headerImages[headerImages.length - 1]}
         visible={openOpenMacDialog}
         onClose={() => setOpenMacDialog(false)}
       />
@@ -236,13 +235,19 @@ function Header() {
                   />
                 </StyledTooltip>
                 <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
                   sx={{
+                    "& .MuiPaper-root": {
+                      borderRadius: "0.75rem",
+                    },
                     marginTop: "0.6rem",
                     marginLeft: "0.25rem",
                   }}
+                  MenuListProps={{
+                    disablePadding: true,
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
                 >
                   <MenuItem onClick={setLightMode}>Light</MenuItem>
                   <MenuItem onClick={setDarkMode}>Dark</MenuItem>
@@ -308,7 +313,7 @@ function Header() {
           )}
         </Toolbar>
       </StyledAppBar>
-    </>
+    </Box>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useReducer, type CSSProperties } from "react";
+import { useReducer, useState, type CSSProperties } from "react";
 import {
   Divider,
   Skeleton,
@@ -34,8 +34,8 @@ function MacDock() {
     dialogProps: {
       heading: "",
       description: "",
-      externalLink: undefined,
     },
+    isMacMenuHovered: false,
   });
 
   const handleClick = (index: number) => {
@@ -46,13 +46,30 @@ function MacDock() {
       dialogProps: {
         heading: `macOS cannot open this app`,
         description: `You are trying to open the ${dockData[index].title} dock item. Would you like to search the web instead?`,
-        externalLink: `https://www.google.com/search?q=${dockData[index].title}`,
+        imgCode: 0,
+        primaryButtonText: "OK",
+        secondaryButtonText: "Search Safari",
+        primaryAction: () => {
+          dispatch({ type: "CLEAR_SELECTED" });
+          dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: false });
+        },
+        secondaryAction: () => {
+          window.open(
+            `https://www.google.com/search?q=${dockData[index].title}`,
+            "_blank",
+          );
+        },
       },
     });
   };
 
-  const isDockDialog =
-    macSystemState.dialogProps?.heading === "macOS cannot open this app";
+  const [tooltipOpen, setToolTipOpen] = useState(false);
+
+  setTimeout(() => {
+    if (!sessionStorage.getItem("seenFinderTooltip")) {
+      setToolTipOpen(!macSystemState.isFinderOpen);
+    }
+  }, 2000);
 
   return (
     <>
@@ -70,23 +87,18 @@ function MacDock() {
           <MacDialog
             heading={macSystemState.dialogProps?.heading ?? ""}
             description={macSystemState.dialogProps?.description ?? ""}
-            primaryButtonText={isDockDialog ? "Stay on akashcraft.ca" : "OK"}
-            secondaryButtonText={isDockDialog ? "Search Safari" : undefined}
-            imageSrc={
-              isDockDialog
-                ? dockImages[dockImages.length - 2]
-                : dockImages[dockImages.length - 3]
+            primaryButtonText={
+              macSystemState.dialogProps?.primaryButtonText ?? "OK"
             }
+            secondaryButtonText={
+              macSystemState.dialogProps?.secondaryButtonText ?? undefined
+            }
+            imgCode={macSystemState.dialogProps?.imgCode ?? 0}
             visible={macSystemState.isMacAlertOpen ?? false}
-            onClose={() => {
-              dispatch({ type: "CLEAR_SELECTED" });
-              dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: false });
-            }}
-            onCloseSecondary={() => {
-              if (macSystemState.dialogProps?.externalLink) {
-                window.location.href = macSystemState.dialogProps.externalLink;
-              }
-            }}
+            onClose={macSystemState.dialogProps?.primaryAction ?? (() => {})}
+            onCloseSecondary={
+              macSystemState.dialogProps?.secondaryAction ?? (() => {})
+            }
           />
           <MacContext.Provider value={{ macSystemState, dispatch }}>
             {macSystemState.isFinderOpen && <MacFinder />}
@@ -127,8 +139,23 @@ function MacDock() {
                 return (
                   <Stack direction="row" key={index}>
                     <StyledHolder>
-                      <StyledTooltip title={item.title} arrow placement="top">
-                        <img
+                      <StyledTooltip
+                        open={tooltipOpen}
+                        title="Try out Finder"
+                        arrow
+                        placement="top"
+                      >
+                        <motion.img
+                          animate={{
+                            scale: macSystemState.isFinderOpen
+                              ? 1
+                              : [1, 1.1, 1],
+                          }}
+                          transition={{
+                            duration: 2,
+                            ease: "easeInOut",
+                            repeat: Infinity,
+                          }}
                           style={imgStyle}
                           src={
                             isLight
@@ -136,6 +163,8 @@ function MacDock() {
                               : dockImages[dockImages.length - 1]
                           }
                           onClick={() => {
+                            sessionStorage.setItem("seenFinderTooltip", "true");
+                            setToolTipOpen(false);
                             dispatch({
                               type: "SET_FINDER_OPEN",
                               booleanValue: true,
@@ -163,7 +192,7 @@ function MacDock() {
                         transition={{
                           duration: 1,
                           ease: ["easeIn", "linear"],
-                          repeat: 100,
+                          repeat: Infinity,
                         }}
                         style={isSelected ? imgStyle : imgOriginalStyle}
                         width="100%"
@@ -184,7 +213,7 @@ function MacDock() {
   );
 }
 
-const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
+export const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(() => ({
   [`& .${tooltipClasses.tooltip}`]: {

@@ -1,14 +1,27 @@
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "framer-motion";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import macSetupLogo from "../assets/img-macos/macSetup.png";
+import akashcraftMacLogo from "../assets/img-macos/macSetup2.svg";
+import akashcraftLogo from "../assets/logo.png";
+import restartLogo from "../assets/img-macos/macosRestart.svg";
+import shutdownLogo from "../assets/img-macos/macosShutdown.svg";
+
+const imgSrc = [
+  macSetupLogo,
+  akashcraftMacLogo,
+  akashcraftLogo,
+  restartLogo,
+  shutdownLogo,
+];
 
 type MacDialogProps = {
   heading: string;
   description: string;
   visible: boolean;
-  imageSrc: string;
   primaryButtonText?: string;
   secondaryButtonText?: string;
+  imgCode?: number;
   onClose: () => void;
   onCloseSecondary?: () => void;
 };
@@ -17,12 +30,13 @@ function MacDialog({
   heading,
   description,
   visible,
-  imageSrc,
+  imgCode = 0,
   onClose,
   onCloseSecondary,
   primaryButtonText,
   secondaryButtonText,
 }: MacDialogProps) {
+  const isPower = ["Shut Down", "Restart"].includes(primaryButtonText!);
   return (
     <AnimatePresence>
       {visible && (
@@ -30,7 +44,7 @@ function MacDialog({
           key="macdialog"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 0.1, ease: "easeInOut" }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
           style={{
             position: "fixed",
             top: "50%",
@@ -42,15 +56,35 @@ function MacDialog({
         >
           <StyledMacDialog>
             <LeftAlign>
-              <img src={imageSrc} style={{ width: "5rem" }} />
+              <img
+                src={imgSrc[imgCode]}
+                style={{
+                  width: "5rem",
+                  paddingLeft: [2, 3, 4].includes(imgCode) ? "0.3rem" : "0",
+                }}
+              />
               <p className="macos-header">{heading}</p>
               <p className="macos-description">{description}</p>
+              {isPower && (
+                <Stack mb={2} direction="row" alignItems="center" gap={1}>
+                  <input type="checkbox" style={{ accentColor: "#f38008" }} />
+                  <Typography
+                    sx={{ fontSize: "0.7rem", fontFamily: "San Francisco" }}
+                    variant="body2"
+                  >
+                    Reopen windows when logging back in
+                  </Typography>
+                </Stack>
+              )}
             </LeftAlign>
             <Stack
-              direction="column"
+              direction={isPower ? "row-reverse" : "column"}
               alignItems="center"
               gap={1.5}
-              style={{ marginBottom: "1.5rem", width: "100%" }}
+              style={{
+                marginBottom: "1.5rem",
+                width: isPower ? "calc(100% - 3rem)" : "100%",
+              }}
             >
               <div className="macos-ok macos-button" onClick={onClose}>
                 {primaryButtonText ?? "OK"}
@@ -75,8 +109,7 @@ const LeftAlign = styled.div`
   display: flex;
   flex-direction: column;
   text-align: left;
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
+  width: calc(100% - 3rem);
 `;
 
 const StyledMacDialog = styled.div`

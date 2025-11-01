@@ -1,4 +1,4 @@
-import { Stack, styled, Typography } from "@mui/material";
+import { Skeleton, Stack, styled, Typography } from "@mui/material";
 import { useContext } from "react";
 import { MacContext } from "./MacContext";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +7,14 @@ type MacFinderContentProps = {
   names: string[];
   imgSrc: string[];
   links: string[];
+  isLoading?: boolean;
 };
 
 export function MacFinderContent({
   names,
   imgSrc,
   links,
+  isLoading = false,
 }: MacFinderContentProps) {
   const { macSystemState } = useContext(MacContext);
   const isTrash = macSystemState.finderPath === "Trash";
@@ -42,7 +44,18 @@ export function MacFinderContent({
                 handleClick(links[index]);
               }}
             >
-              <StyledImg src={imgSrc[index]} />
+              {isLoading && (
+                <Skeleton
+                  variant="rounded"
+                  width={100}
+                  height={60}
+                  sx={{ borderRadius: "0.75rem" }}
+                />
+              )}
+              <StyledImg
+                src={imgSrc[index]}
+                sx={{ display: isLoading ? "none" : "block" }}
+              />
               <StyledTypography variant="body2">{name}</StyledTypography>
             </StyledHolder>
           ))}
@@ -68,7 +81,7 @@ const StyledHolder = styled(Stack)({
 
 const StyledImg = styled("img")({
   width: "100%",
-  aspectRatio: "16 / 9",
+  maxHeight: "4rem",
   objectFit: "contain",
   borderRadius: "0.75rem",
 });

@@ -22,12 +22,25 @@ export function TopBar() {
         heading: "You don't have permission",
         description:
           "At this rate, we would be replicating the entire macOS on my website and Apple will soon have a lawsuit against me lol.",
+        imgCode: 1,
+        primaryButtonText: "OK",
+        primaryAction: () => {
+          dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: false });
+          dispatch({ type: "CLEAR_SELECTED" });
+        },
       },
     });
   }
 
   return (
-    <StyledStack>
+    <StyledStack
+      onMouseEnter={() => {
+        dispatch({ type: "SET_MAC_MENU_HOVERED", booleanValue: true });
+      }}
+      onMouseLeave={() => {
+        dispatch({ type: "SET_MAC_MENU_HOVERED", booleanValue: false });
+      }}
+    >
       <IconHolder>
         <ChevronLeft sx={ChevronStyle} onClick={handleClick} />
         <Divider orientation="vertical" flexItem />

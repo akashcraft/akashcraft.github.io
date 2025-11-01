@@ -6,16 +6,18 @@ import Draggable, {
 } from "react-draggable";
 import { NavChip } from "./NavChip";
 import { LeftItems } from "./LeftItems";
-// import { useGetImages } from "../akash-commons/Hooks";
+import { useGetImages } from "../akash-commons/Hooks";
 import { finderImages, macFinderContent } from "./macDockData";
 import { TopBar } from "./TopBar";
 import { MacFinderContent } from "./MacFinderContent";
 import { ArrowBackOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { MacContext } from "./MacContext";
+import { MacMenuBar } from "./MacMenuBar";
 
 export function MacFinder() {
   const nodeRef = useRef(null);
+  const isLoading = useGetImages([...finderImages, ...macFinderContent.imgSrc]);
   const [visibleChips, setVisibleChips] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [previousPosition, setPreviousPosition] = useState<{
@@ -25,7 +27,7 @@ export function MacFinder() {
 
   const [position, setPosition] = useState<{ x: number; y: number }>(() => {
     const saved = sessionStorage.getItem("finder-pos");
-    return saved ? JSON.parse(saved) : { x: 185, y: 200 };
+    return saved ? JSON.parse(saved) : { x: 395, y: 184 };
   });
 
   const handleStart = () => {
@@ -39,85 +41,121 @@ export function MacFinder() {
     sessionStorage.setItem("finder-pos", JSON.stringify(newPos));
   };
 
-  const { macSystemState } = useContext(MacContext);
+  const { macSystemState, dispatch } = useContext(MacContext);
 
   useEffect(() => {
     if (macSystemState.isFinderExpanded) {
+      window.scrollTo(0, 0);
       setPreviousPosition(position);
-      setPosition({ x: 0, y: 0 });
+      setPosition({ x: 0, y: 30 });
+      (
+        document.getElementsByClassName("Header")[0] as HTMLElement
+      ).style.animation = "go-left 0.6s forwards ease-in-out";
     } else {
       if (previousPosition) {
         setPosition(previousPosition);
+      } else {
+        setPosition({ x: 395, y: 184 });
       }
+      (
+        document.getElementsByClassName("Header")[0] as HTMLElement
+      ).style.animation = "none";
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [macSystemState.isFinderExpanded]);
+  }, [macSystemState.isFinderExpanded, macSystemState.isFinderOpen]);
 
   return (
-    <Draggable
-      handle=".handle"
-      nodeRef={nodeRef}
-      position={position}
-      onStop={handleStop}
-      onStart={handleStart}
-      disabled={macSystemState.isFinderExpanded}
-    >
-      <StyledStack
-        ref={nodeRef}
-        sx={{
-          zIndex: macSystemState.isFinderExpanded ? 2000 : 2,
-          borderRadius: macSystemState.isFinderExpanded ? 0 : "1.5rem",
-          width: macSystemState.isFinderExpanded ? "100vw" : "45rem",
-          height: macSystemState.isFinderExpanded ? "100vh" : "27rem",
-          transition: isDragging ? "none" : "all 0.4s ease-in-out",
-        }}
+    <>
+      {macSystemState.isFinderExpanded && <MacMenuBar />}
+      <Draggable
+        handle=".handle"
+        nodeRef={nodeRef}
+        position={position}
+        onStop={handleStop}
+        onStart={handleStart}
+        disabled={macSystemState.isFinderExpanded}
       >
-        <Handle className="handle" />
-        <LeftBar>
-          <NavBar
-            onMouseEnter={() => setVisibleChips(true)}
-            onMouseLeave={() => setVisibleChips(false)}
-          >
-            {["close", "minimize", "maximize"].map((type) => (
-              <NavChip key={type} type={type} visible={visibleChips} />
-            ))}
-            {!macSystemState.isFinderExpanded && (
-              <motion.div
-                animate={{ x: [-5, 20, -5], y: [1, 1, 1] }}
-                transition={{ ease: "easeInOut", repeat: 1000, duration: 1.5 }}
-              >
-                <ArrowBackOutlined
-                  sx={{ color: "var(--mui-palette-text-secondary)" }}
-                />
-              </motion.div>
-            )}
-          </NavBar>
-          <LeftItems
-            title="Locations"
-            items={["Akash's MacBook Pro", "iCloud", "Windows Drive"]}
-            imgSrc={[finderImages[0], finderImages[1], finderImages[2]]}
+        <StyledStack
+          ref={nodeRef}
+          sx={{
+            borderRadius: macSystemState.isFinderExpanded ? 0 : "1.5rem",
+            width: macSystemState.isFinderExpanded ? "100vw" : "45rem",
+            height: macSystemState.isFinderExpanded
+              ? "calc(100vh - 30px)"
+              : "27rem",
+            transition: isDragging
+              ? "none"
+              : "all 0.4s ease-in-out, background-color 0s, border 0s",
+          }}
+        >
+          <Handle
+            className="handle"
+            onMouseEnter={() => {
+              dispatch({ type: "SET_MAC_MENU_HOVERED", booleanValue: true });
+            }}
+            onMouseLeave={() => {
+              dispatch({ type: "SET_MAC_MENU_HOVERED", booleanValue: false });
+            }}
           />
-          <LeftItems
-            title="Favourites"
-            items={[
-              "Applications",
-              "Handcrafted By Akash",
-              "Legacy Website",
-              "Trash",
-            ]}
-            imgSrc={["", "", "", finderImages[3]]}
-          />
-        </LeftBar>
-        <RightBar>
-          <TopBar />
-          <MacFinderContent
-            names={macFinderContent.names}
-            imgSrc={macFinderContent.imgSrc}
-            links={macFinderContent.links}
-          />
-        </RightBar>
-      </StyledStack>
-    </Draggable>
+          <LeftBar>
+            <NavBar
+              onMouseEnter={() => {
+                dispatch({ type: "SET_MAC_MENU_HOVERED", booleanValue: true });
+                setVisibleChips(true);
+              }}
+              onMouseLeave={() => {
+                setVisibleChips(false);
+                dispatch({ type: "SET_MAC_MENU_HOVERED", booleanValue: false });
+              }}
+            >
+              {["close", "minimize", "maximize"].map((type) => (
+                <NavChip key={type} type={type} visible={visibleChips} />
+              ))}
+              {!macSystemState.isFinderExpanded && (
+                <motion.div
+                  animate={{ x: [-5, 20, -5], y: [1, 1, 1] }}
+                  transition={{
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    duration: 1.5,
+                  }}
+                >
+                  <ArrowBackOutlined
+                    sx={{ color: "var(--mui-palette-text-secondary)" }}
+                  />
+                </motion.div>
+              )}
+            </NavBar>
+            <LeftItems
+              title="Locations"
+              items={["Akash's MacBook Pro", "iCloud", "Windows Drive"]}
+              imgSrc={[finderImages[0], finderImages[1], finderImages[2]]}
+              isLoading={isLoading}
+            />
+            <LeftItems
+              title="Favourites"
+              items={[
+                "Applications",
+                "Handcrafted By Akash",
+                "Legacy Website",
+                "Trash",
+              ]}
+              imgSrc={["", "", "", finderImages[3]]}
+              isLoading={isLoading}
+            />
+          </LeftBar>
+          <RightBar>
+            <TopBar />
+            <MacFinderContent
+              isLoading={isLoading}
+              names={macFinderContent.names}
+              imgSrc={macFinderContent.imgSrc}
+              links={macFinderContent.links}
+            />
+          </RightBar>
+        </StyledStack>
+      </Draggable>
+    </>
   );
 }
 

@@ -9,6 +9,7 @@ import {
   ListItemButton,
   ListItemText,
   Portal,
+  Skeleton,
   Stack,
   useMediaQuery,
 } from "@mui/material";
@@ -30,6 +31,7 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import HeaderRowPaper from "../akash-commons/HeaderRowPaper";
+import { updateCount, useGetCount } from "./eyeportHook";
 
 function EyePort() {
   // Media Query and Images
@@ -42,6 +44,8 @@ function EyePort() {
       element.scrollIntoView({ behavior: "smooth" });
     }
   }
+
+  const { count, loading, error } = useGetCount();
 
   return (
     <HolderBox isWide>
@@ -110,6 +114,29 @@ function EyePort() {
             isLoading={isLoading}
             isPhone={isPhone}
           />
+          {loading ? (
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width="20rem"
+              height="2.5rem"
+              sx={{ borderRadius: "0.75rem", marginBottom: "1.5rem" }}
+            />
+          ) : error ? (
+            <p style={{ marginBottom: "1.5rem" }}>
+              Unable to fetch download count - Something went wrong with the
+              server
+            </p>
+          ) : (
+            <p
+              style={{
+                marginBottom: "1.5rem",
+                textAlign: !isPhone ? "center" : "left",
+              }}
+            >
+              EyePort has been downloaded {count} times.
+            </p>
+          )}
           <Stack
             direction="row"
             justifyContent={!isPhone ? "center" : "flex-start"}
@@ -127,7 +154,10 @@ function EyePort() {
                 marginLeft: isPhone ? "0rem" : "0.5rem",
               }}
               size="medium"
-              onClick={() => downloadEyePort()}
+              onClick={() => {
+                updateCount(count + 1);
+                downloadEyePort();
+              }}
               color="secondary"
               label="Download EyePort"
               icon={<Download sx={{ color: "white !important" }} />}

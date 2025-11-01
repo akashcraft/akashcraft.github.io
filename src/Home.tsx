@@ -53,7 +53,7 @@ function Home() {
     });
     const saved = sessionStorage.getItem("homeScroll");
     if (saved) {
-      window.scrollTo(0, Number(saved) - window.innerHeight);
+      window.scrollTo(0, Number(saved));
     } else {
       setTimeout(() => {
         window.scrollTo(0, 0);

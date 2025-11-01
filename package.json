@@ -21,6 +21,7 @@
     "@fontsource-variable/open-sans": "^5.2.7",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
+    "firebase": "^12.5.0",
     "framer-motion": "^12.23.24",
     "lottie-web": "^5.13.0",
     "react": "^19.1.1",

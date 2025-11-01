@@ -7,7 +7,10 @@ export function openDetailedExplanation() {
 }
 
 export function downloadEyePort() {
-  window.open("../../public/EyePort.3.3.3.Setup.File.exe", "_blank");
+  window.open(
+    "https://github.com/akashcraft/EyePort/releases/download/V3.3.3/EyePort.3.3.3.Setup.File.exe",
+    "_blank",
+  );
 }
 
 export function openDonatePageInNewTab() {

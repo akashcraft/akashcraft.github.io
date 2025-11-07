@@ -26,41 +26,9 @@ const images = [img1, img2, img3, img4, img5, fog, sun, moon, snow, nightsky];
 export default function Background() {
   const isLoading = useGetImages(images);
   const isPhone = useMediaQuery("(max-width:600px)");
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mouse = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const lottieRef = useRef<HTMLDivElement>(null);
   const { mode } = useColorScheme();
   const isLight = mode === "light";
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const imgs = container.querySelectorAll<HTMLElement>(".parallax-img");
-    let frame: number;
-
-    const animate = () => {
-      imgs.forEach((img) => {
-        const speed = Number(img.dataset.speed || "0");
-        const offsetX = isPhone
-          ? 0
-          : (mouse.current.x / window.innerWidth - 0.5) * 2 * speed;
-        const offsetY = isPhone
-          ? 0
-          : (mouse.current.y / window.innerHeight - 0.5) * 2 * speed;
-        img.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      });
-      frame = requestAnimationFrame(animate);
-    };
-
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [isPhone]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    mouse.current.x = e.clientX;
-    mouse.current.y = e.clientY;
-  };
 
   useEffect(() => {
     if (!lottieRef.current) return;
@@ -89,8 +57,6 @@ export default function Background() {
       )}
       <StyledBox
         className="Header"
-        ref={containerRef}
-        onMouseMove={handleMouseMove}
         sx={{
           display: isLoading ? "none" : "block",
           height: isPhone ? "42rem" : "100dvh",

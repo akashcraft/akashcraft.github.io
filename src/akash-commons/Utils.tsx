@@ -1,9 +1,9 @@
 export function openResumeInNewTab() {
-  window.open("../../public/resume.pdf", "_blank");
+  window.open("/resume.pdf", "_blank");
 }
 
 export function openDetailedExplanation() {
-  window.open("../../public/EyePort Algorithm Explanation.pdf", "_blank");
+  window.open("/EyePort Algorithm Explanation.pdf", "_blank");
 }
 
 export function downloadEyePort() {

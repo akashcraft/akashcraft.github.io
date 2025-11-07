@@ -338,6 +338,7 @@ const StyledAppBar = styled(AppBar)`
   width: calc(100dvw - 1rem);
   left: 0.5rem;
   border-radius: 1.5rem;
+  z-index: 2000;
   -webkit-backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
   backdrop-filter: blur(1px) saturate(1.1) url("#glassfilter");
 `;

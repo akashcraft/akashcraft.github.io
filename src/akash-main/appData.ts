@@ -51,7 +51,8 @@ export const codingData: genericAppData[] = [
   },
   {
     title: "App Development",
-    description: "Try some of my web apps and games right from your browser.",
+    description:
+      "My apps and games made using Flutter and Python. Download them here.",
     image: banner2,
     linkText: "Explore",
     link: "app",

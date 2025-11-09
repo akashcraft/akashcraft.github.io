@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import HolderBox from "../akash-commons/HolderBox";
 import {
+  Alert,
   Box,
   List,
   ListItem,
@@ -288,9 +289,12 @@ function Mahjong() {
           </Stack>
         )}
         {!isPhone && !complete && (
-          <Typography mt={3} variant="caption" align="center">
+          <Alert
+            sx={{ borderRadius: "2rem", marginTop: "1.5rem" }}
+            severity="info"
+          >
             Game controls are available on the right hamburger menu.
-          </Typography>
+          </Alert>
         )}
       </Stack>
     </HolderBox>

@@ -113,6 +113,7 @@ function Header() {
         "/app",
         "/web",
         "/mahjong",
+        "/airport/yyt",
       ].includes(path)
     ) {
       if (path.includes("/verafin/")) {
@@ -121,6 +122,8 @@ function Header() {
         return "EyePort";
       } else if (path === "/mahjong") {
         return "Mahjong";
+      } else if (path === "/airport/yyt") {
+        return "Live Schedules";
       }
       return path.charAt(1).toUpperCase() + path.slice(2);
     } else {
@@ -133,7 +136,7 @@ function Header() {
 
   const handleHomeClick = () => {
     const p = window.location.hash.replace(/^#!?/, "");
-    if (["/mahjong"].includes(p)) {
+    if (["/mahjong", "/airport/yyt"].includes(p)) {
       navigate("/web");
     } else {
       navigate("/");

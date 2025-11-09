@@ -1,6 +1,6 @@
 import "./styles/App.css";
 import Header from "./akash-commons/Header";
-import { Backdrop, Box, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
 import reactLogo from "./assets/reactLogo.png";
@@ -29,7 +29,6 @@ import {
   SchoolOutlined as School,
   VideocamOutlined as Videocam,
   DescriptionOutlined as NoteAdd,
-  TouchApp,
 } from "@mui/icons-material";
 import Footer from "./akash-commons/Footer";
 import { motion } from "framer-motion";
@@ -41,7 +40,6 @@ import MacDock from "./akash-macos/MacDock";
 import Background from "./Background";
 
 function Home() {
-  const [showHint, setShowHint] = useState<boolean>(false);
   const [openMacDialog, setOpenMacDialog] = useState<boolean>(false);
 
   useEffect(() => {
@@ -59,67 +57,12 @@ function Home() {
         window.scrollTo(0, 0);
       }, 100);
     }
-
-    const handleScroll = () => {
-      sessionStorage.setItem("homeScroll", String(window.scrollY));
-      if (parseInt(sessionStorage.getItem("homeScroll") || "100") > 1000) {
-        if (!sessionStorage.getItem("hintShown")) {
-          sessionStorage.setItem("hintShown", "true");
-          setTimeout(() => setShowHint(true), 8000);
-        }
-      } else {
-        setShowHint(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   const isLoading = useGetImages(images);
 
   return (
     <>
-      <Backdrop
-        sx={{ zIndex: 100 }}
-        open={showHint}
-        onClick={() => {
-          setShowHint(false);
-        }}
-      >
-        <Stack
-          direction="column"
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <motion.div
-            style={{ transformOrigin: "center center" }}
-            initial={{ opacity: 0, scale: 2 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 75,
-              damping: 5,
-              repeat: Infinity,
-              repeatType: "loop",
-            }}
-          >
-            <TouchApp
-              sx={{
-                color: "white !important",
-                fontSize: "10rem",
-              }}
-            />
-          </motion.div>
-          <Typography variant="h6" sx={{ color: "white", textAlign: "center" }}>
-            Click Cards to Learn More
-          </Typography>
-        </Stack>
-      </Backdrop>
       <Header />
       <motion.div
         style={{ transformOrigin: "top center" }}

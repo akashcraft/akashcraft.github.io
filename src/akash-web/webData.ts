@@ -46,11 +46,11 @@ export const webData: WebDataType[] = [
     ],
   },
   {
-    appName: "Live Airport Schedules",
+    appName: "Live Schedules",
     image: images[1],
     type: "Aviation",
     description:
-      "Live Flight Schedules for St. John's International Airport (CYYT/YYT)",
+      "Live Airport Schedules for St. John's International Airport (YYT/CYYT)",
     smallChipLabel: ["Start"],
     smallChipLinks: ["/airport/yyt"],
   },

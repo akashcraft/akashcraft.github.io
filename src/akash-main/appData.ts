@@ -97,7 +97,7 @@ export const workData = [
 
 export const educationData = [
   {
-    title: "Computer Engineering (B.Eng)",
+    title: "Computer Engineering",
     subtitle: "Current GPA: 4.0/4.0",
     description: "Studying in Memorial University of Newfoundland",
     image: banner7,
@@ -146,7 +146,7 @@ export const otherData = [
     title: "Personal Website",
     description: "This website. Built with React, Material UI, and Firebase.",
     image: banner12,
-    linkText: "Reload",
+    linkText: "Reset",
   },
 ];
 

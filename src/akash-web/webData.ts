@@ -41,7 +41,7 @@ export const webData: WebDataType[] = [
     description: "Interactive Aircraft Progress Map",
     smallChipLabel: ["Start", "View Source Code"],
     smallChipLinks: [
-      "/mapcraft.html",
+      "/legacy/mapcraft.html",
       "https://github.com/akashCraft/MapCraft",
     ],
   },
@@ -69,7 +69,7 @@ export const webData: WebDataType[] = [
     isWideOnly: true,
     description: "A limited replica of the Windows 8.1 interface.",
     smallChipLabel: ["Start"],
-    smallChipLinks: ["/windows8.html"],
+    smallChipLinks: ["/legacy/windows8.html"],
   },
   {
     appName: "GradePlus",

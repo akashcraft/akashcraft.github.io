@@ -57,6 +57,15 @@ function Home() {
         window.scrollTo(0, 0);
       }, 100);
     }
+    const handleScroll = () => {
+      sessionStorage.setItem("homeScroll", String(window.scrollY));
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const isLoading = useGetImages(images);
@@ -66,8 +75,13 @@ function Home() {
       <Header />
       <motion.div
         style={{ transformOrigin: "top center" }}
-        initial={{ opacity: 0, scale: 0.95, y: 0 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
+        initial={{
+          opacity: 0,
+          scale: sessionStorage.getItem("homeScroll") ? 1 : 0.95,
+          x: sessionStorage.getItem("homeScroll") ? 50 : 0,
+          y: 0,
+        }}
+        animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
         transition={{ duration: 1, delay: 0.2, ease: [0.05, 0.8, 0.35, 0.99] }}
       >
         <Box sx={{ marginBottom: "4rem" }}>
@@ -143,7 +157,7 @@ function Home() {
               sx={{ marginTop: "2rem" }}
             >
               <MainSection
-                heading="Coding"
+                heading="Projects"
                 icon={<DataObject sx={ChipIconStyle} />}
                 genericData={codingData}
                 isLoading={isLoading}

@@ -60,7 +60,7 @@ function Web() {
               margin: "0rem",
               flexShrink: 0,
               boxSizing: "border-box",
-              position: !isPhone ? "static" : "sticky",
+              position: "sticky",
             }}
           >
             <List sx={{ marginTop: "0.5rem", paddingBottom: "0" }}>

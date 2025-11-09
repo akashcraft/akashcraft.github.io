@@ -126,13 +126,13 @@ export default function AirportCard({
               <Typography
                 variant="body2"
                 sx={{
-                  color:
-                    flight.estimated ||
-                    ["Cancelled", "Diverted", "Unknown"].includes(flight.status)
-                      ? colorMap[
-                          flight.status.toLowerCase() as keyof typeof colorMap
-                        ]
-                      : "inherit",
+                  color: Object.keys(colorMap).includes(
+                    flight.status.toLowerCase(),
+                  )
+                    ? colorMap[
+                        flight.status.toLowerCase() as keyof typeof colorMap
+                      ]
+                    : "inherit",
                 }}
               >
                 <motion.span

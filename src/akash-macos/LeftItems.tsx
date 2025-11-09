@@ -24,7 +24,7 @@ export function LeftItems({
     } else if (item === "Trash") {
       dispatch({ type: "SET_FIND_PATH", path: "Trash" });
     } else if (item === "Windows Drive") {
-      window.location.href = "/windows8.html";
+      window.location.href = "/legacy/windows8.html";
     } else {
       dispatch({ type: "SET_MAC_ALERT_OPEN", booleanValue: true });
       dispatch({

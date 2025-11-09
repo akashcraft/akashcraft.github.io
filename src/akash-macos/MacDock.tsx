@@ -150,6 +150,7 @@ function MacDock() {
                         placement="top"
                       >
                         <motion.img
+                          id="macos-finder"
                           animate={{
                             scale: macSystemState.isFinderOpen
                               ? 1

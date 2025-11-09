@@ -16,6 +16,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { OpenInNew, PlayArrow } from "@mui/icons-material";
 
 type MainCardProps = {
   data: genericAppData;
@@ -27,7 +28,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
   const subtitle = isDuration ? "Duration: " + data.subtitle : data.subtitle;
   const [hovered, setHovered] = useState<boolean>(false);
   const isPrivate = data.linkText === "Private";
-  const isReload = data.linkText === "Reload";
+  const isReset = data.linkText === "Reset";
   const { setOpenMacDialog } = useContext(MacDialogContext);
   const navigate = useNavigate();
 
@@ -40,14 +41,15 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
   };
 
   function handleClick() {
-    if (data.link && !isReload) {
+    if (data.link && !isReset) {
       if (data.link.startsWith("http")) {
         window.open(data.link, "_blank");
       } else {
         navigate(`/${data.link}`);
       }
-    } else if (isReload) {
+    } else if (isReset) {
       sessionStorage.clear();
+      localStorage.clear();
       window.location.reload();
     } else {
       setOpenMacDialog(true);
@@ -98,7 +100,20 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
                   textAlign: "left",
                 }}
               >
-                <Typography variant="h6">{data.title}</Typography>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="h6">{data.title}</Typography>
+                  {data.title == "Game Development" ? (
+                    <PlayArrow />
+                  ) : isReset ? (
+                    <RefreshIcon />
+                  ) : (
+                    <OpenInNew />
+                  )}
+                </Stack>
               </motion.div>
 
               <motion.div
@@ -143,7 +158,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
             >
               <StyledStack
                 sx={{
-                  backgroundColor: isReload
+                  backgroundColor: isReset
                     ? "green"
                     : isPrivate
                       ? "red"
@@ -155,7 +170,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
                 justifyContent="center"
               >
                 <p>{data.linkText}</p>
-                {isReload ? (
+                {isReset ? (
                   <RefreshIcon />
                 ) : isPrivate ? (
                   <BlockIcon />

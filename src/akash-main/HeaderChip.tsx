@@ -8,7 +8,14 @@ type HeaderChipProps = {
 };
 
 function HeaderChip({ logo, title }: HeaderChipProps) {
-  return <StyledChip variant="filled" icon={logo} label={title} />;
+  return (
+    <StyledChip
+      id={title.toLowerCase()}
+      variant="filled"
+      icon={logo}
+      label={title}
+    />
+  );
 }
 
 const StyledChip = styled(Chip)({

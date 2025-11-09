@@ -46,7 +46,7 @@ function Networking() {
             style={{
               minWidth: "15rem",
               height: "min-content",
-              position: !isPhone ? "static" : "sticky",
+              position: "sticky",
               top: "5.5rem",
               marginTop: "0rem",
             }}

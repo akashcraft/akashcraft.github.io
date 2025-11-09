@@ -28,6 +28,7 @@ import {
   VolunteerActivism,
   Description,
   Menu as MenuIcon,
+  Explore,
 } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -59,6 +60,15 @@ function Header() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
+  const open2 = Boolean(anchorEl2);
+  const handleClick2 = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorEl2(null);
   };
 
   function setLightMode() {
@@ -143,6 +153,16 @@ function Header() {
     }
   };
 
+  function scrolldownToSection(arg0: string) {
+    const section = document.getElementById(arg0);
+    if (!section) return;
+    const yOffset = -90;
+    const y =
+      section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: y, behavior: "smooth" });
+    handleClose2();
+  }
+
   return (
     <Box className="Header">
       <MacDialog
@@ -203,6 +223,77 @@ function Header() {
               spacing={"0.5rem"}
               sx={{ marginRight: "0.6rem" }}
             >
+              <div>
+                <StyledChip
+                  icon={<Explore sx={ChipIconWithTextStyle} />}
+                  label="Explore"
+                  onClick={handleClick2}
+                />
+                <Menu
+                  sx={{
+                    "& .MuiPaper-root": {
+                      borderRadius: "0.75rem",
+                    },
+                    marginTop: "0.6rem",
+                  }}
+                  MenuListProps={{
+                    disablePadding: true,
+                  }}
+                  anchorEl={anchorEl2}
+                  open={open2}
+                  onClose={handleClose2}
+                >
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      scrolldownToSection("projects");
+                    }}
+                  >
+                    Projects
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      scrolldownToSection("work experience");
+                    }}
+                  >
+                    Work Experience
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      scrolldownToSection("education");
+                    }}
+                  >
+                    Education
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      scrolldownToSection("youtube");
+                    }}
+                  >
+                    YouTube
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      document.getElementById("macos-finder")?.click();
+                      handleClose2();
+                    }}
+                  >
+                    macOS
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      scrolldownToSection("others");
+                    }}
+                  >
+                    Others
+                  </MenuItem>
+                </Menu>
+              </div>
               <StyledChip
                 icon={<Description sx={ChipIconWithTextStyle} />}
                 label="Resume"
@@ -270,6 +361,7 @@ function Header() {
                 <MenuIcon sx={ChipIconStyle} />
               </IconButton>
               <Drawer
+                sx={{ zIndex: 2001 }}
                 anchor="right"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
@@ -401,7 +493,6 @@ const ChipIconStyle = { color: "white !important", fontSize: "1.25rem" };
 
 const ChipIconWithTextStyle = {
   color: "white !important",
-  marginBottom: "0.1rem",
   fontSize: "1.25rem",
 };
 

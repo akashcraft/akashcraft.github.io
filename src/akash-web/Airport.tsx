@@ -180,9 +180,9 @@ export default function Airport() {
                 ? (flight) => flight.direction === "inbound"
                 : (flight) => flight.direction === "outbound",
             )
-            .map((flight, index) => (
+            .map((flight) => (
               <AirportCard
-                key={index}
+                key={`${filter}-${flight.number}`}
                 flight={flight}
                 isPhone={isPhone}
                 isEnglish={isEnglish}

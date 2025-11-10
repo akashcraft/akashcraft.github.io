@@ -27,8 +27,8 @@ import {
   DataObject,
   WorkOutline as Work,
   SchoolOutlined as School,
-  VideocamOutlined as Videocam,
   DescriptionOutlined as NoteAdd,
+  YouTube,
 } from "@mui/icons-material";
 import Footer from "./akash-commons/Footer";
 import { motion } from "framer-motion";
@@ -72,6 +72,7 @@ function Home() {
 
   return (
     <>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <Header />
       <motion.div
         style={{ transformOrigin: "top center" }}
@@ -176,15 +177,15 @@ function Home() {
                 isLoading={isLoading}
               />
               <MainSection
-                heading="Others"
-                icon={<NoteAdd sx={ChipIconStyle} />}
-                genericData={otherData}
+                heading="YouTube"
+                icon={<YouTube sx={ChipIconStyle} />}
+                genericData={videoEditingData}
                 isLoading={isLoading}
               />
               <MainSection
-                heading="YouTube"
-                icon={<Videocam sx={ChipIconStyle} />}
-                genericData={videoEditingData}
+                heading="Others"
+                icon={<NoteAdd sx={ChipIconStyle} />}
+                genericData={otherData}
                 isLoading={isLoading}
               />
             </Stack>

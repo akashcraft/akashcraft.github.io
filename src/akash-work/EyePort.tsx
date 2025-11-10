@@ -31,7 +31,7 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import HeaderRowPaper from "../akash-commons/HeaderRowPaper";
-import { updateCount, useGetCount } from "./eyeportHook";
+import { updateCount, useGetCount } from "../akash-commons/firebaseHooks";
 
 function EyePort() {
   // Media Query and Images

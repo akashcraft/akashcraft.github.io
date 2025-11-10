@@ -15,6 +15,8 @@ import ScrollToTop from "./akash-commons/ScrollToTop.tsx";
 import { NotFound } from "./NotFound.tsx";
 import Mahjong from "./akash-web/Mahjong.tsx";
 import Airport from "./akash-web/Airport.tsx";
+import Contact from "./akash-main/Contact.tsx";
+import ContactLegacy from "./akash-main/ContactLegacy.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -89,6 +91,8 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/web" element={<Web />} />
           <Route path="/app" element={<App />} />
           <Route path="/mahjong" element={<Mahjong />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/contact-legacy" element={<ContactLegacy />} />
           <Route path="/airport/yyt" element={<Airport />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

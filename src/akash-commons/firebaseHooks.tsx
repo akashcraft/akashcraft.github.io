@@ -52,6 +52,24 @@ export async function updateCount(number: number) {
       count: number,
     });
   } catch (error) {
-    console.log("Error updating count:", error);
+    console.error("Error updating count:", error);
+  }
+}
+
+export async function addContact(contact: {
+  name?: string;
+  email?: string;
+  message?: string;
+}) {
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const collectionRef = collection(db, "contacts");
+  const contactRef = doc(collectionRef);
+
+  try {
+    await setDoc(contactRef, contact);
+  } catch (error) {
+    console.error("Error adding contact:", error);
+    throw new Error("Failed to add contact");
   }
 }

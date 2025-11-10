@@ -15,6 +15,14 @@ export const images = [img, img2, img3, img4, img5, img6, img7];
 export const scholarshipData = [
   {
     title: "International Undergraduate Academic Award",
+    year: "Fall 2025",
+  },
+  {
+    title: "International Undergraduate Academic Award",
+    year: "Fall 2024",
+  },
+  {
+    title: "Hector and Fanny McNeil Memorial Trust Fund Scholarship",
     year: "Fall 2024",
   },
   {

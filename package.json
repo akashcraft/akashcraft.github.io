@@ -2,7 +2,7 @@
   "name": "akashcraft-new",
   "homepage": "https://akashcraft.github.io/akashcraft/",
   "private": true,
-  "version": "26.1.12",
+  "version": "26.1.13",
   "type": "module",
   "scripts": {
     "dev": "vite",

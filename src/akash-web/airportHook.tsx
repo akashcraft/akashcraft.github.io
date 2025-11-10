@@ -15,7 +15,7 @@ export type AirportSchedule = {
 export default function useGetAirportData() {
   const [data, setData] = useState<AirportSchedule[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,8 +37,9 @@ export default function useGetAirportData() {
               expiry: Date.now() + 45 * 60 * 1000,
             }),
           );
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
-          setError(err as Error);
+          setIsError(true);
         } finally {
           setIsLoading(false);
         }
@@ -53,5 +54,5 @@ export default function useGetAirportData() {
     fetchData();
   }, []);
 
-  return { data, isLoading, error };
+  return { data, isLoading, isError };
 }

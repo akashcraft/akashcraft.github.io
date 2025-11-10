@@ -29,6 +29,8 @@ import {
   Description,
   Menu as MenuIcon,
   Explore,
+  Mail,
+  ArrowDropDown,
 } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -154,6 +156,19 @@ function Header() {
   };
 
   function scrolldownToSection(arg0: string) {
+    if (arg0 === "education") {
+      navigate("/education");
+      return;
+    } else if (arg0 === "networking") {
+      navigate("/networking");
+      return;
+    } else if (!["", "#/"].includes(window.location.hash)) {
+      navigate("/");
+      setTimeout(() => {
+        scrolldownToSection(arg0);
+      }, 100);
+      return;
+    }
     const section = document.getElementById(arg0);
     if (!section) return;
     const yOffset = -90;
@@ -227,7 +242,12 @@ function Header() {
                 <StyledChip
                   icon={<Explore sx={ChipIconWithTextStyle} />}
                   label="Explore"
+                  id="explore-chip"
                   onClick={handleClick2}
+                  onDelete={() => {
+                    document.getElementById("explore-chip")?.click();
+                  }}
+                  deleteIcon={<ArrowDropDown sx={ChipIconWithTextStyle} />}
                 />
                 <Menu
                   sx={{
@@ -278,22 +298,38 @@ function Header() {
                   <MenuItem
                     sx={{ fontSize: "0.9rem" }}
                     onClick={() => {
+                      scrolldownToSection("networking");
+                    }}
+                  >
+                    Networking
+                  </MenuItem>
+                  <MenuItem
+                    sx={{ fontSize: "0.9rem" }}
+                    onClick={() => {
+                      if (!["", "#/"].includes(window.location.hash)) {
+                        sessionStorage.setItem("homeScroll", "0");
+                        navigate("/");
+                        setTimeout(() => {
+                          document.getElementById("macos-finder")?.click();
+                          handleClose2();
+                        }, 100);
+                        return;
+                      }
                       document.getElementById("macos-finder")?.click();
                       handleClose2();
                     }}
                   >
                     macOS
                   </MenuItem>
-                  <MenuItem
-                    sx={{ fontSize: "0.9rem" }}
-                    onClick={() => {
-                      scrolldownToSection("others");
-                    }}
-                  >
-                    Others
-                  </MenuItem>
                 </Menu>
               </div>
+              <StyledChip
+                icon={<Mail sx={ChipIconWithTextStyle} />}
+                label="Contact"
+                onClick={() => {
+                  navigate("/contact");
+                }}
+              />
               <StyledChip
                 icon={<Description sx={ChipIconWithTextStyle} />}
                 label="Resume"
@@ -392,14 +428,21 @@ function Header() {
                       }}
                     />
                     <StyledChipDrawer
-                      icon={<VolunteerActivism sx={ChipIconStyle} />}
-                      label="Donate"
-                      onClick={openDonatePageInNewTab}
+                      icon={<Mail sx={ChipIconStyle} />}
+                      label="Contact"
+                      onClick={() => {
+                        navigate("/contact");
+                      }}
                     />
                     <StyledChipDrawer
                       icon={<Description sx={ChipIconStyle} />}
                       label="Resume"
                       onClick={openResumeInNewTab}
+                    />
+                    <StyledChipDrawer
+                      icon={<VolunteerActivism sx={ChipIconStyle} />}
+                      label="Donate"
+                      onClick={openDonatePageInNewTab}
                     />
                     <div
                       style={{ marginLeft: "0.5rem" }}

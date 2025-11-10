@@ -15,13 +15,14 @@ import { useEffect, useState } from "react";
 import {
   FlightLandOutlined,
   FlightTakeoffOutlined,
-  ErrorOutlineOutlined,
   VideocamOutlined,
 } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import useGetAirportData from "./airportHook";
 import AirportCard from "./AirportCard";
 import { StyledTooltip } from "../akash-macos/MacDock";
+import { motion } from "framer-motion";
+import error from "../assets/img-commons/error.png";
 
 export default function Airport() {
   const [time, setTime] = useState<string>("");
@@ -47,7 +48,7 @@ export default function Airport() {
     return () => clearInterval(interval);
   }, []);
 
-  const { data, isLoading, error } = useGetAirportData();
+  const { data, isLoading, isError } = useGetAirportData();
 
   return (
     <HolderBox>
@@ -156,7 +157,7 @@ export default function Airport() {
             {isEnglish ? "Loading Schedules" : "Chargement des horaires"}
           </Typography>
         </Stack>
-      ) : error ? (
+      ) : isError ? (
         <Stack
           spacing={2}
           sx={{
@@ -167,10 +168,18 @@ export default function Airport() {
           alignItems="center"
           justifyContent="center"
         >
-          <ErrorOutlineOutlined
-            sx={{ color: "white !important", fontSize: "3rem" }}
+          <motion.img
+            initial={{ rotate: 0, scale: 0 }}
+            animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            src={error}
+            alt="Error"
+            style={{
+              width: isPhone ? "10rem" : "50%",
+              maxWidth: "10rem",
+            }}
           />
-          <Typography variant="body2">Server Error</Typography>
+          <Typography variant="h6">Server Error</Typography>
         </Stack>
       ) : (
         <>

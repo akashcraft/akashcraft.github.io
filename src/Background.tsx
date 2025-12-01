@@ -63,18 +63,23 @@ export default function Background() {
         }}
       >
         {isWinter && (
-          <motion.img
+          <motion.div
             animate={{
-              filter: isLight ? "brightness(1)" : "brightness(0.2)",
+              filter: isLight
+                ? "brightness(1) blur(4px)"
+                : "brightness(0.2) blur(4px)",
             }}
             transition={{ duration: 0.4 }}
-            src={images[8]}
             className="parallax-img"
             data-speed="20"
             style={{
               ...imgStyle,
-              zIndex: 0,
-              top: "10%",
+              top: 0,
+              backgroundImage: `url(${images[8]})`,
+              backgroundRepeat: "repeat-x",
+              backgroundSize: "auto 100%",
+              backgroundPosition: "center top",
+              zIndex: -1,
             }}
           />
         )}

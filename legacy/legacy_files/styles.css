@@ -1,0 +1,511 @@
+body{
+    background-color: #000000;
+}
+
+div.loading{
+    background-color: black;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.mainapp{
+    display: none;
+    width: 100%;
+    height: 100vh;
+}
+
+div.fade{
+    display: block;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    box-shadow: 0px -10px 60px 20px black;
+    z-index: 4;
+}
+
+div.newsholder{
+    display: flex;
+    flex-direction: row;
+    width: 90vw;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+div.newsarrow{
+    border-radius: 10px;
+    display: inline-flex;
+    font-size: 1em;
+    padding: 0 8px;
+    align-items: center;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+div.news a{
+    line-height: 0.95;
+    text-align: left;
+    background-color: #22272a;
+    font-size: 1.7em;
+    padding: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    font-family: 'Segoe UI';
+    border-radius: 10px;
+}
+
+div.news{
+    display: none;
+    z-index: 0;
+}
+
+div.news a p{
+    padding: 0;
+    margin: 0;
+}
+
+span.bnewstext{
+    font-size: 0.65em;
+}
+
+span.bnewscr{
+    font-size: 0.5em;
+}
+
+h2{
+    text-align: center;
+    position: relative;
+    top: 10px;
+    font-size: 2em;
+}
+
+p.about{
+    text-align: center;
+    margin: 0 10%;
+    font-size: 1.2em;
+    line-height: 30px;
+}
+
+a{
+    color: white;
+    text-decoration: none;
+}
+
+a.downarrow{
+    position: relative;
+    top: -10px;
+    text-align: center;
+    display: inline-block;
+    margin: 0 auto;
+    scale: 1.7;
+    z-index: 1;
+    opacity: 0;
+    animation: arrow 2s 0s infinite both alternate;
+}
+
+div.mainhead{
+    position: relative;
+    text-align: center;
+    margin: 100px auto;
+    display: inline-block;
+}
+
+p.maintext{
+    margin: 0;
+    position: relative;
+    font-size: 10em;
+}
+
+#M1{
+    animation: fade2 0.1s 0.2s ease both;
+}
+#M2{
+    animation: fade2 0.1s 0.3s ease both;
+}
+#M3{
+    cursor:pointer;
+    animation: fade2 0.1s 0.4s ease both;
+}
+#M4{
+    animation: fade2 0.1s 0.5s ease both;
+}
+#M5{
+    animation: fade2 0.1s 0.6s ease both;
+}
+
+div.ehold{
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+div.emoon{
+    width: 600px;
+    position: relative;
+    bottom: 120px;
+    display: flex;
+}
+
+div.easter{
+    display: none;
+    width: 100%;
+    height: 100svh;
+    justify-content: center;
+    align-items: center;
+}
+
+div.reveal{
+    cursor: pointer;
+    background-color: #f1822b;
+    margin: 30px;
+    display: flex;
+    margin: 20px auto;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+}
+
+div.reveal:hover{
+    scale: 1.03;
+    transition: 0.2s;
+}
+
+div.reveal p{
+    margin: 8px;
+}
+
+div.mainhead img#triangle{
+    pointer-events: none;
+    width: 79px;
+    position: absolute;
+    top: 32px;
+    left: 8px;
+    animation: triangleleft 0.5s 0.2s ease both;
+}
+
+div.mainhead img#circle{
+    pointer-events: none;
+    width: 71px;
+    position: absolute;
+    top: 28.5px;
+    left: 286px;
+    animation: circledown 0.5s 0.3s ease both;
+}
+
+div.mainhead img#rectangle{
+    pointer-events: none;
+    height: 74px;
+    width: 81.5px;
+    position: absolute;
+    bottom: 35px;
+    right: 11.5px;
+    animation: rectangleright 0.5s 0.4s ease both;
+}
+
+ul.link{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    padding: 0;
+}
+ul.link li{
+    list-style-type: none;
+    text-align: center;
+    margin: 0px 8px;
+}
+ul.link li a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    padding: 8px;
+    border-radius: 15px;
+}
+a.youtube{
+    background-color: #670000;
+}
+a.linkedin{
+    background-color: #00446b;
+}
+a.github{
+    background-color: #1d2126;
+}
+ul.link li img{
+    pointer-events: none;
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+a.github img{    
+    margin-bottom: 2px;
+}
+ul.skillcard{
+    padding: 0;
+    text-align: center;
+    white-space: nowrap;
+}
+
+ul.skillcard li{
+    margin: 0 10px;
+    width: 330px;
+    display: inline-block;
+}
+
+.cards{
+    border-radius: 10px;
+    text-align: left;
+    display: inline-block;
+    padding: 10px;
+    background-color:#22272a;
+    white-space: normal;
+}
+
+.cards img{
+    border-radius: 10px;
+}
+
+.cards span{
+    font-size: 1.3em;
+}
+
+/* Pseudo Classes and Elements */
+body::-webkit-scrollbar{
+    display: none;
+}
+
+a.github:hover{
+    background-color: #3d3c3c;
+    transform: scale(1.05);
+    transition: 0.25s;
+}
+
+a.linkedin:hover{
+    background-color: #00649f;
+    transform: scale(1.05);
+    transition: 0.25s;
+}
+
+a.youtube:hover{
+    background-color: darkred;
+    transform: scale(1.05);
+    transition: 0.25s;
+}
+
+a.cards:hover{
+    background-color: #2a3034;
+    transform: scale(1.05);
+    transition: 0.25s;
+}
+
+
+/* Media Queries */
+@media only screen and (min-width: 1800px) {
+    p.about{
+        margin: 0 28%;
+    }
+    p.maintext{
+        font-size: 20em;
+    }
+    .spacer{
+        display: none;
+    }
+    div.mainhead img#triangle{
+        width: 155px;
+        position: absolute;
+        top: 67px;
+        left: 17px;
+    }
+    
+    div.mainhead img#circle{
+        width: 138px;
+        position: absolute;
+        top: 60px;
+        left: 574px;
+    }
+    
+    div.mainhead img#rectangle{
+        height: 148px;
+        width: 163px;
+        position: absolute;
+        bottom: 70px;
+        right: 23px;
+    }
+}
+@media only screen and (min-width: 1200px) and (max-width: 1800px) {
+    p.about{
+        margin: 0 15%;
+    }
+    p.maintext{
+        font-size: 15em;
+    }
+    .spacer{
+        display: none;
+    }
+
+    div.mainhead img#triangle{
+        width: 118px;
+        position: absolute;
+        top: 50px;
+        left: 12px;
+    }
+    
+    div.mainhead img#circle{
+        width: 107px;
+        position: absolute;
+        top: 44px;
+        left: 429px;
+    }
+    
+    div.mainhead img#rectangle{
+        height: 105px;
+        width: 124px;
+        position: absolute;
+        bottom: 52.5px;
+        right: 16.5px;
+    }
+  }
+
+/* Default is 750px to 1200px */
+
+@media only screen and (max-width: 750px) {
+    div.newsholder, div.newsdiv{
+        display: none;
+    }
+    p.maintext{
+        font-size: 8em;
+    }
+    div.mainhead img#triangle{
+        width: 65px;
+        position: absolute;
+        top: 24px;
+        left: 5.5px;
+    }    
+    div.mainhead img#circle{
+        width: 57px;
+        position: absolute;
+        top: 23px;
+        left: 229px;
+    }    
+    div.mainhead img#rectangle{
+        height: 59px;
+        width: 66px;
+        position: absolute;
+        bottom: 28.5px;
+        right: 9px;
+    }
+    ul.link{
+        flex-direction: column;
+        align-items: center;
+    }
+    ul.link li a{
+        font-size: larger;
+        width: 250px;
+        margin: 10px;
+        padding: 10px;
+    }
+    ul.skillcard li{
+        margin: 30px auto;
+        width: 330px;
+        display: block;
+    }
+    .cards{
+        font-size: larger;
+    }
+    .spacer{
+        display: none;
+    }
+}
+
+
+
+/* Animations */
+@keyframes arrow{
+    from{
+        transform: translateY(0px);
+    }
+    to{
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes fade{
+    from{
+        opacity: 1;
+        pointer-events: all;
+    }
+    to{
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+@keyframes fade1{
+    from{
+        opacity: 1;
+        pointer-events: all;
+    }
+    to{
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+@keyframes fade2{
+    0%{
+        opacity: 0;
+    }
+    50%{
+        opacity: 0.9;
+    }
+    85%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+@keyframes circledown{
+    from{
+        transform: translateY(-500px);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes triangleleft{
+    from{
+        transform: translateX(-500px);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes rectangleright{
+    from{
+        transform: translateX(500px);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+body{
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}

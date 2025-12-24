@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="icon" href="./legacy_files/Channel Logo Rounded.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./legacy_files/styles.css">
+  <title>AkashCraft</title>
+</head>
+
+<body>
+  <div class="loading" style="display: none;">
+    <p style="font-size: 1.5em;">Loading/Chargement</p>
+  </div>
+  <div class="mainapp" style="display: block;">
+    <a class="singlenews" style="background-color: #ff0053;">
+      This version of the website is deprecated. Please visit the latest version.</a>
+
+
+    <script src=" ./legacy_files/jquery-3.7.1.min.js"></script>
+    <link href="./legacy_files/icon" rel="stylesheet">
+    <link href="./legacy_files/icon(1)" rel="stylesheet">
+
+    <header>
+      <div class="headerleft">
+        <img class="headerimg" src="./legacy_files/Channel Logo Rounded.png">
+        <a href="/#/" class="title">AkashCraft
+        </a>
+      </div><a href="/#/" class="title">
+      </a>
+      <div><a href="/#/" class="title">
+        </a><a class="smallmenu"><i class="material-icons">menu</i></a>
+        <a href="/#/" class="home"><i class="material-icons">home</i>Home</a>
+        <a href="/#/" class="login"><i class="material-icons">person</i>Login</a>
+        <a href="/#/" class="resume"><i class="material-icons">description</i>Resume</a>
+      </div>
+    </header>
+    <div class="smenu">
+      <a href="/#/" class="shome"><i class="material-icons">home</i>Home</a>
+      <a href="/#/" class="slogin"><i class="material-icons">person</i>Login</a>
+      <a href="/#/" class="sresume"><i class="material-icons">description</i>Resume</a>
+    </div>
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+
+      @font-face {
+        font-family: 'Trebuchet MS';
+        font-style: normal;
+        font-weight: normal;
+        src: local('Trebuchet MS'), url('trebuc.woff') format('woff');
+      }
+
+      body {
+        color: white;
+        font-family: 'Trebuchet MS';
+        background-color: black;
+        margin: 0;
+      }
+
+      div.smenu {
+        display: flex;
+        height: 100dvh;
+        position: fixed;
+        z-index: 10;
+        width: 50%;
+        right: -100%;
+        top: 0px;
+        background-color: #22272a;
+        flex-direction: column;
+      }
+
+      div.smenu a {
+        text-decoration: none;
+        color: white;
+        width: initial;
+        display: flex;
+        padding: 20px 20px;
+        align-items: center;
+        font-size: 1.3em;
+      }
+
+      div.smenu a i {
+        margin-right: 15px;
+        font-size: 1.3em;
+      }
+
+      div.smenu a:hover {
+        background-color: #2a3034;
+        transition: 0.2s;
+      }
+
+      a.singlenews {
+        font-size: 0.9em;
+        font-weight: 100;
+        position: fixed;
+        text-align: center;
+        top: 44px;
+        padding: 5px;
+        width: 100%;
+        z-index: 2;
+        cursor: pointer;
+        color: white;
+        animation: newsdown 1s 0.5s both ease;
+      }
+
+      header {
+        background-color: #f38008;
+        height: 45px;
+        position: fixed;
+        top: 0px;
+        width: 100dvw;
+        display: flex;
+        justify-content: space-between;
+        z-index: 3;
+      }
+
+      div.headerleft,
+      div.headerright {
+        display: inline-flex;
+        flex-direction: row;
+        height: inherit;
+        justify-content: center;
+        align-items: center;
+      }
+
+      img.headerimg {
+        width: 30px;
+        margin-left: 10px;
+      }
+
+      a.title {
+        color: white;
+        font-weight: bold;
+        font-size: 25px;
+        margin-left: 10px;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+      }
+
+      a.resume i,
+      a.login i,
+      a.home i {
+        margin-right: 5px;
+      }
+
+      a.resume,
+      a.login,
+      a.home,
+      a.smallmenu {
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
+        padding: 0px 10px;
+        font-size: 1.2em;
+        height: 45px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      a.smallmenu {
+        display: none;
+      }
+
+      @keyframes newsdown {
+        from {
+          transform: translateY(-100px);
+        }
+
+        to {
+          transform: translateY(0px);
+        }
+      }
+
+      @keyframes newsup {
+        from {
+          transform: translateY(0px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(-100px);
+          opacity: 1;
+        }
+      }
+
+      a.resume:hover,
+      a.login:hover,
+      a.home:hover,
+      a.smallmenu:hover {
+        background: #a65705;
+        transition: 0.25s;
+      }
+
+      @media only screen and (min-width: 650px) {
+        div.smenu {
+          display: none !important;
+        }
+      }
+
+      @media only screen and (max-width: 650px) {
+
+        a.home,
+        a.resume,
+        a.login {
+          display: none;
+        }
+
+        a.smallmenu {
+          display: inline-flex;
+        }
+      }
+
+      @keyframes right {
+        0% {
+          transform: translateX(400px);
+        }
+
+        100% {
+          transform: translateX(0px);
+
+        }
+      }
+    </style>
+    <script>
+      //Single News Remove
+      $("a.singlenews").click((e) => {
+        $.ajax({
+          url: "cancelnews.php",
+        })
+        e.preventDefault();
+        $("a.singlenews").slideUp(200);
+        setTimeout(() => {
+          $("a.singlenews").hide();
+        }, 200)
+      });
+
+      //Small Menu
+      $(".sresume").click(() => {
+        $("div.smenu").animate({
+          right: ['-100%', "swing"]
+        }, 400, () => {
+          $("body").off("click");
+        });
+      })
+
+      function removeonclick() {
+        $("body").click((e) => {
+          $("div.smenu").animate({
+            right: ['-100%', "swing"]
+          }, 400, () => {
+            $("body").off("click");
+          });
+        });
+      }
+      $("div.smenu").click((e) => {
+        e.stopPropagation();
+      })
+
+      function redefine() {
+        $("a.smallmenu").click(() => {
+          $("div.smenu").animate({
+            right: ['0px', "swing"]
+          }, 400);
+          setTimeout(removeonclick, 200);
+        })
+      }
+
+      redefine();
+    </script>
+    <div style="width: 100%; text-align: center;">
+      <div class="mainhead">
+        <p class="maintext">
+          <span id="M1">A</span><span id="M2">K</span><span id="M3">A</span><span id="M4">S</span><span id="M5">H</span>
+        </p>
+        <img src="./legacy_files/triangle.png" id="triangle">
+        <img src="./legacy_files/circle.png" id="circle">
+        <img src="./legacy_files/rectangle.png" id="rectangle">
+      </div>
+    </div>
+    <span id="link1"></span>
+    <center>
+      <a class="downarrow" href="/#/" style="opacity: 1; scale: 1;"><img width="50px"
+          src="./legacy_files/arrow.png"></a>
+    </center>
+    <div id="aboutdiv">
+      <section>
+        <h2 class="about">Trivia</h2>
+        <br />
+        <p class="about">Hello! My name is Akash Samanta. You are viewing the first build of my website compiled on 7
+          October 2023. Styling and animations are preserved but ALL links have been modified to take you back to the
+          new website. This page does not contain any backend functionality.
+        </p>
+        <div class="fade"></div>
+      </section>
+      <br>
+      <ul class="link">
+        <li><a class="github" target="_blank" href="/#/"><img src="./legacy_files/Github.png"
+              class="github"><span>GitHub</span></a></li>
+        <li><a class="linkedin" target="_blank" href="/#/"><img src="./legacy_files/Linkedin.png"
+              class="linkedin"><span>LinkedIn</span></a></li>
+        <li><a class="youtube" target="_blank" href="/#/"><img src="./legacy_files/Youtube.png"
+              class="youtube"><span>YouTube</span></a></li>
+      </ul>
+    </div>
+    <br>
+    <br>
+    <div class="newsdiv" style="height: 200px;">
+      <div class="newsholder">
+        <div class="newsarrow" id="newsleft" style="visibility: hidden;">
+          <p>◀</p>
+        </div>
+        <div class="news" style="display: none;">
+          <a href="/#/">
+            <p>
+              Terminal Information<br><br><span class="bnewstext">Click here to view the live departure/arrival
+                schedule
+                for St. John's Airport, featuring dynamic web pages with Back-End Development.</span><br><span
+                class="bnewscr">Created with PHP and MySQL</span>
+            </p>
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+              <img src="./legacy_files/land.png" width="70px" height="70px" style="margin: 20px;">
+            </div>
+          </a>
+        </div>
+        <div class="news" style="display: block;">
+          <a href="/#/">
+            <p>
+              Eye-Tracking Updates<br><br><span class="bnewstext">EyePort Version 3.3.3 is now available for download,
+                introducing new features and enhancements. Learn more about EyePort and Eye-Tracking.</span><br><span
+                class="bnewscr">Created with Python</span>
+            </p>
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+              <img src="./legacy_files/Logo2.png" width="70px" height="70px" style="margin: 20px;">
+            </div>
+          </a>
+        </div>
+        <div class="news" style="display: none;">
+          <a href="/#/">
+            <p>
+              Try Windows 8.1<br><br><span class="bnewstext">Nice! Your browser is supported. Check out my mini
+                project
+                created purely with Front-End Development. Experience Windows 8.1 Now!</span><br><span
+                class="bnewscr">Microsoft reserves all rights</span>
+            </p>
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+              <img src="./legacy_files/win8startcolor.png" width="70px" height="70px" style="margin: 20px;">
+            </div>
+          </a>
+        </div>
+        <div class="newsarrow" id="newsright" style="visibility: hidden;">
+          <p>▶</p>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <h2>Coding</h2>
+      <br>
+      <ul class="skillcard">
+        <li>
+          <a class="cards" href="/#/"><img src="./legacy_files/banner11.png" height="188px"
+              width="310px"><br><br><span>PHP &amp; JavaScript</span><br><br>Try some of my web apps and
+            games right from your browser.<br><br></a>
+        </li>
+        <li>
+          <a class="cards" href="/#/"><img src="./legacy_files/banner2.png" height="188px"
+              width="310px"><br><br><span>Python</span><br><br>Some apps and games that I made in Python. Download
+            them
+            here.<br><br></a>
+        </li>
+        <div class="spacer">
+          <br>
+        </div>
+        <li>
+          <a class="cards" target="_blank" href="https://play.google.com/store/apps/developer?id=AkashCraft"><img
+              src="./legacy_files/banner1.png" width="310px" height="190px"><br><br><span>PlayStore
+              Apps</span><br><br>Check out my apps on Playstore created with Flutter. Click here.<br><br></a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <br>
+      <h2>Work Experience</h2>
+      <br>
+      <ul class="skillcard">
+        <li>
+          <a class="cards" href="/#/"><img src="./legacy_files/banner5.png" width="310px"><br><br><span>Research and
+              Development</span><br><br>Duration: 8 months<br><br>Worked with
+            Marine Institute and MUN to develop an automated eye tracking software. Click to learn more.<br><br></a>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <br>
+      <h2>Video Editing</h2>
+      <br>
+      <ul class="skillcard">
+        <li>
+          <a class="cards" target="_blank" href="/#/"><img src="./legacy_files/banner3.png" width="310px"
+              height="190px"><br><br><span>Documentaries</span><br><br>Check out some of my documentaries and travel
+            vlogs on YouTube.<br><br></a>
+        </li>
+        <li>
+          <a class="cards" target="_blank" href="/#/"><img src="./legacy_files/banner4.png" width="310px"
+              height="190px"><br><br><span>Rotoscoping</span><br><br>Manual tracing over motion picture using After
+            Effects. Watch now.<br><br></a>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <br>
+      <h2>Others</h2>
+      <br>
+      <ul class="skillcard">
+        <li>
+          <a class="cards"><img src="./legacy_files/banner8.png"
+              width="310px"><br><br><span>Networking</span><br><br>Personal Project. Built ADDS, DNS, and RADIUS
+            Server
+            at home.<br><br></a>
+        </li>
+        <li>
+          <a class="cards" target="_blank" href="/#/"><img src="./legacy_files/banner6.png"
+              width="310px"><br><br><span>Arts and Crafts</span><br><br>Sometimes we
+            need a breather from school or work. See my sketches.<br><br></a>
+        </li>
+        <div class="spacer">
+          <br>
+        </div>
+        <li>
+          <a class="cards" href="/#/"><img src="./legacy_files/banner7.png" style="object-fit: fill;" height="187.88px"
+              width="310px"><br><br><span>Personal
+              Website</span><br><br>This website. Designed with HTML, CSS, JavaScript, PHP, and MySQL.<br><br></a>
+        </li>
+      </ul>
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <footer>
+      <p class="footer">Copyright 2025 AkashCraft</p>
+    </footer>
+    <style>
+      footer {
+        position: relative;
+        text-align: center;
+        max-width: 100%;
+        background-color: #131618;
+        padding: 10px;
+        z-index: 5;
+      }
+
+      p.footer {
+        margin: 0;
+        padding: 0;
+        font-size: 1em;
+      }
+    </style>
+  </div>
+  <script src="./legacy_files/blocker.js"></script>
+  <script src="./legacy_files/indexjava.js"></script>
+
+</body>
+
+</html>

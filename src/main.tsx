@@ -9,6 +9,7 @@ import Education from "./akash-education/Education.tsx";
 import Networking from "./akash-others/Networking.tsx";
 import Verafin from "./akash-work/Verafin.tsx";
 import EyePort from "./akash-work/EyePort.tsx";
+import QuestPlunge from "./akash-game/QuestPlunge.tsx";
 import Web from "./akash-web/Web.tsx";
 import App from "./akash-app/App.tsx";
 import ScrollToTop from "./akash-commons/ScrollToTop.tsx";
@@ -94,6 +95,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/contact" element={<Contact />} />
           <Route path="/contact-legacy" element={<ContactLegacy />} />
           <Route path="/airport/yyt" element={<Airport />} />
+          <Route path="/questplunge" element={<QuestPlunge />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

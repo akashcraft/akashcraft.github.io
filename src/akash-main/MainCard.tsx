@@ -16,7 +16,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { OpenInNew, PlayArrow } from "@mui/icons-material";
+import { OpenInNew } from "@mui/icons-material";
 
 type MainCardProps = {
   data: genericAppData;
@@ -106,13 +106,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
                   alignItems="center"
                 >
                   <Typography variant="h6">{data.title}</Typography>
-                  {data.title == "Game Development" ? (
-                    <PlayArrow />
-                  ) : isReset ? (
-                    <RefreshIcon />
-                  ) : (
-                    <OpenInNew />
-                  )}
+                  {isReset ? <RefreshIcon /> : <OpenInNew />}
                 </Stack>
               </motion.div>
 

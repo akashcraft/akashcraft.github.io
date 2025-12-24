@@ -126,12 +126,15 @@ function Header() {
         "/web",
         "/mahjong",
         "/airport/yyt",
+        "/questplunge",
       ].includes(path)
     ) {
       if (path.includes("/verafin/")) {
         return "Verafin";
       } else if (path === "/eyeport") {
         return "EyePort";
+      } else if (path === "/questplunge") {
+        return "Quest Plunge";
       } else if (path === "/mahjong") {
         return "Mahjong";
       } else if (path === "/airport/yyt") {

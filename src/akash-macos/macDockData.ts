@@ -30,7 +30,7 @@ import banner2 from "../assets/img-main/banner2.png";
 import banner3 from "../assets/img-main/banner3.png";
 import banner4 from "../assets/img-main/banner4.png";
 import banner5 from "../assets/img-main/banner5.png";
-import banner6 from "../assets/img-main/banner6.png";
+import banner6 from "../assets/img-main/banner6.jpg";
 import banner7 from "../assets/img-main/banner7.png";
 import banner8 from "../assets/img-main/banner8.png";
 import resume from "../assets/img-main/resume.png";

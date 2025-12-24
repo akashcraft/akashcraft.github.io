@@ -6,7 +6,7 @@ import {
   setDoc,
   onSnapshot,
 } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoAKXQrOtB6EAHNvaiOk98EZNXpreXQDM",
@@ -17,34 +17,47 @@ const firebaseConfig = {
   appId: "1:120116375945:web:2589bc98e94d7ff845b158",
 };
 
-export function useGetCount() {
+export function useGetCount(dbname?: string) {
   const [count, setCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const collectionRef = collection(db, "eyeport");
-  const countRef = doc(collectionRef, "1");
+  useEffect(() => {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const collectionRef = collection(db, dbname || "eyeport");
+    const countRef = doc(collectionRef, "1");
 
-  onSnapshot(countRef, (doc) => {
-    if (doc.exists()) {
-      const data = doc.data();
-      setCount(data.count);
-      setLoading(false);
-    } else {
-      setError(true);
-      setLoading(false);
-    }
-  });
+    const unsubscribe = onSnapshot(
+      countRef,
+      (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          setCount(data.count);
+          setError(false);
+          setLoading(false);
+        } else {
+          setError(true);
+          setLoading(false);
+        }
+      },
+      (err) => {
+        console.error("Firebase Error:", err);
+        setError(true);
+        setLoading(false);
+      },
+    );
+
+    return () => unsubscribe();
+  }, [dbname]);
 
   return { count, loading, error };
 }
 
-export async function updateCount(number: number) {
+export async function updateCount(number: number, dbname?: string) {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const collectionRef = collection(db, "eyeport");
+  const collectionRef = collection(db, dbname || "eyeport");
   const countRef = doc(collectionRef, "1");
 
   try {

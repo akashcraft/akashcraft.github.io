@@ -102,7 +102,7 @@ function EyePort() {
 
           <p id="link2" style={{ position: "relative", bottom: "5rem" }}></p>
 
-          <h2>Download EyePort</h2>
+          <h2>Download</h2>
           <p>
             Click the download button below to download directly. An additional
             resource is needed for Object Detection Module to work. You can find
@@ -159,7 +159,7 @@ function EyePort() {
                 downloadEyePort();
               }}
               color="secondary"
-              label="Download EyePort"
+              label="Download"
               icon={<Download sx={{ color: "white !important" }} />}
             />
             <Chip
@@ -450,7 +450,7 @@ const TableOfContentsLink = ({
     </ListItem>
     <ListItem disablePadding onClick={() => handler("link2")}>
       <ListItemButton>
-        <ListItemText primary="Download EyePort" />
+        <ListItemText primary="Download" />
       </ListItemButton>
     </ListItem>
     <ListItem disablePadding onClick={() => handler("link3")}>

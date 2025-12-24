@@ -13,6 +13,13 @@ export function downloadEyePort() {
   );
 }
 
+export function downloadQuestPlunge() {
+  window.open(
+    "https://github.com/akashcraft/QuestPlunge/releases/download/V1.0.0/Quest.Plunge.1.0.0.Setup.File.exe",
+    "_blank",
+  );
+}
+
 export function openDonatePageInNewTab() {
   window.open(
     "https://www.paypal.com/donate/?business=YFEQJ9D5KR9PW&no_recurring=0&item_name=Thank+you+for+considering+to+donate+me%21+This+way+I+can+keep+developing+more+applications+for+you.&currency_code=CAD",

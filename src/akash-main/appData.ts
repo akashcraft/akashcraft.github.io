@@ -3,7 +3,7 @@ import banner2 from "../assets/img-main/banner2.png";
 import banner3 from "../assets/img-main/banner3.png";
 import banner4 from "../assets/img-main/banner4.png";
 import banner5 from "../assets/img-main/banner5.png";
-import banner6 from "../assets/img-main/banner6.png";
+import banner6 from "../assets/img-main/banner6.jpg";
 import banner7 from "../assets/img-main/banner7.png";
 import banner8 from "../assets/img-main/banner8.png";
 import banner9 from "../assets/img-main/banner9.png";
@@ -63,6 +63,7 @@ export const codingData: genericAppData[] = [
       "Check out Quest Plunge! My 2D Platformer Game made with Unity.",
     image: banner3,
     linkText: "Play Now",
+    link: "questplunge",
   },
 ];
 
@@ -86,9 +87,9 @@ export const workData = [
   },
   {
     title: "Datalakes Developer",
-    subtitle: "Present",
+    subtitle: "4 months",
     description:
-      "Working with Nasdaq Verafin in the Warehouse Data Preparation Team",
+      "Worked with Nasdaq Verafin in the Warehouse Data Preparation Team",
     image: banner6,
     linkText: "Learn More",
     link: "verafin/2",

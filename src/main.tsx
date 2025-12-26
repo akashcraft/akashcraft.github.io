@@ -18,6 +18,7 @@ import Mahjong from "./akash-web/Mahjong.tsx";
 import Airport from "./akash-web/Airport.tsx";
 import Contact from "./akash-main/Contact.tsx";
 import ContactLegacy from "./akash-main/ContactLegacy.tsx";
+import Login from "./akash-login/Login.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -96,6 +97,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/contact-legacy" element={<ContactLegacy />} />
           <Route path="/airport/yyt" element={<Airport />} />
           <Route path="/questplunge" element={<QuestPlunge />} />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

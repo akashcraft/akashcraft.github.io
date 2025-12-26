@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Stack,
   styled,
@@ -26,6 +27,7 @@ import {
 import { openGitHub, openLinkedIn, openYouTube } from "../akash-commons/Utils";
 import { useNavigate } from "react-router";
 import { useContactSubmit } from "../akash-commons/Hooks";
+import { ContactWavesDark, ContactWavesLight } from "./ContactWaves";
 
 const sanitize = (value: string): string => {
   return value
@@ -69,311 +71,329 @@ function Contact() {
     useContactSubmit();
 
   return (
-    <CenterBox
-      flexDirection={isPhone ? "column" : "row"}
-      sx={{
-        height: isPhone ? "auto" : "90vh",
-        padding: isPhone ? "2rem 1rem" : "0",
-        margin: isPhone ? "1rem auto" : "none",
-        transition: "opacity 0.25s ease-in-out",
-      }}
-    >
-      {isError && (
-        <audio autoPlay>
-          <source src={errorSound} type="audio/mpeg" />
-        </audio>
-      )}
-      {isSuccess && (
-        <audio autoPlay>
-          <source src={successSound} type="audio/mpeg" />
-        </audio>
-      )}
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      {!(isSubmitting || isPhone) && (
-        <StyledTooltip title="Close" placement="top">
-          <CircularButton
-            variant="text"
-            onClick={() => {
-              navigate("/");
-            }}
-            sx={{
-              position: "absolute",
-              top: "1rem",
-              right: "1rem",
-              scale: isPhone ? 0.8 : 1,
-              color: "red",
-            }}
-          >
-            <Close />
-          </CircularButton>
-        </StyledTooltip>
-      )}
-      <Stack
-        width={isPhone ? "100%" : "50%"}
-        justifyContent="center"
-        alignItems="center"
+    <>
+      <Box
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100dvw",
+          height: "100dvh",
+          objectFit: "cover",
+          zIndex: -1,
+        }}
       >
-        {!(isSubmitting || isSuccess || isError) && (
-          <video
-            src={isLight ? mail : mailDark}
-            autoPlay
-            muted
-            playsInline
-            style={{ width: isPhone ? "70%" : "30rem", maxWidth: "30rem" }}
-          />
-        )}
-        {isSubmitting && (
-          <video
-            src={isLight ? loading : loadingDark}
-            autoPlay
-            muted
-            loop
-            playsInline
-            style={{ width: isPhone ? "50%" : "15rem", maxWidth: "15rem" }}
-          />
+        {isLight ? <ContactWavesLight /> : <ContactWavesDark />}
+      </Box>
+      <CenterBox
+        flexDirection={isPhone ? "column" : "row"}
+        sx={{
+          height: isPhone ? "auto" : "90vh",
+          padding: isPhone ? "2rem 1rem" : "0",
+          margin: isPhone ? "1rem auto" : "none",
+          transition: "opacity 0.25s ease-in-out",
+        }}
+      >
+        {isError && (
+          <audio autoPlay>
+            <source src={errorSound} type="audio/mpeg" />
+          </audio>
         )}
         {isSuccess && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            <CheckCircleOutlineOutlined
+          <audio autoPlay>
+            <source src={successSound} type="audio/mpeg" />
+          </audio>
+        )}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {!(isSubmitting || isPhone) && (
+          <StyledTooltip title="Close" placement="top">
+            <CircularButton
+              variant="text"
+              onClick={() => {
+                sessionStorage.setItem("homeScroll", "0");
+                navigate("/");
+              }}
               sx={{
-                color: "var(--mui-palette-success-main)",
-                fontSize: isPhone ? "6rem" : "10rem",
+                position: "absolute",
+                top: "1rem",
+                right: "1rem",
+                scale: isPhone ? 0.8 : 1,
+                color: "red",
+              }}
+            >
+              <Close />
+            </CircularButton>
+          </StyledTooltip>
+        )}
+        <Stack
+          width={isPhone ? "100%" : "50%"}
+          justifyContent="center"
+          alignItems="center"
+        >
+          {!(isSubmitting || isSuccess || isError) && (
+            <video
+              src={isLight ? mail : mailDark}
+              autoPlay
+              muted
+              playsInline
+              style={{ width: isPhone ? "70%" : "30rem", maxWidth: "30rem" }}
+            />
+          )}
+          {isSubmitting && (
+            <video
+              src={isLight ? loading : loadingDark}
+              autoPlay
+              muted
+              loop
+              playsInline
+              style={{ width: isPhone ? "50%" : "15rem", maxWidth: "15rem" }}
+            />
+          )}
+          {isSuccess && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <CheckCircleOutlineOutlined
+                sx={{
+                  color: "var(--mui-palette-success-main)",
+                  fontSize: isPhone ? "6rem" : "10rem",
+                  marginBottom: "2rem",
+                }}
+              />
+            </motion.div>
+          )}
+          {isError && (
+            <motion.img
+              initial={{ rotate: 0, scale: 0 }}
+              animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              src={error}
+              alt="Error"
+              style={{
+                width: isPhone ? "50%" : "15rem",
+                maxWidth: "15rem",
                 marginBottom: "2rem",
               }}
             />
-          </motion.div>
-        )}
-        {isError && (
-          <motion.img
-            initial={{ rotate: 0, scale: 0 }}
-            animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            src={error}
-            alt="Error"
-            style={{
-              width: isPhone ? "50%" : "15rem",
-              maxWidth: "15rem",
-              marginBottom: "2rem",
-            }}
-          />
-        )}
-      </Stack>
-      <Stack
-        width={isPhone ? "100%" : "50%"}
-        justifyContent="center"
-        spacing={2}
-        margin="auto"
-      >
-        <motion.div
-          key={
-            isSubmitting
-              ? "submitting"
-              : isError
-                ? "error"
-                : isSuccess
-                  ? "success"
-                  : "form"
-          }
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{
-            duration: 0.5,
-            delay: 0.2,
-            ease: [0.05, 0.8, 0.35, 0.99],
-          }}
+          )}
+        </Stack>
+        <Stack
+          width={isPhone ? "100%" : "50%"}
+          justifyContent="center"
+          spacing={2}
+          margin="auto"
         >
-          <h1
-            style={{
-              fontSize: isPhone ? "1.5rem" : "2rem",
-              marginTop: isSubmitting ? "4rem" : "unset",
+          <motion.div
+            key={
+              isSubmitting
+                ? "submitting"
+                : isError
+                  ? "error"
+                  : isSuccess
+                    ? "success"
+                    : "form"
+            }
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.2,
+              ease: [0.05, 0.8, 0.35, 0.99],
             }}
           >
-            {isSubmitting
-              ? "Submitting your message"
-              : isError
-                ? "Something went wrong"
-                : isSuccess
-                  ? "Message sent successfully"
-                  : "Let's get you connected"}
-          </h1>
-          <p>
-            {isError
-              ? "But you can try again"
-              : isSuccess
-                ? "Thank you for reaching out!"
-                : isSubmitting
-                  ? "Hang tight!"
-                  : "If you have a question or just want to say hi, feel free to reach out!"}
-          </p>
-          {!isPhone && <br />}
-          {!(isSubmitting || isSuccess || isError) && (
-            <form
-              id="contact-form"
+            <h1
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-                maxWidth: "30rem",
-                fontSize: isPhone ? "smaller" : "1rem",
+                fontSize: isPhone ? "1.5rem" : "2rem",
+                margin: "0rem",
               }}
             >
-              <Stack
-                flexDirection={isPhone ? "column" : "row"}
-                alignContent="center"
-                gap={2}
+              {isSubmitting
+                ? "Submitting your message"
+                : isError
+                  ? "Something went wrong"
+                  : isSuccess
+                    ? "Message sent successfully"
+                    : "Let's get you connected"}
+            </h1>
+            <p>
+              {isError
+                ? "But you can try again"
+                : isSuccess
+                  ? "Thank you for reaching out!"
+                  : isSubmitting
+                    ? "Hang tight!"
+                    : "If you have a question or just want to say hi, feel free to reach out!"}
+            </p>
+            {!(isSubmitting || isSuccess || isError) && (
+              <form
+                id="contact-form"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  maxWidth: "30rem",
+                  fontSize: isPhone ? "smaller" : "1rem",
+                }}
               >
+                <Stack
+                  flexDirection={isPhone ? "column" : "row"}
+                  alignContent="center"
+                  gap={2}
+                  mt={1}
+                >
+                  <StyledHolder>
+                    <p>Enter your name</p>
+                    <StyledInput
+                      required
+                      onChange={(e) => {
+                        sessionStorage.setItem("name", e.target.value);
+                      }}
+                      type="text"
+                      name="name"
+                      placeholder="Name"
+                      defaultValue={sessionStorage.getItem("name") ?? ""}
+                    />
+                  </StyledHolder>
+                  <StyledHolder>
+                    <p>Enter your email</p>
+                    <StyledInput
+                      required
+                      onChange={(e) => {
+                        sessionStorage.setItem("email", e.target.value);
+                      }}
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      defaultValue={sessionStorage.getItem("email") ?? ""}
+                    />
+                  </StyledHolder>
+                </Stack>
                 <StyledHolder>
-                  <p>Enter your name</p>
-                  <StyledInput
+                  <p>Enter your message</p>
+                  <StyledTextarea
                     required
                     onChange={(e) => {
-                      sessionStorage.setItem("name", e.target.value);
+                      sessionStorage.setItem("message", e.target.value);
                     }}
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    defaultValue={sessionStorage.getItem("name") ?? ""}
-                  />
+                    name="message"
+                    placeholder="Message"
+                    defaultValue={sessionStorage.getItem("message") ?? ""}
+                  ></StyledTextarea>
                 </StyledHolder>
-                <StyledHolder>
-                  <p>Enter your email</p>
-                  <StyledInput
-                    required
-                    onChange={(e) => {
-                      sessionStorage.setItem("email", e.target.value);
-                    }}
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    defaultValue={sessionStorage.getItem("email") ?? ""}
-                  />
-                </StyledHolder>
-              </Stack>
-              <StyledHolder>
-                <p>Enter your message</p>
-                <StyledTextarea
-                  required
-                  onChange={(e) => {
-                    sessionStorage.setItem("message", e.target.value);
-                  }}
-                  name="message"
-                  placeholder="Message"
-                  defaultValue={sessionStorage.getItem("message") ?? ""}
-                ></StyledTextarea>
-              </StyledHolder>
-            </form>
-          )}
-          {!isPhone && <br />}
-          {!isSubmitting && (
-            <>
-              <p>More ways to connect</p>
-              <Stack direction="row" spacing={2}>
-                <StyledTooltip title="GitHub" placement="bottom">
-                  <CircularButton variant="outlined" onClick={openGitHub}>
-                    <GitHub />
-                  </CircularButton>
-                </StyledTooltip>
-                <StyledTooltip title="LinkedIn" placement="bottom">
-                  <CircularButton variant="outlined" onClick={openLinkedIn}>
-                    <LinkedIn />
-                  </CircularButton>
-                </StyledTooltip>
-                <StyledTooltip title="YouTube" placement="bottom">
-                  <CircularButton variant="outlined" onClick={openYouTube}>
-                    <YouTube />
-                  </CircularButton>
-                </StyledTooltip>
-              </Stack>
-            </>
-          )}
-        </motion.div>
-        {!(isSuccess || isSubmitting || isError) && (
-          <SwitchStack
-            sx={{
-              position: isPhone ? "block" : "absolute",
-              margin: isPhone ? "1rem 0" : "none",
-            }}
-          >
-            <SubmitButton
-              variant="text"
-              onClick={() => {
-                navigate("/contact-legacy");
-              }}
+              </form>
+            )}
+            {!(isPhone || isSubmitting) && <br />}
+            {!isSubmitting && (
+              <>
+                <p>More ways to connect</p>
+                <Stack direction="row" spacing={2}>
+                  <StyledTooltip title="GitHub" placement="bottom">
+                    <CircularButton variant="outlined" onClick={openGitHub}>
+                      <GitHub />
+                    </CircularButton>
+                  </StyledTooltip>
+                  <StyledTooltip title="LinkedIn" placement="bottom">
+                    <CircularButton variant="outlined" onClick={openLinkedIn}>
+                      <LinkedIn />
+                    </CircularButton>
+                  </StyledTooltip>
+                  <StyledTooltip title="YouTube" placement="bottom">
+                    <CircularButton variant="outlined" onClick={openYouTube}>
+                      <YouTube />
+                    </CircularButton>
+                  </StyledTooltip>
+                </Stack>
+              </>
+            )}
+          </motion.div>
+          {!(isSuccess || isSubmitting || isError) && (
+            <SwitchStack
               sx={{
-                color: "var(--mui-palette-primary-main)",
+                position: isPhone ? "block" : "absolute",
+                margin: isPhone ? "1rem 0" : "none",
               }}
             >
-              Don't like Windows 11 UI?
-            </SubmitButton>
-          </SwitchStack>
-        )}
-        <SubmitStack
-          sx={{ position: isPhone ? "block" : "absolute" }}
-          justifyContent={
-            !isPhone
-              ? "flex-start"
-              : isSubmitting || isSuccess || isError
-                ? "flex-end"
-                : "space-between"
-          }
-        >
-          {!(isSuccess || isSubmitting) && (
+              <SubmitButton
+                variant="text"
+                onClick={() => {
+                  navigate("/contact-legacy");
+                }}
+                sx={{
+                  color: "var(--mui-palette-primary-main)",
+                }}
+              >
+                Don't like Windows 11 UI?
+              </SubmitButton>
+            </SwitchStack>
+          )}
+          <SubmitStack
+            sx={{ position: isPhone ? "block" : "absolute" }}
+            justifyContent={
+              !isPhone
+                ? "flex-start"
+                : isSubmitting || isSuccess || isError
+                  ? "flex-end"
+                  : "space-between"
+            }
+          >
+            {!(isSuccess || isSubmitting) && (
+              <SubmitButton
+                variant="text"
+                onClick={() => {
+                  if (isError) {
+                    window.location.reload();
+                  } else {
+                    sessionStorage.removeItem("name");
+                    sessionStorage.removeItem("email");
+                    sessionStorage.removeItem("message");
+                    sessionStorage.setItem("homeScroll", "0");
+                    navigate("/");
+                  }
+                }}
+                sx={{
+                  color: "var(--mui-palette-primary-main)",
+                }}
+              >
+                {isError ? "Try Again" : "Cancel"}
+              </SubmitButton>
+            )}
             <SubmitButton
-              variant="text"
-              onClick={() => {
-                if (isError) {
-                  window.location.reload();
-                } else {
+              variant="contained"
+              onClick={(e) => {
+                e.preventDefault();
+                if (isSuccess || isError) {
                   sessionStorage.removeItem("name");
                   sessionStorage.removeItem("email");
                   sessionStorage.removeItem("message");
+                  sessionStorage.setItem("homeScroll", "0");
                   navigate("/");
+                } else {
+                  const form = document.getElementById(
+                    "contact-form",
+                  ) as HTMLFormElement | null;
+                  if (form?.checkValidity()) {
+                    handleSubmit();
+                  } else {
+                    form?.reportValidity();
+                  }
                 }
               }}
               sx={{
-                color: "var(--mui-palette-primary-main)",
+                color: "var(--mui-palette-text-primary)",
+                justifySelf: "flex-end",
+                minWidth: "8rem",
               }}
+              disabled={isSubmitting}
+              loading={isSubmitting}
             >
-              {isError ? "Try Again" : "Cancel"}
+              {isSuccess || isError ? "Finish" : "Send Message"}
             </SubmitButton>
-          )}
-          <SubmitButton
-            variant="contained"
-            onClick={(e) => {
-              e.preventDefault();
-              if (isSuccess || isError) {
-                sessionStorage.removeItem("name");
-                sessionStorage.removeItem("email");
-                sessionStorage.removeItem("message");
-                navigate("/");
-              } else {
-                const form = document.getElementById(
-                  "contact-form",
-                ) as HTMLFormElement | null;
-                if (form?.checkValidity()) {
-                  handleSubmit();
-                } else {
-                  form?.reportValidity();
-                }
-              }
-            }}
-            sx={{
-              color: "var(--mui-palette-text-primary)",
-              justifySelf: "flex-end",
-              minWidth: "8rem",
-            }}
-            disabled={isSubmitting}
-            loading={isSubmitting}
-          >
-            {isSuccess || isError ? "Finish" : "Send Message"}
-          </SubmitButton>
-        </SubmitStack>
-      </Stack>
-    </CenterBox>
+          </SubmitStack>
+        </Stack>
+      </CenterBox>
+    </>
   );
 }
 

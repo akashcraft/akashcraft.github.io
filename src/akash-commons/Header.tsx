@@ -8,7 +8,6 @@ import {
   MenuItem,
   Toolbar,
   useColorScheme,
-  IconButton,
   Box,
   styled,
   Drawer,
@@ -18,6 +17,7 @@ import {
   Tooltip,
   tooltipClasses,
   type TooltipProps,
+  Fab,
 } from "@mui/material";
 
 import {
@@ -34,7 +34,6 @@ import {
 } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import MacDialog from "./MacDialog";
 
 import { openDonatePageInNewTab, openResumeInNewTab } from "./Utils";
 import { motion } from "framer-motion";
@@ -48,7 +47,6 @@ export const headerContainer = document.createElement("div");
 
 function Header() {
   // Theme Menu
-  const [openOpenMacDialog, setOpenMacDialog] = useState<boolean>(false);
   const { setMode } = useColorScheme();
   const [themeMode, setThemeMode] = useState<string>(() => {
     const stored = localStorage.getItem("mui-mode");
@@ -100,7 +98,7 @@ function Header() {
   }
 
   // Media Query
-  const phone = useMediaQuery("(min-width:600px)");
+  const phone = useMediaQuery("(min-width:800px)");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -127,6 +125,7 @@ function Header() {
         "/mahjong",
         "/airport/yyt",
         "/questplunge",
+        "/login",
       ].includes(path)
     ) {
       if (path.includes("/verafin/")) {
@@ -183,12 +182,6 @@ function Header() {
 
   return (
     <Box className="Header">
-      <MacDialog
-        heading="Not Implemented"
-        description="This feature is still under development. You can view the completed website on akashcraft.ca."
-        visible={openOpenMacDialog}
-        onClose={() => setOpenMacDialog(false)}
-      />
       <StyledAppBar
         position="fixed"
         sx={{
@@ -343,7 +336,7 @@ function Header() {
                 icon={<Person sx={ChipIconWithTextStyle} />}
                 label="Login"
                 onClick={() => {
-                  setOpenMacDialog(true);
+                  navigate("/login");
                 }}
               />
               <StyledTooltip title="Donate" placement="bottom">
@@ -396,9 +389,17 @@ function Header() {
             </Stack>
           ) : (
             <>
-              <IconButton size="large" onClick={() => setDrawerOpen(true)}>
-                <MenuIcon sx={ChipIconStyle} />
-              </IconButton>
+              <Fab
+                color="secondary"
+                onClick={() => setDrawerOpen(true)}
+                sx={{
+                  position: "fixed",
+                  top: "87vh",
+                  right: "0.25rem",
+                }}
+              >
+                <MenuIcon />
+              </Fab>
               <Drawer
                 sx={{ zIndex: 2001 }}
                 anchor="right"
@@ -407,10 +408,13 @@ function Header() {
               >
                 <StyledBox onClick={() => setDrawerOpen(false)}>
                   <Stack
-                    direction="column"
+                    direction="column-reverse"
                     alignItems="flex-start"
+                    justifyContent="flex-start"
                     spacing={"0rem"}
-                    sx={{ marginTop: "3rem" }}
+                    sx={{
+                      minHeight: "100vh",
+                    }}
                   >
                     <StyledChipDrawer
                       icon={
@@ -427,7 +431,7 @@ function Header() {
                       icon={<Person sx={ChipIconStyle} />}
                       label="Login"
                       onClick={() => {
-                        setOpenMacDialog(true);
+                        navigate("/login");
                       }}
                     />
                     <StyledChipDrawer

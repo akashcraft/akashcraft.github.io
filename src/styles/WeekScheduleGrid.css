@@ -1,0 +1,23 @@
+/* Reduce row height & soften grid */
+.fc-timegrid-slot.fc-timegrid-slot-lane {
+  height: 20px !important;
+}
+
+/* Event card (orange blocks) */
+.fc-event {
+  background-color: #f28c28;
+  border: none;
+  padding: 10px;
+  text-align: center;
+  width: calc(100% + 0.15rem);
+}
+
+.fc-scrollgrid-sync-inner {
+  border: none;
+  box-shadow: none;
+  background-color: #97502d;
+}
+
+.fc-timegrid-axis {
+  background-color: #97502d;
+}

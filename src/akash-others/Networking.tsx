@@ -114,7 +114,7 @@ function Networking() {
                 )
               }
               color="secondary"
-              label="Windows Server Evaluation"
+              label="Download"
               icon={<Download sx={{ color: "white !important" }} />}
             />
           </Stack>

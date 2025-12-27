@@ -7,6 +7,7 @@ declare module "@mui/material/styles" {
     macosfinder?: string;
     macosfinder2?: string;
     light?: string;
+    light2?: string;
   }
 
   interface TypeText {

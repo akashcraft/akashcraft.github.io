@@ -8,9 +8,18 @@ import { motion } from "framer-motion";
 type HolderBoxProps = {
   children?: React.ReactNode;
   isWide?: boolean;
+  disablePadding?: boolean;
+  disableAnimation?: boolean;
+  disableFooter?: boolean;
 };
 
-function HolderBox({ children, isWide = false }: HolderBoxProps) {
+function HolderBox({
+  children,
+  isWide = false,
+  disablePadding = false,
+  disableAnimation = false,
+  disableFooter = false,
+}: HolderBoxProps) {
   // Media Query
   const isPhone = useMediaQuery("(min-width:600px)");
   const isMid = useMediaQuery("(min-width:900px)");
@@ -39,20 +48,24 @@ function HolderBox({ children, isWide = false }: HolderBoxProps) {
   return (
     <>
       <Header />
-      <StyledBox sx={{ padding }}>
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{
-            duration: 0.5,
-            delay: 0.2,
-            ease: [0.05, 0.8, 0.35, 0.99],
-          }}
-        >
-          {children}
-        </motion.div>
+      <StyledBox sx={{ padding: disablePadding ? "2rem 0.5rem" : padding }}>
+        {!disableAnimation ? (
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.2,
+              ease: [0.05, 0.8, 0.35, 0.99],
+            }}
+          >
+            {children}
+          </motion.div>
+        ) : (
+          <>{children}</>
+        )}
       </StyledBox>
-      <Footer />
+      {!disableFooter && <Footer />}
     </>
   );
 }

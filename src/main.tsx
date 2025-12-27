@@ -19,6 +19,7 @@ import Airport from "./akash-web/Airport.tsx";
 import Contact from "./akash-main/Contact.tsx";
 import ContactLegacy from "./akash-main/ContactLegacy.tsx";
 import Login from "./akash-login/Login.tsx";
+import { Account } from "./akash-login/Account.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -38,6 +39,7 @@ const appTheme = createTheme({
           macosfinder: "#fff",
           macosfinder2: "#f3f3f3",
           light: "#693d14",
+          light2: "#693d14aa",
         },
         text: {
           primary: "#fff",
@@ -59,6 +61,7 @@ const appTheme = createTheme({
           macosfinder: "#1e1e1e",
           macosfinder2: "#1b1b1b",
           light: "#434343ff",
+          light2: "#43434388",
         },
         text: {
           primary: "#fff",
@@ -98,6 +101,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/airport/yyt" element={<Airport />} />
           <Route path="/questplunge" element={<QuestPlunge />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/account/:page" element={<Account />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

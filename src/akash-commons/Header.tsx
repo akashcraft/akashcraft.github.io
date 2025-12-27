@@ -17,7 +17,7 @@ import {
   Tooltip,
   tooltipClasses,
   type TooltipProps,
-  Fab,
+  IconButton,
 } from "@mui/material";
 
 import {
@@ -98,7 +98,7 @@ function Header() {
   }
 
   // Media Query
-  const phone = useMediaQuery("(min-width:800px)");
+  const isPhone = useMediaQuery("(max-width:800px)");
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -113,11 +113,14 @@ function Header() {
     })();
 
     if (path === "/") return "";
+    if (path.includes("/account/")) {
+      return "Account";
+    } else if (path.includes("/verafin/")) {
+      return "Verafin";
+    }
     if (
       [
         "/eyeport",
-        "/verafin/1",
-        "/verafin/2",
         "/education",
         "/networking",
         "/app",
@@ -128,9 +131,7 @@ function Header() {
         "/login",
       ].includes(path)
     ) {
-      if (path.includes("/verafin/")) {
-        return "Verafin";
-      } else if (path === "/eyeport") {
+      if (path === "/eyeport") {
         return "EyePort";
       } else if (path === "/questplunge") {
         return "Quest Plunge";
@@ -185,7 +186,7 @@ function Header() {
       <StyledAppBar
         position="fixed"
         sx={{
-          backgroundColor: phone
+          backgroundColor: !isPhone
             ? "rgba(0, 0, 0, 0.2) !important"
             : "color-mix(in srgb, var(--mui-palette-background-paper) 95%, transparent)",
         }}
@@ -228,7 +229,7 @@ function Header() {
             </motion.div>
           </Stack>
           <Box sx={{ flexGrow: 1 }} />
-          {phone ? (
+          {!isPhone ? (
             <Stack
               direction="row"
               spacing={"0.5rem"}
@@ -389,17 +390,9 @@ function Header() {
             </Stack>
           ) : (
             <>
-              <Fab
-                color="secondary"
-                onClick={() => setDrawerOpen(true)}
-                sx={{
-                  position: "fixed",
-                  top: "87vh",
-                  right: "0.25rem",
-                }}
-              >
-                <MenuIcon />
-              </Fab>
+              <IconButton size="large" onClick={() => setDrawerOpen(true)}>
+                <MenuIcon sx={ChipIconStyle} />
+              </IconButton>
               <Drawer
                 sx={{ zIndex: 2001 }}
                 anchor="right"
@@ -408,12 +401,11 @@ function Header() {
               >
                 <StyledBox onClick={() => setDrawerOpen(false)}>
                   <Stack
-                    direction="column-reverse"
+                    direction="column"
                     alignItems="flex-start"
-                    justifyContent="flex-start"
                     spacing={"0rem"}
                     sx={{
-                      minHeight: "100vh",
+                      marginTop: "2rem",
                     }}
                   >
                     <StyledChipDrawer

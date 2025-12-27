@@ -3,8 +3,8 @@ import {
   Box,
   Button,
   List,
-  ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Stack,
   styled,
@@ -15,6 +15,7 @@ import {
   type TooltipProps,
 } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 import { EffectFade, Autoplay } from "swiper/modules";
 import loading from "../assets/img-contact/Loading.mp4";
 import loadingDark from "../assets/img-contact/LoadingDark.mp4";
@@ -29,6 +30,9 @@ import {
   Facebook,
   Apple,
   AccountCircleOutlined,
+  CalendarMonthOutlined,
+  LinkOutlined,
+  BrushOutlined,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import {
@@ -39,12 +43,7 @@ import welcome1 from "../assets/img-account/welcome1.png";
 import welcome2 from "../assets/img-account/welcome2.png";
 import welcome3 from "../assets/img-account/welcome3.png";
 import logo from "../assets/logo.png";
-import { useState } from "react";
-import {
-  CalendarMonthOutlined,
-  AssignmentOutlined,
-  BrushOutlined,
-} from "@mui/icons-material";
+import { useEffect, useRef, useState } from "react";
 import { useLoginSubmit } from "./AuthHooks";
 import { useGetImages } from "../akash-commons/Hooks";
 
@@ -67,7 +66,7 @@ const slideContent = [
   {
     title: "Forms and DLC",
     description: "Access member forms and other DLC content seamlessly",
-    icon: <AssignmentOutlined />,
+    icon: <LinkOutlined />,
   },
   {
     title: "Extensive Personalization",
@@ -97,7 +96,7 @@ const getErrorSubText = (statusCode: number): string => {
     404: "The requested resource was not found",
     409: "An account with this email already exists. Please use a different email.",
     500: "Internal server error occurred. Please try again later.",
-    503: "The service is currently unavailable. Please try again later.",
+    503: "This service is currently unavailable. Please try again later.",
   };
   return errorMessages[statusCode] || "But you can try again";
 };
@@ -111,6 +110,7 @@ function Login() {
   const [isLoginPage, setIsLoginPage] = useState<boolean>(
     sessionStorage.getItem("loggedIn") === "true",
   );
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const handleSubmit = () => {
     const nameInput = document.querySelector(
@@ -138,6 +138,10 @@ function Login() {
     useLoginSubmit();
 
   const isLoading = useGetImages([welcome1, welcome2, welcome3, logo]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
@@ -241,6 +245,7 @@ function Login() {
                 speed={1000}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+                onSwiper={(swiper) => (swiperRef.current = swiper)}
                 style={{
                   display: isLoading ? "none" : "block",
                   width: isPhone ? "95%" : "80%",
@@ -258,24 +263,29 @@ function Login() {
                   </SwiperSlide>
                 ))}
               </StyledSwiper>
-              <List sx={{ width: isPhone ? "95%" : "85%" }}>
+              <List sx={{ width: isPhone ? "95%" : "81%" }}>
                 {slideContent.map((item, index) => (
-                  <ListItem
+                  <ListItemButton
                     key={index}
                     sx={{
                       filter:
                         index === activeIndex ? "none" : "grayscale(100%)",
                       opacity: index === activeIndex ? 1 : 0.6,
+                      borderRadius: "5rem",
+                    }}
+                    onClick={() => {
+                      setActiveIndex(index);
+                      swiperRef.current?.slideToLoop(index);
                     }}
                   >
                     <ListItemAvatar>
-                      <Avatar>{item.icon}</Avatar>
+                      <Avatar sx={{ bgcolor: "#f4b98b" }}>{item.icon}</Avatar>
                     </ListItemAvatar>
                     <StyledListItemText
                       primary={item.title}
                       secondary={item.description}
                     />
-                  </ListItem>
+                  </ListItemButton>
                 ))}
               </List>
             </>

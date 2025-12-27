@@ -91,7 +91,7 @@ function Education() {
             >
               View All
             </StyledButton>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} sx={{ zIndex: 2500 }}>
               <DialogTitle sx={systemFont}>Scholarships and Awards</DialogTitle>
               <DialogContent>
                 <TableContainer>

@@ -2,7 +2,9 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import type { EventInput } from "@fullcalendar/core";
 import { useMediaQuery } from "@mui/material";
-import "../styles/WeekScheduleGrid.css";
+import "../styles/ClassSchedule.css";
+import EmptyState from "./EmptyState";
+import { AddCircleOutlined } from "@mui/icons-material";
 
 const events: EventInput[] = [
   {
@@ -32,9 +34,24 @@ const events: EventInput[] = [
   },
 ];
 
-export default function WeekScheduleGrid() {
+export default function ClassSchedule({ onEmpty }: { onEmpty: () => void }) {
   const isPhone = useMediaQuery("(max-width:800px)");
-  return (
+  return events.length === 0 ? (
+    <EmptyState
+      header="Get Started"
+      height="calc(100% - 2.75rem)"
+      minHeight="20rem"
+      icon={
+        <AddCircleOutlined
+          style={{
+            fontSize: "4rem",
+            color: "var(--mui-palette-background-button)",
+          }}
+        />
+      }
+      onClick={onEmpty}
+    />
+  ) : (
     <FullCalendar
       plugins={[timeGridPlugin]}
       initialView="timeGridWeek"

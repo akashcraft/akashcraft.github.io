@@ -9,7 +9,7 @@
   border: none;
   padding: 10px;
   text-align: center;
-  width: calc(100% + 0.15rem);
+  width: calc(100% + 0.05rem);
 }
 
 .fc-scrollgrid-sync-inner {
@@ -20,4 +20,8 @@
 
 .fc-timegrid-axis {
   background-color: #97502d;
+}
+
+.fc {
+  --fc-border-color: var(--mui-palette-text-light2);
 }

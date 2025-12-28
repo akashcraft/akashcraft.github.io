@@ -2,6 +2,10 @@ import {
   Avatar,
   Box,
   Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputBase,
   List,
   ListItemAvatar,
   ListItemButton,
@@ -33,6 +37,8 @@ import {
   CalendarMonthOutlined,
   LinkOutlined,
   BrushOutlined,
+  VisibilityOff,
+  Visibility,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import {
@@ -107,6 +113,8 @@ function Login() {
   const navigate = useNavigate();
   const isPhone = useMediaQuery("(max-width:1000px)");
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isPasswordTyped, setIsPasswordTyped] = useState<boolean>(false);
   const [isLoginPage, setIsLoginPage] = useState<boolean>(
     sessionStorage.getItem("loggedIn") === "true",
   );
@@ -476,12 +484,66 @@ function Login() {
                         ? "Enter your password"
                         : "Create a password"}
                     </p>
-                    <StyledInput
-                      required
-                      type="password"
-                      name="password"
-                      placeholder="Password"
-                    />
+                    <FormControl variant="standard" fullWidth>
+                      <InputBase
+                        required
+                        name="password"
+                        placeholder="Password"
+                        type={showPassword ? "text" : "password"}
+                        onChange={(value) => {
+                          if (value.currentTarget.value == "") {
+                            setIsPasswordTyped(false);
+                          } else {
+                            setIsPasswordTyped(true);
+                          }
+                        }}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={
+                                showPassword
+                                  ? "hide the password"
+                                  : "display the password"
+                              }
+                              onClick={() => setShowPassword((prev) => !prev)}
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        sx={{
+                          padding: "0.5rem",
+                          borderRadius: "0.25rem",
+                          border: "none",
+                          fontFamily: "Segoe UI",
+                          fontSize: "1rem",
+                          height: "2.5rem",
+                          letterSpacing:
+                            showPassword || !isPasswordTyped
+                              ? "normal"
+                              : "0.15rem",
+                          backgroundColor:
+                            "var(--mui-palette-background-macosfinder)",
+                          color: "var(--mui-palette-text-secondary)",
+                          "&:active, &:focus": {
+                            outline: "none",
+                          },
+                          "&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus":
+                            {
+                              WebkitBoxShadow:
+                                "0 0 0px 1000px var(--mui-palette-background-macosfinder) inset !important",
+                              boxShadow:
+                                "0 0 0px 1000px var(--mui-palette-background-macosfinder) inset !important",
+                              WebkitTextFillColor:
+                                "var(--mui-palette-text-secondary) !important",
+                            },
+                        }}
+                      />
+                    </FormControl>
                   </StyledHolder>
                 </Stack>
               </form>

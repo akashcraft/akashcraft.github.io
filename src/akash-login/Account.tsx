@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   BottomNavigation,
   BottomNavigationAction,
   Box,
@@ -23,17 +22,27 @@ import {
   HomeOutlined,
   LinkOutlined,
   SettingsOutlined,
+  AdminPanelSettingsOutlined,
 } from "@mui/icons-material";
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AccountHeaderBox, { StyledHeaderPaper } from "./AccountHeaderBox";
-import WeekScheduleGrid from "./WeekScheduleGrid";
+import ClassSchedule from "./ClassSchedule";
 import ExamSchedule from "./ExamSchedule";
-import { motion } from "framer-motion";
 import {
   ContactWavesDark,
   ContactWavesLight,
 } from "../akash-main/ContactWaves";
+import Settings from "./Settings";
+import { motion } from "framer-motion";
+import { Links } from "./Links";
+import Admin from "./Admin";
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good Morning";
+  if (hour < 16) return "Good Afternoon";
+  return "Good Evening";
+}
 
 const accountMenuOptions = [
   {
@@ -71,15 +80,21 @@ const accountMenuOptions = [
     bgcolor: "#f4b98b",
     id: "settings",
   },
+  {
+    title: "Admin",
+    icon: <AdminPanelSettingsOutlined />,
+    fgcolor: "#880e4f",
+    bgcolor: "#fe5d5d",
+    id: "admin",
+  },
 ];
 
 export function Account() {
   const isPhone = useMediaQuery("(max-width:800px)");
   const { mode } = useColorScheme();
   const isLight = mode === "light";
-  const [selectedPage, setSelectedPage] = useState<string>(
-    useParams().page || "home",
-  );
+  const { page } = useParams();
+  const selectedPage = page || "home";
 
   const navigate = useNavigate();
 
@@ -98,42 +113,80 @@ export function Account() {
       >
         {isLight ? <ContactWavesLight /> : <ContactWavesDark />}
       </Box>
+      {!isPhone ? (
+        <StyledPaper elevation={0}>
+          <List>
+            {accountMenuOptions.map((item, index) => (
+              <ListItemButton
+                key={index}
+                selected={selectedPage === item.id}
+                sx={{ borderRadius: "5rem", width: "fit-content" }}
+                onClick={() => {
+                  navigate(`/account/${item.id}`);
+                }}
+              >
+                <ListItemAvatar sx={{ position: "relative", left: "-0.5rem" }}>
+                  <Avatar sx={{ bgcolor: item.bgcolor, color: item.fgcolor }}>
+                    {item.icon}
+                  </Avatar>
+                </ListItemAvatar>
+                <StyledListItemText primary={item.title} />
+              </ListItemButton>
+            ))}
+          </List>
+        </StyledPaper>
+      ) : (
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10,
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <BottomNavigation
+            showLabels
+            value={selectedPage}
+            onChange={(_event, newValue) => {
+              navigate(`/account/${newValue}`);
+              window.scrollTo(0, 0);
+            }}
+            sx={{
+              width: "100%",
+              "& .MuiBottomNavigationAction-root": {
+                padding: "0 !important",
+                minWidth: "unset !important",
+                borderRadius: "2rem",
+              },
+            }}
+          >
+            {accountMenuOptions.map((item, index) => (
+              <BottomNavigationAction
+                sx={{
+                  color: "white",
+                  "&.Mui-selected": { color: item.bgcolor },
+                }}
+                key={index}
+                label={item.title.split(" ")[0]}
+                value={item.id}
+                icon={item.icon}
+              />
+            ))}
+          </BottomNavigation>
+        </Box>
+      )}
       <HolderBox disablePadding disableAnimation disableFooter>
-        <Stack direction={isPhone ? "column" : "row"} gap={1} zIndex={0}>
-          {!isPhone && (
-            <StyledPaper elevation={0}>
-              <List>
-                {accountMenuOptions.map((item, index) => (
-                  <ListItemButton
-                    key={index}
-                    selected={selectedPage === item.id}
-                    sx={{ borderRadius: "5rem", width: "fit-content" }}
-                    onClick={() => {
-                      setSelectedPage(item.id);
-                      navigate(`/account/${item.id}`);
-                    }}
-                  >
-                    <ListItemAvatar
-                      sx={{ position: "relative", left: "-0.5rem" }}
-                    >
-                      <Badge
-                        badgeContent={item.id == "links" ? 1 : 0}
-                        color="secondary"
-                        overlap="circular"
-                      >
-                        <Avatar
-                          sx={{ bgcolor: item.bgcolor, color: item.fgcolor }}
-                        >
-                          {item.icon}
-                        </Avatar>
-                      </Badge>
-                    </ListItemAvatar>
-                    <StyledListItemText primary={item.title} />
-                  </ListItemButton>
-                ))}
-              </List>
-            </StyledPaper>
-          )}
+        <Stack
+          direction={isPhone ? "column" : "row"}
+          gap={1}
+          zIndex={0}
+          sx={{ overflowX: "hidden" }}
+        >
+          {!isPhone && <Box sx={{ width: "13rem", flexShrink: 0 }} />}
           <motion.div
             key={selectedPage}
             style={{
@@ -148,12 +201,23 @@ export function Account() {
               ease: [0.05, 0.8, 0.35, 0.99],
             }}
           >
-            <MainBox sx={{ padding: isPhone ? "0" : "1rem" }}>
+            <MainBox
+              sx={{
+                padding: isPhone ? "0" : "1rem",
+                fontSize: isPhone ? "0.9rem" : "1rem",
+              }}
+            >
               {selectedPage === "home" && (
-                <MainStack sx={{ height: "min-content" }}>
+                <MainStack
+                  sx={{
+                    flexDirection: "row",
+                    maxWidth: "60rem",
+                    minHeight: "80vh",
+                    alignContent: "flex-start",
+                  }}
+                >
                   <AccountHeaderBox
                     onclick={() => {
-                      setSelectedPage("settings");
                       navigate("/account/settings");
                     }}
                     avatar={
@@ -165,13 +229,17 @@ export function Account() {
                         }}
                       />
                     }
-                    heading="Guest"
+                    heading={getGreeting() + " Guest!"}
                     description="guest@akashcraft.ca"
                   />
                   <AccountHeaderBox
                     avatar={
                       <CalendarMonthOutlined
-                        sx={{ width: "2rem", height: "2rem", color: "#824222" }}
+                        sx={{
+                          width: "2rem",
+                          height: "2rem",
+                          color: "#824222",
+                        }}
                       />
                     }
                     heading="Next Exam"
@@ -180,137 +248,103 @@ export function Account() {
                   <AccountHeaderBox
                     avatar={
                       <CampaignOutlined
-                        sx={{ width: "2rem", height: "2rem", color: "#824222" }}
+                        sx={{
+                          width: "2rem",
+                          height: "2rem",
+                          color: "#824222",
+                        }}
                       />
                     }
-                    heading="Announcements"
+                    heading="Announcement"
                     description="You are all caught up!"
                     flexGrow={2}
                   />
                   <Stack
                     direction={isPhone ? "column" : "row"}
-                    gap={2}
-                    width={"100%"}
+                    sx={{ width: "100%" }}
                   >
                     <StyledHeaderPaper
                       elevation={0}
                       sx={{
                         flexGrow: 1,
-                        flexShrink: 0,
+                        minWidth: isPhone ? "100%" : "40%",
+                        marginRight: isPhone ? 0 : "0.5rem",
+                        marginBottom: isPhone ? "1rem" : 0,
                         padding: "1rem",
+                        height: "100%",
                       }}
                     >
-                      <h3 style={{ margin: "0" }}>Exam Schedule</h3>
-                      <ExamSchedule />
+                      <h3 style={{ margin: "0 0 1rem 0" }}>Exam Schedule</h3>
+                      <ExamSchedule
+                        onEmpty={() => {
+                          navigate(`/account/exam`);
+                          window.scrollTo(0, 0);
+                        }}
+                      />
                     </StyledHeaderPaper>
                     <StyledHeaderPaper
                       elevation={0}
                       sx={{
                         flexGrow: 1,
-                        flexShrink: 1,
-                        minWidth: "20rem",
+                        minWidth: isPhone ? "100%" : "40%",
+                        marginLeft: isPhone ? 0 : "0.5rem",
+                        marginBottom: isPhone ? "2rem" : 0,
                         padding: "1rem",
+                        height: "100%",
                       }}
                     >
                       <h3 style={{ margin: "0 0 1rem 0" }}>Class Schedule</h3>
-                      <WeekScheduleGrid />
+                      <ClassSchedule
+                        onEmpty={() => {
+                          navigate(`/account/class`);
+                          window.scrollTo(0, 0);
+                        }}
+                      />
                     </StyledHeaderPaper>
                   </Stack>
                 </MainStack>
               )}
               {selectedPage === "exam" && (
-                <MainStack sx={{ height: "min-content" }}>
+                <MainStack sx={{ minHeight: "80vh", maxWidth: "60rem" }}>
                   <StyledHeader>Exam Schedule</StyledHeader>
                 </MainStack>
               )}
               {selectedPage === "class" && (
-                <MainStack sx={{ height: "min-content" }}>
+                <MainStack sx={{ minHeight: "80vh", maxWidth: "60rem" }}>
                   <StyledHeader>Class Schedule</StyledHeader>
                 </MainStack>
               )}
               {selectedPage === "links" && (
-                <MainStack sx={{ height: "min-content" }}>
-                  <StyledHeader>Links</StyledHeader>
+                <MainStack sx={{ minHeight: "80vh", maxWidth: "40rem" }}>
+                  <Links />
                 </MainStack>
               )}
               {selectedPage === "settings" && (
-                <MainStack sx={{ height: "min-content" }}>
-                  <StyledHeader>Settings</StyledHeader>
+                <MainStack sx={{ minHeight: "80vh", maxWidth: "40rem" }}>
+                  <Settings />
+                </MainStack>
+              )}
+              {selectedPage === "admin" && (
+                <MainStack sx={{ minHeight: "80vh", maxWidth: "40rem" }}>
+                  <Admin />
                 </MainStack>
               )}
             </MainBox>
           </motion.div>
-          <br />
-          {isPhone && (
-            <Box
-              sx={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 10,
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-              }}
-            >
-              <BottomNavigation
-                showLabels
-                value={selectedPage}
-                onChange={(_event, newValue) => {
-                  setSelectedPage(newValue);
-                  navigate(`/account/${newValue}`);
-                  window.scrollTo(0, 0);
-                }}
-                sx={{
-                  width: "100%",
-                  "& .MuiBottomNavigationAction-root": {
-                    padding: "0 !important",
-                    minWidth: "unset !important",
-                    borderRadius: "2rem",
-                  },
-                }}
-              >
-                {accountMenuOptions.map((item, index) => (
-                  <BottomNavigationAction
-                    sx={{
-                      color: "white",
-                      "&.Mui-selected": { color: item.bgcolor },
-                    }}
-                    key={index}
-                    label={item.title.split(" ")[0]}
-                    value={item.id}
-                    icon={
-                      <Badge
-                        badgeContent={item.id == "links" ? 1 : 0}
-                        color="secondary"
-                        overlap="circular"
-                        variant="dot"
-                      >
-                        {item.icon}
-                      </Badge>
-                    }
-                  />
-                ))}
-              </BottomNavigation>
-            </Box>
-          )}
         </Stack>
       </HolderBox>
     </>
   );
 }
 
-const StyledHeader = styled("h2")({
+export const StyledHeader = styled("h2")({
   fontFamily: "Segoe UI",
-  margin: "0 0 1rem 0.5rem",
+  margin: "0 0 0rem 0.5rem",
 });
 
 const MainStack = styled(Stack)`
-  max-width: 60rem;
   width: 100%;
   font-family: "Segoe UI";
-  flex-direction: row;
   gap: 1rem;
   height: "fit-content";
   flex-wrap: wrap;
@@ -325,21 +359,22 @@ const MainBox = styled(Box)({
 
 const StyledPaper = styled(Paper)({
   padding: "0 1rem",
-  position: "sticky",
+  position: "fixed",
   width: "17rem",
   top: "5.5rem",
+  left: "0.65rem",
   backgroundColor: "transparent",
-  margin: "0.25rem 0",
   height: "min-content",
 });
 
-const StyledListItemText = styled(ListItemText)({
+export const StyledListItemText = styled(ListItemText)({
   "& .MuiListItemText-primary": {
     fontFamily: "Segoe UI",
     fontWeight: "bold",
   },
   "& .MuiListItemText-secondary": {
     fontFamily: "Segoe UI",
+    color: "var(--mui-palette-text-primary)",
   },
   position: "relative",
   left: "-0.75rem",

@@ -60,4 +60,5 @@ export default AccountHeaderBox;
 export const StyledHeaderPaper = styled(Paper)({
   backgroundColor: "var(--mui-palette-background-light2)",
   borderRadius: "1rem",
+  height: "fit-content",
 });

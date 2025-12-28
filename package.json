@@ -2,7 +2,7 @@
   "name": "akashcraft-new",
   "homepage": "https://akashcraft.github.io/akashcraft/",
   "private": true,
-  "version": "26.1.16",
+  "version": "26.1.17",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -24,6 +24,8 @@
     "@fullcalendar/timegrid": "^6.1.20",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
+    "@mui/x-date-pickers": "^8.23.0",
+    "dayjs": "^1.11.19",
     "firebase": "^12.5.0",
     "framer-motion": "^12.23.24",
     "lottie-web": "^5.13.0",

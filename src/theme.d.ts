@@ -8,11 +8,14 @@ declare module "@mui/material/styles" {
     macosfinder2?: string;
     light?: string;
     light2?: string;
+    button?: string;
+    buttondark?: string;
   }
 
   interface TypeText {
     muted?: string;
     light?: string;
+    light2?: string;
     dark?: string;
   }
 }

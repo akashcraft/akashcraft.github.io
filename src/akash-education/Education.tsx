@@ -85,8 +85,17 @@ function Education() {
             }}
           >
             <StyledButton
-              variant="outlined"
-              sx={{ margin: "0.25rem 0.5rem", marginLeft: "0rem" }}
+              variant="contained"
+              sx={{
+                margin: "0.25rem 0.5rem",
+                marginLeft: "0rem",
+                backgroundColor: "var(--mui-palette-background-buttondark)",
+                "&:hover": {
+                  backgroundColor: "var(--mui-palette-background-button)",
+                },
+                color: "var(--mui-palette-text-primary)",
+              }}
+              disableElevation
               onClick={handleOpen}
             >
               View All
@@ -95,22 +104,24 @@ function Education() {
               <DialogTitle sx={systemFont}>Scholarships and Awards</DialogTitle>
               <DialogContent>
                 <TableContainer>
-                  <Table>
+                  <Table
+                    sx={{ border: "1px solid var(--mui-palette-text-light2)" }}
+                  >
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={systemFont}>Award</TableCell>
-                        <TableCell sx={systemFont}>Year</TableCell>
+                        <StyledTableHead sx={systemFont}>Award</StyledTableHead>
+                        <StyledTableHead sx={systemFont}>Year</StyledTableHead>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {scholarshipData.map((scholarship, index) => (
                         <TableRow key={index}>
-                          <TableCell sx={systemFont}>
+                          <StyledTableCell sx={systemFont}>
                             {scholarship.title}
-                          </TableCell>
-                          <TableCell sx={systemFont}>
+                          </StyledTableCell>
+                          <StyledTableCell sx={systemFont}>
                             {scholarship.year}
-                          </TableCell>
+                          </StyledTableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -202,6 +213,15 @@ const StyledSkeleton = styled(Skeleton)({
   borderRadius: "1rem",
   margin: "0.25rem 0",
   height: "auto",
+});
+
+const StyledTableHead = styled(TableCell)({
+  fontWeight: "bold",
+  borderColor: "var(--mui-palette-text-light2)",
+});
+
+const StyledTableCell = styled(TableCell)({
+  borderColor: "var(--mui-palette-text-light2)",
 });
 
 export default Education;

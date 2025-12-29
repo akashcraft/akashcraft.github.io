@@ -7,8 +7,9 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyDoAKXQrOtB6EAHNvaiOk98EZNXpreXQDM",
   authDomain: "akashcraft-firebase.firebaseapp.com",
   projectId: "akashcraft-firebase",
@@ -17,19 +18,21 @@ const firebaseConfig = {
   appId: "1:120116375945:web:2589bc98e94d7ff845b158",
 };
 
-export function useGetCount(dbname?: string) {
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth();
+
+export function useGetCount(recordName: string) {
   const [count, setCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const collectionRef = collection(db, dbname || "eyeport");
-    const countRef = doc(collectionRef, "1");
+    const collectionRef = collection(db, "count");
+    const recordRef = doc(collectionRef, recordName);
 
     const unsubscribe = onSnapshot(
-      countRef,
+      recordRef,
       (doc) => {
         if (doc.exists()) {
           const data = doc.data();
@@ -41,27 +44,25 @@ export function useGetCount(dbname?: string) {
           setLoading(false);
         }
       },
-      (err) => {
-        console.error("Firebase Error:", err);
+      (error) => {
+        console.error(error);
         setError(true);
         setLoading(false);
       },
     );
 
     return () => unsubscribe();
-  }, [dbname]);
+  }, [recordName]);
 
   return { count, loading, error };
 }
-
-export async function updateCount(number: number, dbname?: string) {
-  const app = initializeApp(firebaseConfig);
+export async function updateCount(number: number, recordName: string) {
   const db = getFirestore(app);
-  const collectionRef = collection(db, dbname || "eyeport");
-  const countRef = doc(collectionRef, "1");
+  const collectionRef = collection(db, "count");
+  const recordRef = doc(collectionRef, recordName);
 
   try {
-    await setDoc(countRef, {
+    await setDoc(recordRef, {
       count: number,
     });
   } catch (error) {
@@ -69,20 +70,33 @@ export async function updateCount(number: number, dbname?: string) {
   }
 }
 
-export async function addContact(contact: {
-  name?: string;
-  email?: string;
-  message?: string;
-}) {
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const collectionRef = collection(db, "contacts");
-  const contactRef = doc(collectionRef);
+export const useContactSubmit = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  try {
-    await setDoc(contactRef, contact);
-  } catch (error) {
-    console.error("Error adding contact:", error);
-    throw new Error("Failed to add contact");
-  }
-}
+  const submitContactForm = async (data: {
+    name?: string;
+    email?: string;
+    message?: string;
+  }) => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    try {
+      const db = getFirestore(app);
+      const collectionRef = collection(db, "contacts");
+      const contactRef = doc(collectionRef);
+      await setDoc(contactRef, data);
+      setIsSuccess(true);
+    } catch (error) {
+      setIsError(true);
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return { isSubmitting, isError, isSuccess, submitContactForm };
+};

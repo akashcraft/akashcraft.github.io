@@ -3,6 +3,7 @@ import {
   CampaignOutlined,
   FlightOutlined,
   LinkOutlined,
+  PersonOutlined,
   ReplayOutlined,
 } from "@mui/icons-material";
 import {
@@ -88,9 +89,9 @@ export default function Admin() {
               onClick={() => {
                 dispatch({
                   page: "form-entry",
-                  header: "Announcement",
+                  header: "Private Announcement",
                   description:
-                    "This is the announcement displayed on the home page when logged in. Leave it blank to remove any announcements.",
+                    "This is the announcement displayed on the account page when logged in. Leave it blank to remove any announcements.",
                   type: "text",
                   defaultValue: "",
                 });
@@ -99,7 +100,49 @@ export default function Admin() {
               <ListItemIcon>
                 <CampaignOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="Announcement" secondary="" />
+              <StyledListItemText
+                primary="Private Announcement"
+                secondary="Not Set"
+              />
+            </StyledListItemButton>
+            <StyledListItemButton
+              sx={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
+              onClick={() => {
+                dispatch({
+                  page: "form-entry",
+                  header: "Public Announcement",
+                  description:
+                    "This is the announcement displayed on the landing page regardless of login status. Leave it blank to remove any announcements.",
+                  type: "text",
+                  defaultValue: "",
+                });
+              }}
+            >
+              <ListItemIcon>
+                <CampaignOutlined sx={IconStyle} />
+              </ListItemIcon>
+              <StyledListItemText
+                primary="Public Announcement"
+                secondary="Not Set"
+              />
+            </StyledListItemButton>
+            <StyledListItemButton
+              sx={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
+              onClick={() => {
+                dispatch({
+                  page: "form-entry",
+                  header: "About Me",
+                  description:
+                    "This is the text displayed under the About Me section on the landing page. Leave it blank to remove the section.",
+                  type: "text",
+                  defaultValue: "",
+                });
+              }}
+            >
+              <ListItemIcon>
+                <PersonOutlined sx={IconStyle} />
+              </ListItemIcon>
+              <StyledListItemText primary="About Me" secondary="Not Set" />
             </StyledListItemButton>
             <StyledListItemButton
               onClick={() => {
@@ -244,11 +287,7 @@ export default function Admin() {
                   padding: "0.3rem 1.4rem 0.4rem 1.4rem",
                 }}
               >
-                {state.entryHeader == "Delete Account"
-                  ? "Delete"
-                  : state.entryType == "password"
-                    ? "Change"
-                    : "Save"}
+                {state.entryHeader == "Links" ? "Add" : "Save"}
               </Button>
             </Stack>
           </Box>

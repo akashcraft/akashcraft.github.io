@@ -45,7 +45,7 @@ import { useEffect, useReducer } from "react";
 import { motion } from "framer-motion";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { StyledDatePicker } from "./Pickers";
 
 const accentColours = [
   "Red",
@@ -236,31 +236,7 @@ export default function Settings() {
                     />
                   </Avatar>
                 </Box>
-                <Stack direction="row">
-                  {["#ff0000", "#ffa500", "#ffff00", "#008000", "#0000ff"].map(
-                    (colour, index) => (
-                      <Avatar
-                        key={index}
-                        sx={{
-                          bgcolor: `${colour}44`,
-                          width: "3rem",
-                          height: "3rem",
-                          margin: "0.25rem",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <AccountCircleOutlined
-                          sx={{
-                            width: "2rem",
-                            height: "2rem",
-                            color: `${colour}dd`,
-                          }}
-                        />
-                      </Avatar>
-                    ),
-                  )}
-                </Stack>
-                <Stack width="100%" gap={1} alignItems="center">
+                <Stack width="100%" gap={1} alignItems="center" mt={2}>
                   <PopupButton
                     sx={{
                       backgroundColor:
@@ -725,76 +701,16 @@ export default function Settings() {
               />
             )}
             {state.entryType == "date" && (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  label="Birthday"
-                  slotProps={{
-                    openPickerButton: {
-                      sx: {
-                        color: "var(--mui-palette-text-primary)",
-                      },
-                    },
-                    popper: {
-                      sx: {
-                        "& *": {
-                          color: "white",
-                        },
-
-                        "& .MuiPickersDay-root": {
-                          color: "white",
-                        },
-
-                        "& .MuiPickersDay-root.Mui-selected": {
-                          backgroundColor: "white",
-                          color: "#824222",
-                        },
-
-                        "& .MuiPickersDay-root.MuiPickersDay-today": {
-                          borderColor: "white",
-                        },
-
-                        "& .MuiPickersCalendarHeader-label": {
-                          color: "white",
-                        },
-
-                        "& .MuiPickersArrowSwitcher-button": {
-                          color: "white",
-                        },
-
-                        "& .MuiDayCalendar-weekDayLabel": {
-                          color: "white",
-                        },
-                      },
-                    },
-                    textField: {
-                      sx: {
-                        margin: isPhone ? "2rem 0.5rem" : "1rem",
-                        width: isPhone
-                          ? "calc(100% - 1rem)"
-                          : "calc(100% - 2rem)",
-                        "& input": {
-                          color: "var(--mui-palette-text-primary)",
-                          fontFamily: "Segoe UI",
-                        },
-                        "& label": {
-                          color: "rgba(255,255,255,0.6)",
-                          fontFamily: "Segoe UI",
-                        },
-                        "& fieldset": {
-                          borderColor: "rgba(255,255,255,0.4)",
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "rgba(255,255,255,0.7)",
-                        },
-                        "& .Mui-focused fieldset": {
-                          borderColor: "#824222",
-                        },
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
+              <Box
+                sx={{
+                  width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
+                  margin: isPhone ? "2rem 0.5rem" : "2rem 1rem",
+                }}
+              >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <StyledDatePicker format="DD/MM/YYYY" label="Birthday" />
+                </LocalizationProvider>
+              </Box>
             )}
             {state.entryType == "password" && (
               <>
@@ -816,6 +732,9 @@ export default function Settings() {
                         letterSpacing: state.passwordStates?.oldPassword
                           ? "normal"
                           : "0.15rem !important",
+                      },
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderRadius: "1rem",
                       },
                     }}
                     endAdornment={
@@ -858,6 +777,9 @@ export default function Settings() {
                         letterSpacing: state.passwordStates?.newPassword
                           ? "normal"
                           : "0.15rem !important",
+                      },
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderRadius: "1rem",
                       },
                     }}
                     endAdornment={
@@ -904,6 +826,9 @@ export default function Settings() {
                         letterSpacing: state.passwordStates?.confirmPassword
                           ? "normal"
                           : "0.15rem !important",
+                      },
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderRadius: "1rem",
                       },
                     }}
                     endAdornment={
@@ -1027,7 +952,7 @@ const IconStyle = {
   top: "0.1rem",
 };
 
-const SingleTextField = styled(TextField)({
+export const SingleTextField = styled(TextField)({
   "& .MuiInputBase-input": {
     color: "var(--mui-palette-text-primary)",
     fontFamily: "Segoe UI",
@@ -1037,6 +962,7 @@ const SingleTextField = styled(TextField)({
     fontFamily: "Segoe UI",
   },
   "& .MuiOutlinedInput-notchedOutline": {
+    borderRadius: "1rem",
     borderColor: "rgba(255, 255, 255, 0.4)",
   },
   "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -1044,7 +970,7 @@ const SingleTextField = styled(TextField)({
   },
 });
 
-const StyledFormControl = styled(FormControl)({
+export const StyledFormControl = styled(FormControl)({
   "& .MuiInputBase-input": {
     color: "var(--mui-palette-text-primary)",
     fontFamily: "Segoe UI",
@@ -1069,7 +995,7 @@ const StyledColourChip = styled(Chip)({
   },
 });
 
-const StyledDropChip = styled(Chip)({
+export const StyledDropChip = styled(Chip)({
   ".MuiChip-label": {
     fontFamily: "Segoe UI",
   },
@@ -1077,6 +1003,7 @@ const StyledDropChip = styled(Chip)({
 
 const StyledPopupBox = styled(Box)({
   position: "absolute",
+  width: "18rem",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -1092,5 +1019,5 @@ const PopupButton = styled(Button)({
   padding: "0.5rem 1.5rem",
   fontSize: "1rem",
   gap: 5,
-  width: "95%",
+  width: "90%",
 });

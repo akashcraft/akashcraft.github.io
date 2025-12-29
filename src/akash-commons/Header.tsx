@@ -31,6 +31,7 @@ import {
   Explore,
   Mail,
   ArrowDropDown,
+  ExitToApp,
 } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -334,8 +335,14 @@ function Header() {
               />
               <StyledChip
                 color="secondary"
-                icon={<Person sx={ChipIconWithTextStyle} />}
-                label="Login"
+                icon={
+                  breadcrumbLabel === "Account" ? (
+                    <ExitToApp sx={ChipIconWithTextStyle} />
+                  ) : (
+                    <Person sx={ChipIconWithTextStyle} />
+                  )
+                }
+                label={breadcrumbLabel === "Account" ? "Exit" : "Login"}
                 onClick={() => {
                   navigate("/login");
                 }}
@@ -420,8 +427,14 @@ function Header() {
                       onClick={toggleThemeMode}
                     />
                     <StyledChipDrawer
-                      icon={<Person sx={ChipIconStyle} />}
-                      label="Login"
+                      icon={
+                        breadcrumbLabel === "Account" ? (
+                          <ExitToApp sx={ChipIconStyle} />
+                        ) : (
+                          <Person sx={ChipIconStyle} />
+                        )
+                      }
+                      label={breadcrumbLabel == "Account" ? "Exit" : "Login"}
                       onClick={() => {
                         navigate("/login");
                       }}

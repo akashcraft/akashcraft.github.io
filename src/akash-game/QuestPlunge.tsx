@@ -114,8 +114,7 @@ function QuestPlunge() {
             />
           ) : error ? (
             <p style={{ marginBottom: "1.5rem" }}>
-              Unable to fetch download count - Something went wrong with the
-              server
+              Unable to fetch download count
             </p>
           ) : (
             <p

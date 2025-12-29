@@ -39,7 +39,7 @@ export default function ClassSchedule({ onEmpty }: { onEmpty: () => void }) {
   return events.length === 0 ? (
     <EmptyState
       header="Get Started"
-      height="calc(100% - 2.75rem)"
+      height="100%"
       minHeight="20rem"
       icon={
         <AddCircleOutlined
@@ -78,7 +78,7 @@ export default function ClassSchedule({ onEmpty }: { onEmpty: () => void }) {
         minute: "2-digit",
         hour12: false,
       }}
-      dayHeaderFormat={{ weekday: isPhone ? "narrow" : "long" }}
+      dayHeaderFormat={{ weekday: isPhone ? "narrow" : "short" }}
       events={events}
     />
   );

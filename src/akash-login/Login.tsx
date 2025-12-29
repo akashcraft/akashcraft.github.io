@@ -35,10 +35,10 @@ import {
   Apple,
   AccountCircleOutlined,
   CalendarMonthOutlined,
-  LinkOutlined,
   BrushOutlined,
   VisibilityOff,
   Visibility,
+  MoneyOffOutlined,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import {
@@ -70,13 +70,13 @@ const slideContent = [
     icon: <CalendarMonthOutlined />,
   },
   {
-    title: "Forms and DLC",
-    description: "Access member forms and other DLC content seamlessly",
-    icon: <LinkOutlined />,
+    title: "No Ads and No Frills",
+    description: "Access member links and other DLC content at no cost ad-free",
+    icon: <MoneyOffOutlined />,
   },
   {
     title: "Extensive Personalization",
-    description: "Make it your own with themes, colors, and layouts",
+    description: "Make it your own with themes and wallpapers",
     icon: <BrushOutlined />,
   },
 ];

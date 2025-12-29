@@ -26,7 +26,7 @@ import {
 } from "@mui/icons-material";
 import { openGitHub, openLinkedIn, openYouTube } from "../akash-commons/Utils";
 import { useNavigate } from "react-router";
-import { useContactSubmit } from "../akash-commons/Hooks";
+import { useContactSubmit } from "../akash-commons/firebaseHooks";
 import { ContactWavesDark, ContactWavesLight } from "./ContactWaves";
 
 const sanitize = (value: string): string => {

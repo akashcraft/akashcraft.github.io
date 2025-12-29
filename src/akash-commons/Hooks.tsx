@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { addContact } from "./firebaseHooks";
 
 export const useGetImages = (images: string[]) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -43,32 +42,4 @@ export const useGetImages = (images: string[]) => {
   }, [images]);
 
   return !imagesLoaded;
-};
-
-export const useContactSubmit = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  const submitContactForm = async (data: {
-    name?: string;
-    email?: string;
-    message?: string;
-  }) => {
-    setIsSubmitting(true);
-    setIsError(false);
-    setIsSuccess(false);
-
-    try {
-      await addContact(data);
-      setIsSuccess(true);
-    } catch (error) {
-      setIsError(true);
-      console.error("Contact form submission error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return { isSubmitting, isError, isSuccess, submitContactForm };
 };

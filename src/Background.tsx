@@ -10,6 +10,11 @@ import img2 from "./assets/img-parallax/img2.png";
 import img3 from "./assets/img-parallax/img3.png";
 import img4 from "./assets/img-parallax/img4.png";
 import img5 from "./assets/img-parallax/img5.png";
+import winter1 from "./assets/img-parallax/winter1.png";
+import winter2 from "./assets/img-parallax/winter2.png";
+import winter3 from "./assets/img-parallax/winter3.png";
+import winter4 from "./assets/img-parallax/winter4.png";
+import winter5 from "./assets/img-parallax/winter5.png";
 import snow from "./assets/img-parallax/snow.gif";
 import fog from "./assets/img-parallax/fog.png";
 import sun from "./assets/img-parallax/sun.svg";
@@ -22,7 +27,23 @@ import { motion } from "framer-motion";
 import "./styles/Image.css";
 import { ArrowCircleDownOutlined, SwipeUpOutlined } from "@mui/icons-material";
 
-const images = [img1, img2, img3, img4, img5, fog, sun, moon, snow, nightsky];
+const images = [
+  img1,
+  img2,
+  img3,
+  img4,
+  img5,
+  fog,
+  sun,
+  moon,
+  snow,
+  nightsky,
+  winter1,
+  winter2,
+  winter3,
+  winter4,
+  winter5,
+];
 export default function Background() {
   const isLoading = useGetImages(images);
   const isPhone = useMediaQuery("(max-width:600px)");
@@ -45,7 +66,7 @@ export default function Background() {
   }, []);
 
   const month = new Date().getMonth();
-  const isWinter = month === 11 || month === 0;
+  const isWinter = month === 10 || month === 11 || month === 0 || month === 1;
 
   return (
     <>
@@ -88,7 +109,7 @@ export default function Background() {
             filter: isLight ? "brightness(1)" : "brightness(0.2)",
           }}
           transition={{ duration: 0.4 }}
-          src={images[4]}
+          src={isWinter ? images[14] : images[4]}
           className="parallax-img"
           data-speed="20"
           style={{
@@ -105,7 +126,7 @@ export default function Background() {
             position: "absolute",
             left: "calc(50% - 2rem)",
             top: isPhone ? "88%" : "65%",
-            color: "var(--mui-palette-primary-main)",
+            color: isWinter ? "lightblue" : "var(--mui-palette-primary-main)",
             zIndex: 0,
           }}
         >
@@ -145,7 +166,7 @@ export default function Background() {
         <motion.img
           animate={{ filter: isLight ? "brightness(1)" : "brightness(0.2)" }}
           transition={{ duration: 0.4 }}
-          src={images[3]}
+          src={isWinter ? images[13] : images[3]}
           className="parallax-img"
           data-speed="5"
           style={{
@@ -157,7 +178,7 @@ export default function Background() {
         <motion.img
           animate={{ filter: isLight ? "brightness(1)" : "brightness(0.2)" }}
           transition={{ duration: 0.4 }}
-          src={images[2]}
+          src={isWinter ? images[12] : images[2]}
           className="parallax-img"
           data-speed="3"
           style={{
@@ -169,13 +190,13 @@ export default function Background() {
         <motion.img
           animate={{ filter: isLight ? "brightness(1)" : "brightness(0.2)" }}
           transition={{ duration: 0.4 }}
-          src={images[1]}
+          src={isWinter ? images[11] : images[1]}
           className="parallax-img"
           data-speed="2"
           style={{
             ...imgStyle,
             zIndex: -3,
-            display: isPhone ? "none" : "block",
+            display: isPhone || isWinter ? "none" : "block",
             top: "35%",
           }}
         />
@@ -230,7 +251,7 @@ export default function Background() {
         <motion.img
           animate={{ opacity: isLight ? 1 : 0 }}
           transition={{ duration: 0.4 }}
-          src={images[0]}
+          src={isWinter ? images[10] : images[0]}
           className="parallax-img"
           data-speed="1"
           style={{
@@ -239,7 +260,7 @@ export default function Background() {
           }}
         />
         <StyledImg
-          src={images[images.length - 1]}
+          src={images[9]}
           className="parallax-img"
           data-speed="1"
           sx={{

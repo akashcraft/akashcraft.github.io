@@ -45,7 +45,7 @@ function EyePort() {
     }
   }
 
-  const { count, loading, error } = useGetCount();
+  const { count, loading, error } = useGetCount("eyeport");
 
   return (
     <HolderBox isWide>
@@ -124,8 +124,7 @@ function EyePort() {
             />
           ) : error ? (
             <p style={{ marginBottom: "1.5rem" }}>
-              Unable to fetch download count - Something went wrong with the
-              server
+              Unable to fetch download count
             </p>
           ) : (
             <p
@@ -155,7 +154,7 @@ function EyePort() {
               }}
               size="medium"
               onClick={() => {
-                updateCount(count + 1);
+                updateCount(count + 1, "eyeport");
                 downloadEyePort();
               }}
               color="secondary"
@@ -340,7 +339,7 @@ function EyePort() {
                   "_blank",
                 )
               }
-              label="Download DynaFRAM"
+              label="Download"
               icon={<Download sx={{ color: "white !important" }} />}
             />
             <Chip

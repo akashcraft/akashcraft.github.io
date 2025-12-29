@@ -21,7 +21,7 @@ export default function ExamSchedule({ onEmpty }: { onEmpty: () => void }) {
   return rows.length === 0 ? (
     <EmptyState
       header="No Exams"
-      height="calc(100% - 2.75rem)"
+      height="100%"
       minHeight="20rem"
       icon={
         <CelebrationOutlined

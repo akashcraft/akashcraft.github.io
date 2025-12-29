@@ -36,6 +36,8 @@ import Settings from "./Settings";
 import { motion } from "framer-motion";
 import { Links } from "./Links";
 import Admin from "./Admin";
+import { Exam } from "./Exam";
+import { Class } from "./Class";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -275,12 +277,14 @@ export function Account() {
                       }}
                     >
                       <h3 style={{ margin: "0 0 1rem 0" }}>Exam Schedule</h3>
-                      <ExamSchedule
-                        onEmpty={() => {
-                          navigate(`/account/exam`);
-                          window.scrollTo(0, 0);
-                        }}
-                      />
+                      <Box sx={{ height: "calc(100% - 2.75rem)" }}>
+                        <ExamSchedule
+                          onEmpty={() => {
+                            navigate(`/account/exam`);
+                            window.scrollTo(0, 0);
+                          }}
+                        />
+                      </Box>
                     </StyledHeaderPaper>
                     <StyledHeaderPaper
                       elevation={0}
@@ -294,24 +298,26 @@ export function Account() {
                       }}
                     >
                       <h3 style={{ margin: "0 0 1rem 0" }}>Class Schedule</h3>
-                      <ClassSchedule
-                        onEmpty={() => {
-                          navigate(`/account/class`);
-                          window.scrollTo(0, 0);
-                        }}
-                      />
+                      <Box sx={{ height: "calc(100% - 2.75rem)" }}>
+                        <ClassSchedule
+                          onEmpty={() => {
+                            navigate(`/account/class`);
+                            window.scrollTo(0, 0);
+                          }}
+                        />
+                      </Box>
                     </StyledHeaderPaper>
                   </Stack>
                 </MainStack>
               )}
               {selectedPage === "exam" && (
                 <MainStack sx={{ minHeight: "80vh", maxWidth: "60rem" }}>
-                  <StyledHeader>Exam Schedule</StyledHeader>
+                  <Exam />
                 </MainStack>
               )}
               {selectedPage === "class" && (
                 <MainStack sx={{ minHeight: "80vh", maxWidth: "60rem" }}>
-                  <StyledHeader>Class Schedule</StyledHeader>
+                  <Class />
                 </MainStack>
               )}
               {selectedPage === "links" && (

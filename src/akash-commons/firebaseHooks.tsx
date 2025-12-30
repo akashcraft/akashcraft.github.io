@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyDoAKXQrOtB6EAHNvaiOk98EZNXpreXQDM",
@@ -29,6 +30,8 @@ export const db = initializeFirestore(app, {
 });
 
 export const auth = getAuth();
+
+export const storage = getStorage(app);
 
 export function useGetCount(recordName: string) {
   const [count, setCount] = useState<number>(0);

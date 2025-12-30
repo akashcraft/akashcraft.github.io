@@ -10,16 +10,26 @@ import {
   reauthenticateWithPopup,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  updatePassword,
 } from "firebase/auth";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { FirebaseError } from "firebase/app";
 import { useEffect, useState } from "react";
-import { auth, db } from "../akash-commons/firebaseHooks";
+import { auth, db, storage } from "../akash-commons/firebaseHooks";
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
+  getDocs,
   setDoc,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 
 export function useLoginSubmit() {
@@ -277,7 +287,6 @@ export function useSettingsSubmit() {
 
     try {
       if (provider === "email") {
-        console.log("Reauthenticating with email and password");
         const credential = EmailAuthProvider.credential(email, password ?? "");
         await reauthenticateWithCredential(currentUser!, credential);
       }
@@ -300,17 +309,39 @@ export function useSettingsSubmit() {
           await reauthenticateWithPopup(currentUser!, providerInstance);
           await deleteUserAccount(uid, email, provider);
         } else {
-          if (password) {
-            const credential = EmailAuthProvider.credential(email, password);
-            await reauthenticateWithCredential(currentUser!, credential);
-            await deleteUserAccount(uid, email, provider);
-          } else {
-            setIsError(true);
-            setErrorMessage("Password is required for re-authentication.");
-            setIsSubmitting(false);
-            return;
-          }
+          setIsError(true);
         }
+      } else if ((error as FirebaseError).code === "auth/invalid-credential") {
+        setErrorMessage("Invalid Credentials");
+        setIsError(true);
+      } else {
+        setIsError(true);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const changeUserPassword = async (
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+  ) => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    const currentUser = auth.currentUser;
+
+    try {
+      const credential = EmailAuthProvider.credential(email, oldPassword ?? "");
+      await reauthenticateWithCredential(currentUser!, credential);
+      await updatePassword(currentUser!, newPassword);
+      setIsSuccess(true);
+    } catch (error) {
+      if ((error as FirebaseError).code === "auth/invalid-credential") {
+        setErrorMessage("Invalid Credentials");
+        setIsError(true);
       } else {
         setIsError(true);
       }
@@ -326,5 +357,209 @@ export function useSettingsSubmit() {
     errorMessage,
     updateUserSetting,
     deleteUserAccount,
+    changeUserPassword,
+  };
+}
+
+export function usePhotoUpload() {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const uploadPhoto = async (uid: string, file: File) => {
+    setIsUploading(true);
+    setUploadError(null);
+
+    // 1. Create storage reference
+    const storageRef = ref(storage, `profile_photos/${uid}`);
+
+    try {
+      // 2. Upload the file to Storage
+      const snapshot = await uploadBytes(storageRef, file);
+
+      // 3. Get the public download URL
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // 4. Update the photo field in Firestore
+      const userDocRef = doc(db, "user", uid);
+      await updateDoc(userDocRef, {
+        photo: downloadURL,
+      });
+
+      return downloadURL;
+    } catch (error) {
+      console.error(error);
+      setUploadError((error as FirebaseError).message);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const deletePhoto = async (uid: string) => {
+    setIsUploading(true);
+    const storageRef = ref(storage, `profile_photos/${uid}`);
+    const userDocRef = doc(db, "user", uid);
+
+    try {
+      // 1. Delete from Storage
+      await deleteObject(storageRef);
+
+      // 2. Clear the field in Firestore
+      await updateDoc(userDocRef, {
+        photo: "",
+      });
+    } catch (error) {
+      // If the file doesn't exist in storage, we should still clear Firestore
+      if ((error as FirebaseError).code === "storage/object-not-found") {
+        await updateDoc(userDocRef, { photo: "" });
+      } else {
+        setUploadError((error as FirebaseError).message);
+      }
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return { uploadPhoto, deletePhoto, isUploading, uploadError };
+}
+
+export function useAdminSettingsSubmit() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (isSuccess || isError) {
+      const timer = setTimeout(() => {
+        setIsSuccess(false);
+        setIsError(false);
+        setErrorMessage("");
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess, isError]);
+
+  const updateGeneralSetting = async (
+    field: string,
+    value: string,
+    callback?: () => void,
+  ) => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    try {
+      const generalRef = doc(db, "link", "general");
+      await setDoc(generalRef, { [field]: value }, { merge: true });
+
+      setIsSuccess(true);
+      if (callback) callback();
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const addUserLink = async (
+    header: string,
+    description: string,
+    url: string,
+  ) => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    try {
+      const linkCollectionRef = collection(db, "link");
+      await addDoc(linkCollectionRef, {
+        header,
+        description,
+        url,
+      });
+
+      setIsSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resetAirportSchedules = async () => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    try {
+      const airportCollectionRef = collection(db, "airport");
+      const querySnapshot = await getDocs(airportCollectionRef);
+
+      const batch = writeBatch(db);
+      querySnapshot.forEach((document) => {
+        batch.delete(document.ref);
+      });
+
+      await batch.commit();
+      setIsSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    isSubmitting,
+    isError,
+    isSuccess,
+    errorMessage,
+    updateGeneralSetting,
+    addUserLink,
+    resetAirportSchedules,
+  };
+}
+
+export function useAdminLinkDelete() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess || isError) {
+      const timer = setTimeout(() => {
+        setIsSuccess(false);
+        setIsError(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess, isError]);
+
+  const deleteLink = async (uid: string) => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    try {
+      const linkRef = doc(db, "link", uid);
+      await deleteDoc(linkRef);
+      setIsSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    isSubmitting,
+    isError,
+    isSuccess,
+    deleteLink,
   };
 }

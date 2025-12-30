@@ -2,26 +2,39 @@ import {
   OpenInNewRounded,
   LinkOutlined,
   LinkOffOutlined,
+  Delete,
 } from "@mui/icons-material";
-import { Chip, ListItemButton, ListItemIcon, Stack } from "@mui/material";
+import {
+  Chip,
+  ListItemButton,
+  ListItemIcon,
+  Snackbar,
+  Stack,
+  useMediaQuery,
+} from "@mui/material";
 import { StyledHeader, StyledListItemText } from "./Account";
 import { StyledList, StyledListItemButton } from "./Settings";
 import EmptyState from "./EmptyState";
+import { AccountContext } from "./AccountContext";
+import { useContext, useState } from "react";
+import { useAdminLinkDelete } from "./AuthHooks";
 
-const mockData = [
-  {
-    title: "Feedback Form",
-    secondary: "Tell us how we did and how we can improve this service",
-    link: "https://docs.google.com/forms/d/e/1FAIpQLScsCpxUZM8I7dWFH5wTmmYYZ0605UVmwrxiVUJEkRSkqKYnDw/viewform?usp=send_form",
-  },
-];
+const adminUID = "NBH76id0H9gunlBAxynGWjsSomP2";
 
 export function Links() {
+  const { accountState } = useContext(AccountContext);
+
+  const { isSubmitting, isError, isSuccess, deleteLink } = useAdminLinkDelete();
+
+  const isPhone = useMediaQuery("(max-width:800px)");
+
+  const [selectedUID, setSelectedUID] = useState<string>("");
+
   return (
     <>
       <Stack direction="row" gap={1} alignItems="center">
         <StyledHeader>Links</StyledHeader>
-        {mockData.length > 0 && (
+        {accountState.links?.length > 0 && (
           <Chip
             sx={{
               fontFamily: "Segoe UI",
@@ -30,11 +43,11 @@ export function Links() {
               position: "relative",
               top: "0.1rem",
             }}
-            label={mockData.length}
+            label={accountState.links.length}
           />
         )}
       </Stack>
-      {mockData.length === 0 ? (
+      {accountState.links?.length === 0 ? (
         <EmptyState
           header="No links available"
           height="70dvh"
@@ -49,43 +62,91 @@ export function Links() {
         />
       ) : (
         <StyledList>
-          {mockData.map((item, index) => (
+          {accountState.links?.map((item, index) => (
             <StyledListItemButton
+              disabled={isSubmitting && selectedUID === item.uid}
               key={index}
               sx={{
                 borderTopLeftRadius: index === 0 ? "1rem" : 0,
                 borderTopRightRadius: index === 0 ? "1rem" : 0,
                 borderBottomLeftRadius:
-                  index === mockData.length - 1 ? "1rem" : 0,
+                  index === accountState.links.length - 1 ? "1rem" : 0,
                 borderBottomRightRadius:
-                  index === mockData.length - 1 ? "1rem" : 0,
-                borderBottom: index === mockData.length - 1 ? "none" : "",
+                  index === accountState.links.length - 1 ? "1rem" : 0,
+                borderBottom:
+                  index === accountState.links.length - 1 ? "none" : "",
               }}
               onClick={() => {
-                window.open(item.link, "_blank");
+                window.open(item.url, "_blank");
               }}
             >
               <ListItemIcon>
                 <LinkOutlined sx={IconStyle} />
               </ListItemIcon>
               <StyledListItemText
-                primary={item.title}
-                secondary={item.secondary}
+                primary={item.header}
+                secondary={item.description}
               />
-              <ListItemButton
-                disableTouchRipple
-                disableRipple
-                sx={{
-                  padding: 0,
-                  display: "contents",
-                }}
-              >
-                <OpenInNewRounded sx={{ ...IconStyle, marginRight: "1rem" }} />
-              </ListItemButton>
+              {accountState.userDetails?.uid === adminUID ? (
+                <ListItemButton
+                  disableTouchRipple
+                  disableRipple
+                  sx={{
+                    padding: 0,
+                    display: "contents",
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setSelectedUID(item.uid || "");
+                    deleteLink(item.uid || "");
+                  }}
+                >
+                  <Delete
+                    sx={{
+                      ...IconStyle,
+                      marginRight: "1rem",
+                      color: "red !important",
+                    }}
+                  />
+                </ListItemButton>
+              ) : (
+                <ListItemButton
+                  disableTouchRipple
+                  disableRipple
+                  sx={{
+                    padding: 0,
+                    display: "contents",
+                  }}
+                >
+                  <OpenInNewRounded
+                    sx={{ ...IconStyle, marginRight: "1rem" }}
+                  />
+                </ListItemButton>
+              )}
             </StyledListItemButton>
           ))}
         </StyledList>
       )}
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isSuccess}
+        message="Link Delete Successful"
+      />
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isError}
+        message="Error"
+      />
     </>
   );
 }

@@ -50,7 +50,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StyledDatePicker } from "./Pickers";
 import { AccountContext } from "./AccountContext";
 import dayjs from "dayjs";
-import { useSettingsSubmit } from "./AuthHooks";
+import { usePhotoUpload, useSettingsSubmit } from "./AuthHooks";
 
 const sanitize = (value: string): string => {
   return value
@@ -135,6 +135,7 @@ const settingsReducer = (
           newPassword: false,
           confirmPassword: false,
         },
+        entryValue: action.defaultValue ?? "",
       };
     case "set-entry-value":
       return {
@@ -227,6 +228,21 @@ export default function Settings() {
   const { accountState } = useContext(AccountContext);
   const isExternalProvider = accountState.userDetails?.provider !== "email";
 
+  const handlePasswordValidation = () => {
+    const newPass = document.getElementById("new-password") as HTMLInputElement;
+    const confirmPass = document.getElementById(
+      "confirm-password",
+    ) as HTMLInputElement;
+
+    if (newPass && confirmPass) {
+      if (newPass.value !== confirmPass.value) {
+        confirmPass.setCustomValidity("Passwords do not match");
+      } else {
+        confirmPass.setCustomValidity("");
+      }
+    }
+  };
+
   useEffect(() => {
     if (state.selectedPage === "settings-main") {
       window.scrollTo(0, state.settingsScroll || 0);
@@ -239,8 +255,6 @@ export default function Settings() {
     let field = state.entryHeader?.toLowerCase().replace(" ", "") || "";
     if (field === "birthday") {
       field = "dateOfBirth";
-    } else if (field === "deleteaccount") {
-      return;
     }
     updateUserSetting(
       accountState.userDetails.uid || "",
@@ -257,7 +271,11 @@ export default function Settings() {
     errorMessage,
     updateUserSetting,
     deleteUserAccount,
+    changeUserPassword,
   } = useSettingsSubmit();
+
+  const { uploadPhoto, deletePhoto, isUploading, uploadError } =
+    usePhotoUpload();
 
   return (
     <>
@@ -270,7 +288,15 @@ export default function Settings() {
               dispatch({ page: "toggle-profile-dialog" });
             }}
           >
-            <StyledPopupBox sx={{ fontFamily: "Segoe UI" }}>
+            <StyledPopupBox
+              sx={{
+                fontFamily: "Segoe UI",
+                backgroundColor:
+                  accountState.userDetails?.accentColour ?? "grey",
+
+                bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "grey"}, black 20%)`,
+              }}
+            >
               <Stack
                 alignItems="center"
                 justifyContent="center"
@@ -279,48 +305,76 @@ export default function Settings() {
                 mb={2}
               >
                 <h3 style={{ margin: 0 }}>Change Profile Picture</h3>
-                <Box sx={{ position: "relative" }}>
-                  <Avatar
-                    sx={{
-                      bgcolor: "#f4b98b",
-                      width: "8rem",
-                      height: "8rem",
-                    }}
-                  >
-                    <AccountCircleOutlined
+                {!isUploading &&
+                accountState.userDetails?.photo !== undefined ? (
+                  <Box sx={{ position: "relative" }}>
+                    <Avatar
                       sx={{
-                        width: "6rem",
-                        height: "6rem",
-                        color: "#824222",
+                        backgroundColor:
+                          accountState.userDetails?.accentColour ?? "#f4b98b",
+                        bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "#f4b98b"}, white 60%)`,
+                        width: "8rem",
+                        height: "8rem",
                       }}
-                    />
-                  </Avatar>
-                  <Avatar
-                    sx={{
-                      bgcolor: "#f48b8bff",
-                      width: "2rem",
-                      height: "2rem",
-                      position: "absolute",
-                      bottom: 0,
-                      right: 0,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Delete
-                      sx={{
-                        width: "1.5rem",
-                        height: "1.5rem",
-                        color: "#822222ff",
-                      }}
-                    />
-                  </Avatar>
-                </Box>
+                      src={
+                        accountState.userDetails.photo == ""
+                          ? undefined
+                          : accountState.userDetails.photo
+                      }
+                    >
+                      {accountState.userDetails.photo == "" && (
+                        <AccountCircleOutlined
+                          sx={{
+                            width: "6rem",
+                            height: "6rem",
+                            color:
+                              accountState.userDetails?.accentColour ??
+                              "#824222",
+                          }}
+                        />
+                      )}
+                    </Avatar>
+                    {accountState.userDetails.photo !== "" && (
+                      <Avatar
+                        sx={{
+                          bgcolor: "#f48b8b",
+                          width: "2rem",
+                          height: "2rem",
+                          position: "absolute",
+                          bottom: 0,
+                          right: 0,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Delete
+                          sx={{
+                            width: "1.5rem",
+                            height: "1.5rem",
+                            color: "#822222ff",
+                          }}
+                          onClick={() => {
+                            deletePhoto(accountState.userDetails?.uid || "");
+                            sessionStorage.removeItem("account-photo");
+                          }}
+                        />
+                      </Avatar>
+                    )}
+                  </Box>
+                ) : (
+                  <Skeleton
+                    variant="circular"
+                    sx={{ width: "8rem", height: "8rem" }}
+                  />
+                )}
                 <Stack width="100%" gap={1} alignItems="center" mt={2}>
                   <PopupButton
                     sx={{
-                      backgroundColor: "var(--mui-palette-secondary-main)",
+                      backgroundColor:
+                        accountState.userDetails?.accentColour ?? "unset",
+                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
                       "&:hover": {
-                        backgroundColor: "var(--mui-palette-secondary-light)",
+                        backgroundColor:
+                          accountState.userDetails?.accentColour ?? "unset",
                       },
                       color: "var(--mui-palette-text-primary)",
                     }}
@@ -329,12 +383,21 @@ export default function Settings() {
                         sx={{ scale: 1.2, position: "relative", top: "0.1rem" }}
                       />
                     }
+                    loading={isUploading}
                     variant="contained"
                     disableElevation
                     onClick={() => {
                       const input = document.createElement("input");
                       input.type = "file";
                       input.accept = "image/*";
+
+                      input.onchange = async (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file && accountState.userDetails?.uid) {
+                          uploadPhoto(accountState.userDetails.uid, file);
+                        }
+                      };
+
                       input.click();
                     }}
                   >
@@ -342,11 +405,18 @@ export default function Settings() {
                   </PopupButton>
                   <PopupButton
                     variant="text"
+                    sx={{
+                      "&:hover": {
+                        backgroundColor:
+                          accountState.userDetails?.accentColour ?? "unset",
+                      },
+                      color: "var(--mui-palette-text-primary)",
+                    }}
                     onClick={() => {
                       dispatch({ page: "toggle-profile-dialog" });
                     }}
                   >
-                    Cancel
+                    Done
                   </PopupButton>
                 </Stack>
               </Stack>
@@ -375,44 +445,44 @@ export default function Settings() {
                   display: "contents",
                 }}
               >
-                {isExternalProvider ? (
-                  !accountState.userDetails ? (
-                    <Skeleton
-                      variant="circular"
-                      sx={{
-                        width: "3rem",
-                        height: "3rem",
-                        margin: "0.5rem",
-                      }}
-                    />
-                  ) : (
-                    <Avatar
-                      sx={{
-                        width: "3rem",
-                        height: "3rem",
-                        margin: "0.5rem",
-                      }}
-                      imgProps={{ referrerPolicy: "no-referrer" }}
-                      src={accountState.userDetails?.photo}
-                    />
-                  )
-                ) : (
+                {!isUploading &&
+                accountState.userDetails?.photo !== undefined ? (
                   <Avatar
                     sx={{
-                      bgcolor: "#f4b98b",
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0.5rem",
+                      backgroundColor:
+                        accountState.userDetails?.accentColour ?? "#f4b98b",
+                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "#f4b98b"}, white 60%)`,
+                    }}
+                    imgProps={{ referrerPolicy: "no-referrer" }}
+                    src={
+                      accountState.userDetails.photo == ""
+                        ? undefined
+                        : accountState.userDetails.photo
+                    }
+                  >
+                    {accountState.userDetails.photo == "" && (
+                      <AccountCircleOutlined
+                        sx={{
+                          width: "2rem",
+                          height: "2rem",
+                          color:
+                            accountState.userDetails?.accentColour ?? "#824222",
+                        }}
+                      />
+                    )}
+                  </Avatar>
+                ) : (
+                  <Skeleton
+                    variant="circular"
+                    sx={{
                       width: "3rem",
                       height: "3rem",
                       margin: "0.5rem",
                     }}
-                  >
-                    <AccountCircleOutlined
-                      sx={{
-                        width: "2rem",
-                        height: "2rem",
-                        color: "#824222",
-                      }}
-                    />
-                  </Avatar>
+                  />
                 )}
               </ListItemButton>
             </StyledListItemButton>
@@ -544,6 +614,15 @@ export default function Settings() {
                     }}
                   />
                   <Menu
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          "--mui-palette-background-paper":
+                            accountState.userDetails?.accentColour ?? "grey",
+                          bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "grey"}, black 50%)`,
+                        },
+                      },
+                    }}
                     sx={{
                       "& .MuiPaper-root": {
                         borderRadius: "1.25rem",
@@ -604,7 +683,7 @@ export default function Settings() {
                       dispatch({
                         page: "set-dropdown",
                         dropdownField: {
-                          key: 2,
+                          key: 1,
                           element: document.activeElement as HTMLElement,
                         },
                       });
@@ -621,6 +700,15 @@ export default function Settings() {
                     }}
                   />
                   <Menu
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          "--mui-palette-background-paper":
+                            accountState.userDetails?.accentColour ?? "grey",
+                          bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "grey"}, black 50%)`,
+                        },
+                      },
+                    }}
                     sx={{
                       "& .MuiPaper-root": {
                         borderRadius: "1.25rem",
@@ -686,6 +774,15 @@ export default function Settings() {
                     }}
                   />
                   <Menu
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          "--mui-palette-background-paper":
+                            accountState.userDetails?.accentColour ?? "grey",
+                          bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "grey"}, black 50%)`,
+                        },
+                      },
+                    }}
                     sx={{
                       "& .MuiPaper-root": {
                         borderRadius: "1.25rem",
@@ -763,7 +860,7 @@ export default function Settings() {
                 dispatch({
                   page: "form-entry",
                   header: "Delete Account",
-                  description: `Deleting your account will remove all your data from AkashCraft. This action cannot be undone and you will be signed out immediately. Please type 'DELETE' to confirm.${!isExternalProvider && " For security reasons, you will also need to enter your password to proceed."}`,
+                  description: `Deleting your account will remove all your data from AkashCraft. This action cannot be undone and you will be signed out immediately. Please type 'DELETE' to confirm.${!isExternalProvider ? " For security reasons, you will also need to enter your password to proceed." : ""}`,
                   type: "text",
                   defaultValue: "",
                   required: true,
@@ -818,9 +915,8 @@ export default function Settings() {
             >
               {state.entryDescription}
             </p>
-            {(state.entryType == "password" ||
-              state.entryHeader == "Delete Account") && (
-              <>
+            {state.entryType == "password" && (
+              <form id="password-form">
                 <StyledFormControl
                   sx={{
                     margin: isPhone ? "2rem 0.5rem 0 0.5rem" : "1rem",
@@ -828,11 +924,7 @@ export default function Settings() {
                   }}
                   variant="outlined"
                 >
-                  <InputLabel htmlFor="old-password">
-                    {state.entryType == "password"
-                      ? "Old Password"
-                      : "Password"}
-                  </InputLabel>
+                  <InputLabel htmlFor="old-password">Old Password</InputLabel>
                   <OutlinedInput
                     id="old-password"
                     required
@@ -868,122 +960,160 @@ export default function Settings() {
                         </IconButton>
                       </InputAdornment>
                     }
-                    label={
-                      state.entryType == "password"
-                        ? "Old Password"
-                        : "Password"
-                    }
+                    label="Old Password"
                   />
                 </StyledFormControl>
-                {state.entryType == "password" && (
-                  <>
-                    <StyledFormControl
-                      sx={{
-                        margin: isPhone ? "2rem 0.5rem 0 0.5rem" : "1rem",
-                        width: isPhone
-                          ? "calc(100% - 1rem)"
-                          : "calc(100% - 2rem)",
-                      }}
-                      variant="outlined"
-                    >
-                      <InputLabel htmlFor="new-password">
-                        New Password
-                      </InputLabel>
-                      <OutlinedInput
-                        id="new-password"
-                        required
-                        type={
-                          state.passwordStates?.newPassword
-                            ? "text"
-                            : "password"
-                        }
-                        sx={{
-                          ".MuiOutlinedInput-input": {
-                            letterSpacing: state.passwordStates?.newPassword
-                              ? "normal"
-                              : "0.15rem !important",
-                          },
-                          ".MuiOutlinedInput-notchedOutline": {
-                            borderRadius: "1rem",
-                          },
-                        }}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() =>
-                                dispatch({
-                                  page: "toggle-password-visibility",
-                                  passwordField: "newPassword",
-                                })
-                              }
-                              edge="end"
-                            >
-                              {state.passwordStates?.newPassword ? (
-                                <VisibilityOff sx={{ color: "white" }} />
-                              ) : (
-                                <Visibility sx={{ color: "white" }} />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        label="New Password"
-                      />
-                    </StyledFormControl>
-                    <StyledFormControl
-                      sx={{
-                        margin: isPhone ? "2rem 0.5rem" : "1rem",
-                        width: isPhone
-                          ? "calc(100% - 1rem)"
-                          : "calc(100% - 2rem)",
-                      }}
-                      variant="outlined"
-                    >
-                      <InputLabel htmlFor="confirm-password">
-                        Confirm New Password
-                      </InputLabel>
-                      <OutlinedInput
-                        id="confirm-password"
-                        required
-                        type={
-                          state.passwordStates?.confirmPassword
-                            ? "text"
-                            : "password"
-                        }
-                        sx={{
-                          ".MuiOutlinedInput-input": {
-                            letterSpacing: state.passwordStates?.confirmPassword
-                              ? "normal"
-                              : "0.15rem !important",
-                          },
-                          ".MuiOutlinedInput-notchedOutline": {
-                            borderRadius: "1rem",
-                          },
-                        }}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() =>
-                                dispatch({
-                                  page: "toggle-password-visibility",
-                                  passwordField: "confirmPassword",
-                                })
-                              }
-                              edge="end"
-                            >
-                              {state.passwordStates?.confirmPassword ? (
-                                <VisibilityOff sx={{ color: "white" }} />
-                              ) : (
-                                <Visibility sx={{ color: "white" }} />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        label="Confirm New Password"
-                      />
-                    </StyledFormControl>
-                  </>
-                )}
-              </>
+                <StyledFormControl
+                  sx={{
+                    margin: isPhone ? "2rem 0.5rem 0 0.5rem" : "1rem",
+                    width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
+                  }}
+                  variant="outlined"
+                >
+                  <InputLabel htmlFor="new-password">New Password</InputLabel>
+                  <OutlinedInput
+                    id="new-password"
+                    required
+                    onChange={handlePasswordValidation}
+                    inputProps={{ minLength: 8 }}
+                    type={
+                      state.passwordStates?.newPassword ? "text" : "password"
+                    }
+                    sx={{
+                      ".MuiOutlinedInput-input": {
+                        letterSpacing: state.passwordStates?.newPassword
+                          ? "normal"
+                          : "0.15rem !important",
+                      },
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderRadius: "1rem",
+                      },
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            dispatch({
+                              page: "toggle-password-visibility",
+                              passwordField: "newPassword",
+                            })
+                          }
+                          edge="end"
+                        >
+                          {state.passwordStates?.newPassword ? (
+                            <VisibilityOff sx={{ color: "white" }} />
+                          ) : (
+                            <Visibility sx={{ color: "white" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="New Password"
+                  />
+                </StyledFormControl>
+                <StyledFormControl
+                  sx={{
+                    margin: isPhone ? "2rem 0.5rem" : "1rem",
+                    width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
+                  }}
+                  variant="outlined"
+                >
+                  <InputLabel htmlFor="confirm-password">
+                    Confirm New Password
+                  </InputLabel>
+                  <OutlinedInput
+                    id="confirm-password"
+                    required
+                    onChange={handlePasswordValidation}
+                    inputProps={{ minLength: 8 }}
+                    type={
+                      state.passwordStates?.confirmPassword
+                        ? "text"
+                        : "password"
+                    }
+                    sx={{
+                      ".MuiOutlinedInput-input": {
+                        letterSpacing: state.passwordStates?.confirmPassword
+                          ? "normal"
+                          : "0.15rem !important",
+                      },
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderRadius: "1rem",
+                      },
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            dispatch({
+                              page: "toggle-password-visibility",
+                              passwordField: "confirmPassword",
+                            })
+                          }
+                          edge="end"
+                        >
+                          {state.passwordStates?.confirmPassword ? (
+                            <VisibilityOff sx={{ color: "white" }} />
+                          ) : (
+                            <Visibility sx={{ color: "white" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Confirm New Password"
+                  />
+                </StyledFormControl>
+              </form>
+            )}
+            {state.entryHeader == "Delete Account" && !isExternalProvider && (
+              <form id="password-form">
+                <StyledFormControl
+                  sx={{
+                    margin: isPhone ? "2rem 0.5rem 0 0.5rem" : "1rem",
+                    width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
+                  }}
+                  variant="outlined"
+                >
+                  <InputLabel htmlFor="old-password">Password</InputLabel>
+                  <OutlinedInput
+                    id="old-password"
+                    required
+                    type={
+                      state.passwordStates?.oldPassword ? "text" : "password"
+                    }
+                    sx={{
+                      ".MuiOutlinedInput-input": {
+                        letterSpacing: state.passwordStates?.oldPassword
+                          ? "normal"
+                          : "0.15rem !important",
+                      },
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderRadius: "1rem",
+                      },
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            dispatch({
+                              page: "toggle-password-visibility",
+                              passwordField: "oldPassword",
+                            })
+                          }
+                          edge="end"
+                        >
+                          {state.passwordStates?.oldPassword ? (
+                            <VisibilityOff sx={{ color: "white" }} />
+                          ) : (
+                            <Visibility sx={{ color: "white" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                </StyledFormControl>
+              </form>
             )}
             {state.entryType == "text" && (
               <form
@@ -1079,6 +1209,7 @@ export default function Settings() {
                 disableElevation
                 id="submit-button"
                 disabled={
+                  state.entryHeader != "Birthday" &&
                   state.entryValue === (state.entryDefaultValue || "").trim()
                 }
                 loading={isSubmitting}
@@ -1103,9 +1234,12 @@ export default function Settings() {
                     state.entryHeader == "Delete Account"
                   ) {
                     const form = document.getElementById(
+                      "password-form",
+                    ) as HTMLFormElement | null;
+                    const form2 = document.getElementById(
                       "form-entry-form",
                     ) as HTMLFormElement | null;
-                    if (form?.checkValidity()) {
+                    if (form?.checkValidity() && form2?.checkValidity()) {
                       const input = document.getElementById(
                         "old-password",
                       ) as HTMLInputElement | null;
@@ -1117,6 +1251,7 @@ export default function Settings() {
                       );
                     } else {
                       form?.reportValidity();
+                      form2?.reportValidity();
                     }
                   } else if (state.entryType == "date") {
                     const input = document.querySelector(
@@ -1126,6 +1261,31 @@ export default function Settings() {
                       "YYYY-MM-DD",
                     );
                     handleSubmitSettingsForm(formattedDate);
+                  } else if (state.entryType == "password") {
+                    const form = document.getElementById(
+                      "password-form",
+                    ) as HTMLFormElement | null;
+                    if (form?.checkValidity()) {
+                      const oldPasswordInput = document.getElementById(
+                        "old-password",
+                      ) as HTMLInputElement | null;
+                      const newPasswordInput = document.getElementById(
+                        "new-password",
+                      ) as HTMLInputElement | null;
+                      const confirmPasswordInput = document.getElementById(
+                        "confirm-password",
+                      ) as HTMLInputElement | null;
+                      changeUserPassword(
+                        accountState.userDetails?.email || "",
+                        oldPasswordInput?.value || "",
+                        newPasswordInput?.value || "",
+                      );
+                      oldPasswordInput!.value = "";
+                      newPasswordInput!.value = "";
+                      confirmPasswordInput!.value = "";
+                    } else {
+                      form?.reportValidity();
+                    }
                   }
                 }}
                 sx={{
@@ -1159,7 +1319,9 @@ export default function Settings() {
           },
         }}
         open={isSuccess}
-        message="Save Successful"
+        message={`${
+          state.entryType == "password" ? "Password Change" : "Save"
+        } Successful`}
       />
       <Snackbar
         sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
@@ -1168,7 +1330,7 @@ export default function Settings() {
             fontFamily: "Segoe UI",
           },
         }}
-        open={isError}
+        open={isError || uploadError !== null}
         message={errorMessage == "" ? "Error" : `Error - ${errorMessage}`}
       />
     </>
@@ -1275,7 +1437,7 @@ export const StyledDropChip = styled(Chip)({
   },
 });
 
-const StyledPopupBox = styled(Box)({
+export const StyledPopupBox = styled(Box)({
   position: "absolute",
   width: "18rem",
   top: "50%",
@@ -1286,7 +1448,7 @@ const StyledPopupBox = styled(Box)({
   borderRadius: "1rem",
 });
 
-const PopupButton = styled(Button)({
+export const PopupButton = styled(Button)({
   textTransform: "none",
   borderRadius: "3rem",
   fontFamily: "Segoe UI",

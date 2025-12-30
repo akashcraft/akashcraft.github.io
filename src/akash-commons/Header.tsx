@@ -1,4 +1,15 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import coin0 from "../assets/img-account/coin0.png";
+import coin1 from "../assets/img-account/coin1.png";
+import dice0 from "../assets/img-account/dice1.png";
+import dice1 from "../assets/img-account/dice2.png";
+import dice2 from "../assets/img-account/dice3.png";
+import dice3 from "../assets/img-account/dice4.png";
+import dice4 from "../assets/img-account/dice5.png";
+import dice5 from "../assets/img-account/dice6.png";
+import coinSound from "../assets/img-account/coin.mp3";
+import diceSound from "../assets/img-account/dice.mp3";
+
 import "../styles/Image.css";
 
 import {
@@ -18,13 +29,13 @@ import {
   tooltipClasses,
   type TooltipProps,
   IconButton,
+  Modal,
 } from "@mui/material";
 
 import {
   LightMode,
   DarkMode,
   Computer,
-  Person,
   VolunteerActivism,
   Description,
   Menu as MenuIcon,
@@ -32,6 +43,10 @@ import {
   Mail,
   ArrowDropDown,
   ExitToApp,
+  AccountCircle,
+  CasinoOutlined,
+  TollOutlined,
+  ReplayOutlined,
 } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -43,9 +58,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGetImages } from "./Hooks";
 import { headerImages } from "./headerData";
 import { auth } from "./firebaseHooks";
+import { AccountContext } from "../akash-login/AccountContext";
+import { PopupButton, StyledPopupBox } from "../akash-login/Settings";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const headerContainer = document.createElement("div");
+
+const dice = [dice0, dice1, dice2, dice3, dice4, dice5];
+const coin = [coin0, coin1];
+
+// Zero inclusive, Max exclusive
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
 
 function Header() {
   // Theme Menu
@@ -54,6 +79,13 @@ function Header() {
     const stored = localStorage.getItem("mui-mode");
     return stored ? stored.charAt(0).toUpperCase() + stored.slice(1) : "Light";
   });
+
+  const [gameOpen, setGameOpen] = useState<boolean>(false);
+  const [randomNumber, setRandomNumber] = useState<number>(0);
+  const [isCoinSound, setIsCoinSound] = useState<boolean>(false);
+  const [isDiceSound, setIsDiceSound] = useState<boolean>(false);
+
+  const { accountState } = useContext(AccountContext);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -164,6 +196,8 @@ function Header() {
     try {
       await auth.signOut();
       sessionStorage.removeItem("account-name");
+      sessionStorage.removeItem("account-photo");
+      sessionStorage.removeItem("account-game");
     } catch (error) {
       console.error(error);
     }
@@ -194,6 +228,8 @@ function Header() {
 
   return (
     <Box className="Header">
+      {isCoinSound && <audio autoPlay src={coinSound} />}
+      {isDiceSound && <audio autoPlay src={diceSound} />}
       <StyledAppBar
         position="fixed"
         sx={{
@@ -240,12 +276,172 @@ function Header() {
             </motion.div>
           </Stack>
           <Box sx={{ flexGrow: 1 }} />
+          <Modal
+            open={gameOpen}
+            onClose={() => {
+              setGameOpen(false);
+            }}
+          >
+            <StyledPopupBox
+              sx={{
+                fontFamily: "Segoe UI",
+                backgroundColor:
+                  accountState.userDetails?.accentColour ?? "grey",
+                bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "grey"}, black 20%)`,
+              }}
+            >
+              <Stack
+                alignItems="center"
+                justifyContent="center"
+                gap={1}
+                mt={4}
+                mb={2}
+              >
+                <motion.div
+                  key={`${gameOpen}-${randomNumber}`}
+                  initial={
+                    sessionStorage.getItem("account-game") === "Dice"
+                      ? { y: -50, opacity: 0, rotate: -45 }
+                      : { rotateY: 0 }
+                  }
+                  animate={
+                    sessionStorage.getItem("account-game") === "Dice"
+                      ? {
+                          y: 0,
+                          opacity: 1,
+                          rotate: 0,
+                          transition: {
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 15,
+                          },
+                        }
+                      : {
+                          rotateY: 360,
+                          transition: {
+                            duration: 0.6,
+                            ease: "easeInOut",
+                          },
+                        }
+                  }
+                  style={{ perspective: 1000 }}
+                >
+                  <img
+                    style={{
+                      width: "8rem",
+                      height: "8rem",
+                    }}
+                    src={
+                      sessionStorage.getItem("account-game") == "Dice"
+                        ? dice[randomNumber]
+                        : coin[randomNumber]
+                    }
+                  />
+                </motion.div>
+                <p style={{ margin: "1.5rem 0 0 0" }}>
+                  {sessionStorage.getItem("account-game") == "Dice"
+                    ? "The dice landed on " + (randomNumber + 1)
+                    : "The coin landed on " +
+                      (randomNumber === 0 ? "Heads" : "Tails")}
+                </p>
+                <Stack width="100%" gap={1} alignItems="center" mt={2}>
+                  <PopupButton
+                    startIcon={
+                      <ReplayOutlined
+                        sx={{ scale: 1.2, position: "relative", top: "0.1rem" }}
+                      />
+                    }
+                    sx={{
+                      backgroundColor:
+                        accountState.userDetails?.accentColour ?? "unset",
+                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
+                      "&:hover": {
+                        backgroundColor:
+                          accountState.userDetails?.accentColour ?? "unset",
+                      },
+                      color: "var(--mui-palette-text-primary)",
+                    }}
+                    variant="contained"
+                    disableElevation
+                    onClick={() => {
+                      if (sessionStorage.getItem("account-game") == "Dice") {
+                        setRandomNumber(getRandomInt(6));
+                        setIsDiceSound(true);
+                        setTimeout(() => {
+                          setIsDiceSound(false);
+                        }, 1000);
+                      } else {
+                        setRandomNumber(getRandomInt(2));
+                        setIsCoinSound(true);
+                        setTimeout(() => {
+                          setIsCoinSound(false);
+                        }, 1000);
+                      }
+                    }}
+                  >
+                    {sessionStorage.getItem("account-game") == "Dice"
+                      ? "Roll Again"
+                      : "Flip Again"}
+                  </PopupButton>
+                  <PopupButton
+                    sx={{
+                      "&:hover": {
+                        backgroundColor:
+                          accountState.userDetails?.accentColour ?? "unset",
+                      },
+                      color: "var(--mui-palette-text-primary)",
+                    }}
+                    variant="text"
+                    disableElevation
+                    onClick={() => {
+                      setGameOpen(false);
+                    }}
+                  >
+                    Done
+                  </PopupButton>
+                </Stack>
+              </Stack>
+            </StyledPopupBox>
+          </Modal>
           {!isPhone ? (
             <Stack
               direction="row"
               spacing={"0.5rem"}
               sx={{ marginRight: "0.6rem" }}
             >
+              {breadcrumbLabel === "Account" && (
+                <>
+                  {sessionStorage.getItem("account-game") == "Dice" ? (
+                    <StyledTooltip title="Dice" placement="bottom">
+                      <IconChip
+                        icon={<CasinoOutlined sx={ChipIconStyle} />}
+                        onClick={() => {
+                          setRandomNumber(getRandomInt(6));
+                          setIsDiceSound(true);
+                          setTimeout(() => {
+                            setIsDiceSound(false);
+                          }, 1000);
+                          setGameOpen(true);
+                        }}
+                      />
+                    </StyledTooltip>
+                  ) : (
+                    <StyledTooltip title="Coin" placement="bottom">
+                      <IconChip
+                        icon={<TollOutlined sx={ChipIconStyle} />}
+                        onClick={() => {
+                          setRandomNumber(getRandomInt(2));
+                          setIsCoinSound(true);
+                          setTimeout(() => {
+                            setIsCoinSound(false);
+                          }, 1000);
+                          setGameOpen(true);
+                        }}
+                      />
+                    </StyledTooltip>
+                  )}
+                </>
+              )}
               <div>
                 <StyledChip
                   icon={<Explore sx={ChipIconWithTextStyle} />}
@@ -258,6 +454,15 @@ function Header() {
                   deleteIcon={<ArrowDropDown sx={ChipIconWithTextStyle} />}
                 />
                 <Menu
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        "--mui-palette-background-paper":
+                          accountState.userDetails?.accentColour ?? "unset",
+                        bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 50%)`,
+                      },
+                    },
+                  }}
                   sx={{
                     "& .MuiPaper-root": {
                       borderRadius: "0.75rem",
@@ -344,12 +549,27 @@ function Header() {
                 onClick={openResumeInNewTab}
               />
               <StyledChip
-                color="secondary"
+                sx={{
+                  backgroundColor: "#f50057",
+                  "&:hover": { backgroundColor: "#cb0f61", transition: "0.3s" },
+                }}
+                color={breadcrumbLabel !== "Account" ? "secondary" : "default"}
                 icon={
                   breadcrumbLabel === "Account" ? (
                     <ExitToApp sx={ChipIconWithTextStyle} />
+                  ) : sessionStorage.getItem("account-photo") ? (
+                    <img
+                      src={sessionStorage.getItem("account-photo") || ""}
+                      alt="Profile"
+                      style={{
+                        width: "1.5rem",
+                        height: "1.5rem",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
                   ) : (
-                    <Person sx={ChipIconWithTextStyle} />
+                    <AccountCircle sx={ChipIconWithTextStyle} />
                   )
                 }
                 label={
@@ -387,6 +607,15 @@ function Header() {
                   />
                 </StyledTooltip>
                 <Menu
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        "--mui-palette-background-paper":
+                          accountState.userDetails?.accentColour ?? "unset",
+                        bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 50%)`,
+                      },
+                    },
+                  }}
                   sx={{
                     "& .MuiPaper-root": {
                       borderRadius: "0.75rem",
@@ -423,6 +652,15 @@ function Header() {
                 anchor="right"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      "--mui-palette-background-paper":
+                        accountState.userDetails?.accentColour ?? "unset",
+                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 50%)`,
+                    },
+                  },
+                }}
               >
                 <StyledBox onClick={() => setDrawerOpen(false)}>
                   <Stack
@@ -445,11 +683,30 @@ function Header() {
                       onClick={toggleThemeMode}
                     />
                     <StyledChipDrawer
+                      icon={<VolunteerActivism sx={ChipIconStyle} />}
+                      label="Donate"
+                      onClick={openDonatePageInNewTab}
+                    />
+                    <StyledChipDrawer
                       icon={
                         breadcrumbLabel === "Account" ? (
                           <ExitToApp sx={ChipIconStyle} />
+                        ) : sessionStorage.getItem("account-photo") ? (
+                          <img
+                            src={sessionStorage.getItem("account-photo") || ""}
+                            alt="Profile"
+                            style={{
+                              width: "1.5rem",
+                              height: "1.5rem",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                              position: "relative",
+                              bottom: "0.025rem",
+                              left: "-0.1rem",
+                            }}
+                          />
                         ) : (
-                          <Person sx={ChipIconStyle} />
+                          <AccountCircle sx={ChipIconStyle} />
                         )
                       }
                       label={
@@ -467,22 +724,48 @@ function Header() {
                       }}
                     />
                     <StyledChipDrawer
+                      icon={<Description sx={ChipIconStyle} />}
+                      label="Resume"
+                      onClick={openResumeInNewTab}
+                    />
+                    <StyledChipDrawer
                       icon={<Mail sx={ChipIconStyle} />}
                       label="Contact"
                       onClick={() => {
                         navigate("/contact");
                       }}
                     />
-                    <StyledChipDrawer
-                      icon={<Description sx={ChipIconStyle} />}
-                      label="Resume"
-                      onClick={openResumeInNewTab}
-                    />
-                    <StyledChipDrawer
-                      icon={<VolunteerActivism sx={ChipIconStyle} />}
-                      label="Donate"
-                      onClick={openDonatePageInNewTab}
-                    />
+                    {breadcrumbLabel === "Account" && (
+                      <>
+                        {sessionStorage.getItem("account-game") == "Dice" ? (
+                          <StyledChipDrawer
+                            icon={<CasinoOutlined sx={ChipIconStyle} />}
+                            label="Dice"
+                            onClick={() => {
+                              setRandomNumber(getRandomInt(6));
+                              setIsDiceSound(true);
+                              setTimeout(() => {
+                                setIsDiceSound(false);
+                              }, 1000);
+                              setGameOpen(true);
+                            }}
+                          />
+                        ) : (
+                          <StyledChipDrawer
+                            icon={<TollOutlined sx={ChipIconStyle} />}
+                            label="Coin"
+                            onClick={() => {
+                              setRandomNumber(getRandomInt(2));
+                              setIsCoinSound(true);
+                              setTimeout(() => {
+                                setIsCoinSound(false);
+                              }, 1000);
+                              setGameOpen(true);
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
                     <div
                       style={{ marginLeft: "0.5rem" }}
                       ref={(el) => {
@@ -504,7 +787,7 @@ const StyledTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(() => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "var(--mui-palette-background-paper)",
+    backgroundColor: "var(--mui-palette-background-main)",
     borderRadius: "1rem",
     fontSize: "0.85rem",
   },

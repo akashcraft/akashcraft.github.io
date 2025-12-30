@@ -14,6 +14,17 @@ export type AccountState = {
     wallpaper?: string;
     game?: string;
   };
+  general: {
+    publicAnnouncement?: string;
+    privateAnnouncement?: string;
+    aboutMe?: string;
+  };
+  links: {
+    header?: string;
+    description?: string;
+    url?: string;
+    uid?: string;
+  }[];
 };
 
 export type AccountAction = {
@@ -31,6 +42,17 @@ export type AccountAction = {
     wallpaper?: string;
     game?: string;
   };
+  general?: {
+    publicAnnouncement?: string;
+    privateAnnouncement?: string;
+    aboutMe?: string;
+  };
+  links?: {
+    header?: string;
+    description?: string;
+    url?: string;
+    uid?: string;
+  }[];
 };
 
 export const reducerAccount: Reducer<AccountState, AccountAction> = (
@@ -42,6 +64,16 @@ export const reducerAccount: Reducer<AccountState, AccountAction> = (
       return {
         ...state,
         userDetails: action.userDetails!,
+      };
+    case "updateGeneral":
+      return {
+        ...state,
+        general: action.general!,
+      };
+    case "updateLinks":
+      return {
+        ...state,
+        links: action.links!,
       };
     default:
       return state;

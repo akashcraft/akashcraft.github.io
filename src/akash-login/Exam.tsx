@@ -14,7 +14,7 @@ import { StyledHeader } from "./Account";
 import { StyledHeaderPaper } from "./AccountHeaderBox";
 import ExamSchedule from "./ExamSchedule";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   AddOutlined,
   ArrowDropDown,
@@ -28,6 +28,7 @@ import EmptyState from "./EmptyState";
 import { StyledDatePicker, StyledTimePicker } from "./Pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AccountContext } from "./AccountContext";
 
 export function Exam() {
   const isPhone = useMediaQuery("(max-width:800px)");
@@ -46,6 +47,8 @@ export function Exam() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const { accountState } = useContext(AccountContext);
 
   return (
     <>
@@ -117,9 +120,12 @@ export function Exam() {
                 disableElevation
                 startIcon={<AddOutlined sx={{ color: "inherit" }} />}
                 sx={{
-                  backgroundColor: "var(--mui-palette-secondary-main)",
+                  backgroundColor:
+                    accountState.userDetails?.accentColour ?? "unset",
+                  bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
                   "&:hover": {
-                    backgroundColor: "var(--mui-palette-secondary-light)",
+                    backgroundColor:
+                      accountState.userDetails?.accentColour ?? "unset",
                   },
                   color: "var(--mui-palette-text-primary)",
                 }}
@@ -215,6 +221,15 @@ export function Exam() {
                 anchorOrigin={{
                   vertical: "bottom",
                   horizontal: "center",
+                }}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      "--mui-palette-background-paper":
+                        accountState.userDetails?.accentColour ?? "grey",
+                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "grey"}, black 50%)`,
+                    },
+                  },
                 }}
                 transformOrigin={{
                   vertical: "top",

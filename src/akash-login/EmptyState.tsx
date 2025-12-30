@@ -26,7 +26,7 @@ function EmptyState({
       height={height}
       gap={1}
       sx={{
-        backgroundColor: "var(--mui-palette-background-light2)",
+        backgroundColor: "var(--mui-palette-background-default)",
         borderRadius: "1rem",
         cursor: onClick ? "pointer" : "default",
         minHeight: minHeight,

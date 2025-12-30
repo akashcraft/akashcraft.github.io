@@ -7,14 +7,10 @@ import { styled } from "@mui/material";
 import EmptyState from "./EmptyState";
 import { CelebrationOutlined } from "@mui/icons-material";
 
-function createData(course: string, date: string, time: string) {
-  return { course, date, time };
-}
-
 const rows = [
-  createData("DEMO 1000", "1 Jan 2026", "13:00 - 14:00"),
-  createData("DEMO 2000", "2 Jan 2026", "14:00 - 15:00"),
-  createData("DEMO 3000", "3 Jan 2026", "15:00 - 16:00"),
+  // createData("DEMO 1000", "1 Jan 2026", "13:00 - 14:00"),
+  // createData("DEMO 2000", "2 Jan 2026", "14:00 - 15:00"),
+  // createData("DEMO 3000", "3 Jan 2026", "15:00 - 16:00"),
 ];
 
 export default function ExamSchedule({ onEmpty }: { onEmpty: () => void }) {

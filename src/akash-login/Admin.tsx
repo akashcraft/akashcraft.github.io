@@ -14,14 +14,35 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
+  Skeleton,
+  Snackbar,
   Stack,
   styled,
   TextField,
   useMediaQuery,
 } from "@mui/material";
 import { StyledHeader, StyledListItemText } from "./Account";
-import { useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer, type JSX } from "react";
 import { motion } from "framer-motion";
+import { AccountContext } from "./AccountContext";
+import { useAdminSettingsSubmit } from "./AuthHooks";
+
+function showData(
+  data: string | undefined,
+  width?: string,
+): JSX.Element | string {
+  if (data === undefined) {
+    return (
+      <Skeleton
+        variant="text"
+        animation="wave"
+        sx={{ width: width || "10rem", fontSize: "0.9rem" }}
+      />
+    );
+  }
+
+  return data === "" ? "Not Set" : data;
+}
 
 type SettingsState = {
   selectedPage: string;
@@ -31,10 +52,12 @@ type SettingsState = {
   entryDefaultValue?: string;
   required?: boolean;
   settingsScroll?: number;
+  entryValue?: string;
 };
 
 type SettingsAction = {
   page: string;
+  setEntryValue?: string;
   header?: string;
   defaultValue?: string;
   description?: string;
@@ -57,10 +80,16 @@ const settingsReducer = (
         entryType: action.type ?? "text",
         entryDefaultValue: action.defaultValue ?? "",
         required: action.required ?? false,
+        entryValue: action.defaultValue ?? "",
       };
     case "main":
       window.scrollTo(0, state.settingsScroll || 0);
       return { ...state, selectedPage: "settings-main" };
+    case "set-entry-value":
+      return {
+        ...state,
+        entryValue: action.setEntryValue ?? "",
+      };
     default:
       return state;
   }
@@ -72,11 +101,23 @@ export default function Admin() {
     selectedPage: "settings-main",
   });
 
+  const { accountState } = useContext(AccountContext);
+
   useEffect(() => {
     if (state.selectedPage === "settings-main") {
       window.scrollTo(0, state.settingsScroll || 0);
     }
   }, [state.selectedPage, state.settingsScroll]);
+
+  const {
+    isSubmitting,
+    isError,
+    isSuccess,
+    errorMessage,
+    updateGeneralSetting,
+    addUserLink,
+    resetAirportSchedules,
+  } = useAdminSettingsSubmit();
 
   return (
     <>
@@ -93,7 +134,7 @@ export default function Admin() {
                   description:
                     "This is the announcement displayed on the account page when logged in. Leave it blank to remove any announcements.",
                   type: "text",
-                  defaultValue: "",
+                  defaultValue: accountState.general?.privateAnnouncement ?? "",
                 });
               }}
             >
@@ -102,11 +143,10 @@ export default function Admin() {
               </ListItemIcon>
               <StyledListItemText
                 primary="Private Announcement"
-                secondary="Not Set"
+                secondary={showData(accountState.general?.privateAnnouncement)}
               />
             </StyledListItemButton>
             <StyledListItemButton
-              sx={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
               onClick={() => {
                 dispatch({
                   page: "form-entry",
@@ -114,7 +154,7 @@ export default function Admin() {
                   description:
                     "This is the announcement displayed on the landing page regardless of login status. Leave it blank to remove any announcements.",
                   type: "text",
-                  defaultValue: "",
+                  defaultValue: accountState.general?.publicAnnouncement ?? "",
                 });
               }}
             >
@@ -123,11 +163,10 @@ export default function Admin() {
               </ListItemIcon>
               <StyledListItemText
                 primary="Public Announcement"
-                secondary="Not Set"
+                secondary={showData(accountState.general?.publicAnnouncement)}
               />
             </StyledListItemButton>
             <StyledListItemButton
-              sx={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
               onClick={() => {
                 dispatch({
                   page: "form-entry",
@@ -135,14 +174,17 @@ export default function Admin() {
                   description:
                     "This is the text displayed under the About Me section on the landing page. Leave it blank to remove the section.",
                   type: "text",
-                  defaultValue: "",
+                  defaultValue: accountState.general?.aboutMe ?? "",
                 });
               }}
             >
               <ListItemIcon>
                 <PersonOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="About Me" secondary="Not Set" />
+              <StyledListItemText
+                primary="About Me"
+                secondary={showData(accountState.general?.aboutMe)}
+              />
             </StyledListItemButton>
             <StyledListItemButton
               onClick={() => {
@@ -174,6 +216,10 @@ export default function Admin() {
                       backgroundColor: "var(--mui-palette-secondary-light)",
                     },
                   }}
+                  onClick={() => {
+                    resetAirportSchedules();
+                  }}
+                  disabled={isSubmitting}
                 />
               }
             >
@@ -225,42 +271,69 @@ export default function Admin() {
             >
               {state.entryDescription}
             </p>
-            {state.entryType == "text" && (
-              <SingleTextField
-                sx={{
-                  margin: isPhone ? "2rem 0.5rem" : "1rem",
-                  width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
-                }}
-                required={state.required}
-                id="form-entry-field"
-                label={
-                  state.entryHeader == "Links"
-                    ? "Link Header"
-                    : state.entryHeader
-                }
-                defaultValue={state.entryDefaultValue}
-              />
-            )}
-            {state.entryHeader == "Links" && (
-              <>
+            <form id="admin-form-entry">
+              {state.entryType == "text" && (
                 <SingleTextField
                   sx={{
                     margin: isPhone ? "2rem 0.5rem" : "1rem",
                     width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
                   }}
-                  id="form-entry-field-2"
-                  label="Link Description"
-                />
-                <SingleTextField
-                  sx={{
-                    margin: isPhone ? "2rem 0.5rem" : "1rem",
-                    width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
+                  id="form-entry-field"
+                  required={state.entryHeader == "Links"}
+                  autoComplete="off"
+                  onKeyDownCapture={(e) => {
+                    if (e.key === "Enter" && state.entryHeader != "Links") {
+                      e.preventDefault();
+                      (
+                        document.querySelector(
+                          "#submit-button",
+                        ) as HTMLInputElement
+                      )?.click();
+                    }
                   }}
-                  id="form-entry-field-3"
-                  label="Link URL"
+                  label={
+                    state.entryHeader == "Links"
+                      ? "Link Header"
+                      : state.entryHeader
+                  }
+                  defaultValue={state.entryDefaultValue}
+                  onChange={(event) => {
+                    dispatch({
+                      page: "set-entry-value",
+                      setEntryValue: event.currentTarget.value,
+                    });
+                  }}
                 />
-              </>
-            )}
+              )}
+              {state.entryHeader == "Links" && (
+                <>
+                  <SingleTextField
+                    sx={{
+                      margin: isPhone ? "2rem 0.5rem" : "1rem",
+                      width: isPhone
+                        ? "calc(100% - 1rem)"
+                        : "calc(100% - 2rem)",
+                    }}
+                    id="form-entry-field-2"
+                    required={state.entryHeader == "Links"}
+                    autoComplete="off"
+                    label="Link Description"
+                  />
+                  <SingleTextField
+                    sx={{
+                      margin: isPhone ? "2rem 0.5rem" : "1rem",
+                      width: isPhone
+                        ? "calc(100% - 1rem)"
+                        : "calc(100% - 2rem)",
+                    }}
+                    id="form-entry-field-3"
+                    required={state.entryHeader == "Links"}
+                    autoComplete="off"
+                    label="Link URL"
+                  />
+                </>
+              )}
+            </form>
             <Stack
               direction="row"
               justifyContent="flex-end"
@@ -286,6 +359,7 @@ export default function Admin() {
               <Button
                 variant="contained"
                 disableElevation
+                id="submit-button"
                 sx={{
                   textTransform: "none",
                   borderRadius: "2rem",
@@ -298,6 +372,50 @@ export default function Admin() {
                   },
                   color: "var(--mui-palette-text-primary)",
                 }}
+                loading={isSubmitting}
+                disabled={
+                  state.entryHeader != "Links" &&
+                  state.entryValue === (state.entryDefaultValue || "").trim()
+                }
+                onClick={() => {
+                  const form = document.getElementById(
+                    "admin-form-entry",
+                  ) as HTMLFormElement | null;
+                  if (form?.checkValidity()) {
+                    const input1 = document.getElementById(
+                      "form-entry-field",
+                    ) as HTMLInputElement | null;
+                    const input2 = document.getElementById(
+                      "form-entry-field-2",
+                    ) as HTMLInputElement | null;
+                    const input3 = document.getElementById(
+                      "form-entry-field-3",
+                    ) as HTMLInputElement | null;
+                    if (state.entryHeader == "Links") {
+                      addUserLink(
+                        input1?.value || "",
+                        input2?.value || "",
+                        input3?.value || "",
+                      );
+                    } else {
+                      let field = state.entryHeader
+                        ?.toLowerCase()
+                        .replace(" ", "");
+                      if (field === "aboutme") {
+                        field = "aboutMe";
+                      } else if (field === "privateannouncement") {
+                        field = "privateAnnouncement";
+                      } else if (field === "publicannouncement") {
+                        field = "publicAnnouncement";
+                      }
+                      updateGeneralSetting(field!, input1?.value || "", () =>
+                        dispatch({ page: "main" }),
+                      );
+                    }
+                  } else {
+                    form?.reportValidity();
+                  }
+                }}
               >
                 {state.entryHeader == "Links" ? "Add" : "Save"}
               </Button>
@@ -305,6 +423,26 @@ export default function Admin() {
           </Box>
         </motion.div>
       )}
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isSuccess}
+        message="Operation Successful"
+      />
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isError}
+        message={errorMessage == "" ? "Error" : `Error - ${errorMessage}`}
+      />
     </>
   );
 }
@@ -370,6 +508,7 @@ const SingleTextField = styled(TextField)({
     fontFamily: "Segoe UI",
   },
   "& .MuiOutlinedInput-notchedOutline": {
+    borderRadius: "1rem",
     borderColor: "rgba(255, 255, 255, 0.4)",
   },
   "&:hover .MuiOutlinedInput-notchedOutline": {

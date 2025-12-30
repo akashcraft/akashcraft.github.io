@@ -209,8 +209,6 @@ function Login() {
             <CircularButton
               variant="text"
               onClick={() => {
-                sessionStorage.removeItem("name");
-                sessionStorage.removeItem("email");
                 sessionStorage.setItem("homeScroll", "0");
                 navigate("/");
               }}
@@ -375,7 +373,7 @@ function Login() {
                   sx={{
                     color: "var(--mui-palette-success-main)",
                     fontSize: isPhone ? "6rem" : "10rem",
-                    marginBottom: "1rem",
+                    marginBottom: isPhone ? "1rem" : "0rem",
                   }}
                 />
               )}
@@ -507,9 +505,6 @@ function Login() {
                       <p>Enter your name</p>
                       <StyledInput
                         required
-                        onChange={(e) => {
-                          sessionStorage.setItem("name", e.target.value);
-                        }}
                         onKeyDownCapture={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault();
@@ -523,7 +518,7 @@ function Login() {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        defaultValue={sessionStorage.getItem("name") ?? ""}
+                        defaultValue=""
                       />
                     </StyledHolder>
                   )}
@@ -531,9 +526,6 @@ function Login() {
                     <p>Enter your email</p>
                     <StyledInput
                       required
-                      onChange={(e) => {
-                        sessionStorage.setItem("email", e.target.value);
-                      }}
                       onKeyDownCapture={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -547,7 +539,7 @@ function Login() {
                       type="email"
                       name="email"
                       placeholder="Email"
-                      defaultValue={sessionStorage.getItem("email") ?? ""}
+                      defaultValue=""
                     />
                   </StyledHolder>
                   {!isPasswordForgotten && (
@@ -728,8 +720,6 @@ function Login() {
               <SubmitButton
                 variant="text"
                 onClick={() => {
-                  sessionStorage.removeItem("name");
-                  sessionStorage.removeItem("email");
                   sessionStorage.setItem("homeScroll", "0");
                   if (isPasswordForgotten) {
                     (

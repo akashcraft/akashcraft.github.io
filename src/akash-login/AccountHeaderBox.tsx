@@ -5,9 +5,11 @@ import {
   Avatar,
   Paper,
   ListItemButton,
+  Skeleton,
 } from "@mui/material";
 import type React from "react";
-import type { JSX } from "react";
+import { useContext, type JSX } from "react";
+import { AccountContext } from "./AccountContext";
 
 type AccountHeaderBoxProps = {
   avatar: React.ReactNode;
@@ -15,6 +17,8 @@ type AccountHeaderBoxProps = {
   description: string;
   onclick?: () => void;
   flexGrow?: number;
+  isProfilePic?: boolean;
+  isLoading?: boolean;
 };
 
 function AccountHeaderBox({
@@ -23,7 +27,11 @@ function AccountHeaderBox({
   description,
   flexGrow = 1,
   onclick,
+  isProfilePic = false,
+  isLoading = false,
 }: AccountHeaderBoxProps): JSX.Element {
+  const { accountState } = useContext(AccountContext);
+
   return (
     <StyledHeaderPaper elevation={0} sx={{ flexGrow: { flexGrow } }}>
       <ListItemButton
@@ -35,19 +43,53 @@ function AccountHeaderBox({
       >
         <Stack height="100%" direction="row" gap={1} alignItems="center">
           <ListItemAvatar>
-            <Avatar
-              sx={{
-                bgcolor: "#f4b98b",
-                width: "3rem",
-                height: "3rem",
-              }}
-            >
-              {avatar}
-            </Avatar>
+            {isLoading ? (
+              <Skeleton variant="circular" width="3rem" height="3rem" />
+            ) : isProfilePic &&
+              accountState.userDetails?.provider !== "email" &&
+              accountState.userDetails?.photo ? (
+              <Avatar
+                sx={{
+                  width: "3rem",
+                  height: "3rem",
+                }}
+                imgProps={{ referrerPolicy: "no-referrer" }}
+                src={accountState.userDetails.photo}
+              />
+            ) : (
+              <Avatar
+                sx={{
+                  bgcolor: "#f4b98b",
+                  width: "3rem",
+                  height: "3rem",
+                }}
+              >
+                {avatar}
+              </Avatar>
+            )}
           </ListItemAvatar>
           <Stack>
-            <h3 style={{ margin: 0 }}>{heading}</h3>
-            <p style={{ margin: 0 }}>{description}</p>
+            {isLoading ? (
+              <>
+                <Skeleton
+                  variant="text"
+                  width="12rem"
+                  height="1.6rem"
+                  animation="wave"
+                />
+                <Skeleton
+                  variant="text"
+                  width="6rem"
+                  height="1.6rem"
+                  animation="wave"
+                />
+              </>
+            ) : (
+              <>
+                <h3 style={{ margin: 0 }}>{heading}</h3>
+                <p style={{ margin: 0 }}>{description}</p>
+              </>
+            )}
           </Stack>
         </Stack>
       </ListItemButton>

@@ -9,7 +9,7 @@ import {
   Circle,
   Delete,
   DeleteOutlined,
-  PasswordOutlined,
+  KeyOutlined,
   PhotoCameraOutlined,
   PhotoLibraryOutlined,
   SchoolOutlined,
@@ -35,17 +35,32 @@ import {
   MenuItem,
   Modal,
   OutlinedInput,
+  Skeleton,
+  Snackbar,
   Stack,
   styled,
   TextField,
   useMediaQuery,
 } from "@mui/material";
 import { StyledHeader, StyledListItemText } from "./Account";
-import { useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer, type JSX } from "react";
 import { motion } from "framer-motion";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StyledDatePicker } from "./Pickers";
+import { AccountContext } from "./AccountContext";
+import dayjs from "dayjs";
+import { useSettingsSubmit } from "./AuthHooks";
+
+const sanitize = (value: string): string => {
+  return value
+    .trim()
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/`/g, "&#96;");
+};
 
 const accentColours = [
   "Red",
@@ -85,10 +100,12 @@ type SettingsState = {
   dropdownStates?: (HTMLElement | null)[];
   isProfileDialogOpen?: boolean;
   settingsScroll?: number;
+  entryValue?: string;
 };
 
 type SettingsAction = {
   page: string;
+  setEntryValue?: string;
   header?: string;
   defaultValue?: string;
   description?: string;
@@ -118,6 +135,11 @@ const settingsReducer = (
           newPassword: false,
           confirmPassword: false,
         },
+      };
+    case "set-entry-value":
+      return {
+        ...state,
+        entryValue: action.setEntryValue ?? "",
       };
     case "toggle-password-visibility":
       return {
@@ -167,6 +189,34 @@ const settingsReducer = (
   }
 };
 
+function showData(
+  data: string | undefined,
+  width?: string,
+): JSX.Element | string {
+  if (data === undefined) {
+    return (
+      <Skeleton
+        variant="text"
+        animation="wave"
+        sx={{ width: width || "10rem", fontSize: "0.9rem" }}
+      />
+    );
+  }
+
+  if (data === "") return "Not Set";
+
+  const isIsoDate = /^\d{4}-\d{2}-\d{2}$/.test(data);
+
+  if (isIsoDate) {
+    const dateObj = dayjs(data);
+    if (dateObj.isValid()) {
+      return dateObj.format("DD MMM YYYY");
+    }
+  }
+
+  return data;
+}
+
 export default function Settings() {
   const isPhone = useMediaQuery("(max-width:800px)");
   const [state, dispatch] = useReducer(settingsReducer, {
@@ -174,11 +224,40 @@ export default function Settings() {
     dropdownStates: [null, null, null],
   });
 
+  const { accountState } = useContext(AccountContext);
+  const isExternalProvider = accountState.userDetails?.provider !== "email";
+
   useEffect(() => {
     if (state.selectedPage === "settings-main") {
       window.scrollTo(0, state.settingsScroll || 0);
+    } else {
+      window.scrollTo(0, 0);
     }
   }, [state.selectedPage, state.settingsScroll]);
+
+  const handleSubmitSettingsForm = (value: string, fieldOverride?: string) => {
+    let field = state.entryHeader?.toLowerCase().replace(" ", "") || "";
+    if (field === "birthday") {
+      field = "dateOfBirth";
+    } else if (field === "deleteaccount") {
+      return;
+    }
+    updateUserSetting(
+      accountState.userDetails.uid || "",
+      fieldOverride ? fieldOverride : field,
+      value,
+      fieldOverride ? undefined : () => dispatch({ page: "main" }),
+    );
+  };
+
+  const {
+    isSubmitting,
+    isError,
+    isSuccess,
+    errorMessage,
+    updateUserSetting,
+    deleteUserAccount,
+  } = useSettingsSubmit();
 
   return (
     <>
@@ -239,10 +318,9 @@ export default function Settings() {
                 <Stack width="100%" gap={1} alignItems="center" mt={2}>
                   <PopupButton
                     sx={{
-                      backgroundColor:
-                        "var(--mui-palette-background-buttondark)",
+                      backgroundColor: "var(--mui-palette-secondary-main)",
                       "&:hover": {
-                        backgroundColor: "var(--mui-palette-background-button)",
+                        backgroundColor: "var(--mui-palette-secondary-light)",
                       },
                       color: "var(--mui-palette-text-primary)",
                     }}
@@ -277,6 +355,7 @@ export default function Settings() {
           <StyledList>
             <StyledListItemButton
               sx={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
+              disabled={isExternalProvider}
               onClick={() => {
                 dispatch({ page: "toggle-profile-dialog" });
               }}
@@ -284,7 +363,10 @@ export default function Settings() {
               <ListItemIcon>
                 <PhotoCameraOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="Profile Picture" />
+              <StyledListItemText
+                primary="Profile Picture"
+                secondary={isExternalProvider && "Managed by Third-Party Login"}
+              />
               <ListItemButton
                 disableTouchRipple
                 disableRipple
@@ -293,22 +375,45 @@ export default function Settings() {
                   display: "contents",
                 }}
               >
-                <Avatar
-                  sx={{
-                    bgcolor: "#f4b98b",
-                    width: "3rem",
-                    height: "3rem",
-                    margin: "0.5rem",
-                  }}
-                >
-                  <AccountCircleOutlined
+                {isExternalProvider ? (
+                  !accountState.userDetails ? (
+                    <Skeleton
+                      variant="circular"
+                      sx={{
+                        width: "3rem",
+                        height: "3rem",
+                        margin: "0.5rem",
+                      }}
+                    />
+                  ) : (
+                    <Avatar
+                      sx={{
+                        width: "3rem",
+                        height: "3rem",
+                        margin: "0.5rem",
+                      }}
+                      imgProps={{ referrerPolicy: "no-referrer" }}
+                      src={accountState.userDetails?.photo}
+                    />
+                  )
+                ) : (
+                  <Avatar
                     sx={{
-                      width: "2rem",
-                      height: "2rem",
-                      color: "#824222",
+                      bgcolor: "#f4b98b",
+                      width: "3rem",
+                      height: "3rem",
+                      margin: "0.5rem",
                     }}
-                  />
-                </Avatar>
+                  >
+                    <AccountCircleOutlined
+                      sx={{
+                        width: "2rem",
+                        height: "2rem",
+                        color: "#824222",
+                      }}
+                    />
+                  </Avatar>
+                )}
               </ListItemButton>
             </StyledListItemButton>
             <StyledListItemButton
@@ -319,7 +424,7 @@ export default function Settings() {
                   description:
                     "This is the name displayed on your account and in menus across the interface. You do not have to include your surname or use your real name.",
                   type: "text",
-                  defaultValue: "Guest",
+                  defaultValue: accountState.userDetails?.name,
                   required: true,
                 });
               }}
@@ -327,7 +432,10 @@ export default function Settings() {
               <ListItemIcon>
                 <AccountBoxOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="Name" secondary="Guest" />
+              <StyledListItemText
+                primary="Name"
+                secondary={showData(accountState.userDetails?.name)}
+              />
             </StyledListItemButton>
             <StyledListItemButton
               onClick={() => {
@@ -337,7 +445,11 @@ export default function Settings() {
                   description:
                     "This is used to provide automated greetings on your birthday. It is only visible to you and is an optional field.",
                   type: "date",
-                  defaultValue: "Not Set",
+                  defaultValue:
+                    accountState.userDetails.dateOfBirth == "" ||
+                    accountState.userDetails.dateOfBirth == undefined
+                      ? new Date().toISOString().split("T")[0]
+                      : accountState.userDetails.dateOfBirth,
                   required: false,
                 });
               }}
@@ -345,7 +457,10 @@ export default function Settings() {
               <ListItemIcon>
                 <CakeOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="Birthday" secondary="Not Set" />
+              <StyledListItemText
+                primary="Birthday"
+                secondary={showData(accountState.userDetails?.dateOfBirth)}
+              />
             </StyledListItemButton>
             <StyledListItemButton
               onClick={() => {
@@ -355,7 +470,7 @@ export default function Settings() {
                   description:
                     "Your university is shown when printing your schedules. It is also visible to others if you have turned on schedule sharing. This is an optional field.",
                   type: "text",
-                  defaultValue: "Demo University",
+                  defaultValue: accountState.userDetails?.university,
                   required: false,
                 });
               }}
@@ -365,7 +480,7 @@ export default function Settings() {
               </ListItemIcon>
               <StyledListItemText
                 primary="University"
-                secondary="Demo University"
+                secondary={showData(accountState.userDetails?.university)}
               />
             </StyledListItemButton>
             <StyledListItemButton
@@ -381,7 +496,7 @@ export default function Settings() {
                   description:
                     "Your semester is shown when printing your schedules. It is also visible to others if you have turned on schedule sharing. This is an optional field.",
                   type: "text",
-                  defaultValue: "Demo Semester",
+                  defaultValue: accountState.userDetails?.semester,
                   required: false,
                 });
               }}
@@ -391,7 +506,7 @@ export default function Settings() {
               </ListItemIcon>
               <StyledListItemText
                 primary="Semester"
-                secondary="Demo Semester"
+                secondary={showData(accountState.userDetails?.semester)}
               />
             </StyledListItemButton>
           </StyledList>
@@ -408,7 +523,11 @@ export default function Settings() {
                         justifyContent="center"
                         gap={1}
                       >
-                        <Circle sx={{ color: "orange !important" }} />
+                        <Circle
+                          sx={{
+                            color: `${accountState.userDetails?.accentColour?.toLowerCase() ?? "grey"} !important`,
+                          }}
+                        />
                         <ArrowDropDown
                           sx={{
                             fontSize: "1.4rem",
@@ -437,9 +556,13 @@ export default function Settings() {
                     {accentColours.map((colour) => (
                       <MenuItem
                         key={colour}
-                        onClick={() =>
-                          dispatch({ page: "close-all-dropdowns" })
-                        }
+                        onClick={() => {
+                          handleSubmitSettingsForm(
+                            colour.charAt(0).toUpperCase() + colour.slice(1),
+                            "accentColour",
+                          );
+                          dispatch({ page: "close-all-dropdowns" });
+                        }}
                       >
                         <ListItemIcon>
                           <Circle
@@ -460,7 +583,10 @@ export default function Settings() {
               <ListItemIcon>
                 <BrushOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="Accent Colour" secondary="Orange" />
+              <StyledListItemText
+                primary="Accent Colour"
+                secondary={showData(accountState.userDetails?.accentColour)}
+              />
             </StyledListItem>
             <StyledListItem
               secondaryAction={
@@ -483,7 +609,10 @@ export default function Settings() {
                         },
                       });
                     }}
-                    label="Waves"
+                    label={showData(
+                      accountState.userDetails?.wallpaper,
+                      "3rem",
+                    )}
                     onClick={(event) => {
                       dispatch({
                         page: "set-dropdown",
@@ -504,9 +633,10 @@ export default function Settings() {
                     {wallpapers.map((wallpaper) => (
                       <MenuItem
                         key={wallpaper}
-                        onClick={() =>
-                          dispatch({ page: "close-all-dropdowns" })
-                        }
+                        onClick={() => {
+                          handleSubmitSettingsForm(wallpaper, "wallpaper");
+                          dispatch({ page: "close-all-dropdowns" });
+                        }}
                         sx={{
                           "&.MuiMenuItem-root": {
                             fontFamily: "Segoe UI",
@@ -547,7 +677,7 @@ export default function Settings() {
                         },
                       });
                     }}
-                    label="Dice"
+                    label={showData(accountState.userDetails?.game, "3rem")}
                     onClick={(event) => {
                       dispatch({
                         page: "set-dropdown",
@@ -568,9 +698,10 @@ export default function Settings() {
                     {games.map((game) => (
                       <MenuItem
                         key={game}
-                        onClick={() =>
-                          dispatch({ page: "close-all-dropdowns" })
-                        }
+                        onClick={() => {
+                          handleSubmitSettingsForm(game, "game");
+                          dispatch({ page: "close-all-dropdowns" });
+                        }}
                         sx={{
                           "&.MuiMenuItem-root": {
                             fontFamily: "Segoe UI",
@@ -600,6 +731,7 @@ export default function Settings() {
           <StyledList>
             <StyledListItemButton
               sx={{ borderTopLeftRadius: "1rem", borderTopRightRadius: "1rem" }}
+              disabled={isExternalProvider}
               onClick={() => {
                 dispatch({
                   page: "form-entry",
@@ -613,9 +745,12 @@ export default function Settings() {
               }}
             >
               <ListItemIcon>
-                <PasswordOutlined sx={IconStyle} />
+                <KeyOutlined sx={IconStyle} />
               </ListItemIcon>
-              <StyledListItemText primary="Change Password" />
+              <StyledListItemText
+                primary="Change Password"
+                secondary={isExternalProvider && "Managed by Third-Party Login"}
+              />
             </StyledListItemButton>
             <StyledListItemButton
               sx={{
@@ -628,8 +763,7 @@ export default function Settings() {
                 dispatch({
                   page: "form-entry",
                   header: "Delete Account",
-                  description:
-                    "Deleting your account will remove all your data from AkashCraft. This action cannot be undone. You will be signed out immediately. Please type 'DELETE' to confirm.",
+                  description: `Deleting your account will remove all your data from AkashCraft. This action cannot be undone and you will be signed out immediately. Please type 'DELETE' to confirm.${!isExternalProvider && " For security reasons, you will also need to enter your password to proceed."}`,
                   type: "text",
                   defaultValue: "",
                   required: true,
@@ -684,35 +818,8 @@ export default function Settings() {
             >
               {state.entryDescription}
             </p>
-            {state.entryType == "text" && (
-              <SingleTextField
-                sx={{
-                  margin: isPhone ? "2rem 0.5rem" : "1rem",
-                  width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
-                }}
-                required={state.required}
-                id="form-entry-field"
-                label={
-                  state.entryHeader == "Delete Account"
-                    ? "Type DELETE to confirm"
-                    : state.entryHeader
-                }
-                defaultValue={state.entryDefaultValue}
-              />
-            )}
-            {state.entryType == "date" && (
-              <Box
-                sx={{
-                  width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
-                  margin: isPhone ? "2rem 0.5rem" : "2rem 1rem",
-                }}
-              >
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <StyledDatePicker format="DD/MM/YYYY" label="Birthday" />
-                </LocalizationProvider>
-              </Box>
-            )}
-            {state.entryType == "password" && (
+            {(state.entryType == "password" ||
+              state.entryHeader == "Delete Account") && (
               <>
                 <StyledFormControl
                   sx={{
@@ -721,9 +828,14 @@ export default function Settings() {
                   }}
                   variant="outlined"
                 >
-                  <InputLabel htmlFor="old-password">Old Password</InputLabel>
+                  <InputLabel htmlFor="old-password">
+                    {state.entryType == "password"
+                      ? "Old Password"
+                      : "Password"}
+                  </InputLabel>
                   <OutlinedInput
                     id="old-password"
+                    required
                     type={
                       state.passwordStates?.oldPassword ? "text" : "password"
                     }
@@ -756,104 +868,189 @@ export default function Settings() {
                         </IconButton>
                       </InputAdornment>
                     }
-                    label="Old Password"
+                    label={
+                      state.entryType == "password"
+                        ? "Old Password"
+                        : "Password"
+                    }
                   />
                 </StyledFormControl>
-                <StyledFormControl
-                  sx={{
-                    margin: isPhone ? "2rem 0.5rem 0 0.5rem" : "1rem",
-                    width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
-                  }}
-                  variant="outlined"
-                >
-                  <InputLabel htmlFor="new-password">New Password</InputLabel>
-                  <OutlinedInput
-                    id="new-password"
-                    type={
-                      state.passwordStates?.newPassword ? "text" : "password"
-                    }
-                    sx={{
-                      ".MuiOutlinedInput-input": {
-                        letterSpacing: state.passwordStates?.newPassword
-                          ? "normal"
-                          : "0.15rem !important",
-                      },
-                      ".MuiOutlinedInput-notchedOutline": {
-                        borderRadius: "1rem",
-                      },
-                    }}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() =>
-                            dispatch({
-                              page: "toggle-password-visibility",
-                              passwordField: "newPassword",
-                            })
-                          }
-                          edge="end"
-                        >
-                          {state.passwordStates?.newPassword ? (
-                            <VisibilityOff sx={{ color: "white" }} />
-                          ) : (
-                            <Visibility sx={{ color: "white" }} />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    label="New Password"
-                  />
-                </StyledFormControl>
-                <StyledFormControl
+                {state.entryType == "password" && (
+                  <>
+                    <StyledFormControl
+                      sx={{
+                        margin: isPhone ? "2rem 0.5rem 0 0.5rem" : "1rem",
+                        width: isPhone
+                          ? "calc(100% - 1rem)"
+                          : "calc(100% - 2rem)",
+                      }}
+                      variant="outlined"
+                    >
+                      <InputLabel htmlFor="new-password">
+                        New Password
+                      </InputLabel>
+                      <OutlinedInput
+                        id="new-password"
+                        required
+                        type={
+                          state.passwordStates?.newPassword
+                            ? "text"
+                            : "password"
+                        }
+                        sx={{
+                          ".MuiOutlinedInput-input": {
+                            letterSpacing: state.passwordStates?.newPassword
+                              ? "normal"
+                              : "0.15rem !important",
+                          },
+                          ".MuiOutlinedInput-notchedOutline": {
+                            borderRadius: "1rem",
+                          },
+                        }}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() =>
+                                dispatch({
+                                  page: "toggle-password-visibility",
+                                  passwordField: "newPassword",
+                                })
+                              }
+                              edge="end"
+                            >
+                              {state.passwordStates?.newPassword ? (
+                                <VisibilityOff sx={{ color: "white" }} />
+                              ) : (
+                                <Visibility sx={{ color: "white" }} />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        label="New Password"
+                      />
+                    </StyledFormControl>
+                    <StyledFormControl
+                      sx={{
+                        margin: isPhone ? "2rem 0.5rem" : "1rem",
+                        width: isPhone
+                          ? "calc(100% - 1rem)"
+                          : "calc(100% - 2rem)",
+                      }}
+                      variant="outlined"
+                    >
+                      <InputLabel htmlFor="confirm-password">
+                        Confirm New Password
+                      </InputLabel>
+                      <OutlinedInput
+                        id="confirm-password"
+                        required
+                        type={
+                          state.passwordStates?.confirmPassword
+                            ? "text"
+                            : "password"
+                        }
+                        sx={{
+                          ".MuiOutlinedInput-input": {
+                            letterSpacing: state.passwordStates?.confirmPassword
+                              ? "normal"
+                              : "0.15rem !important",
+                          },
+                          ".MuiOutlinedInput-notchedOutline": {
+                            borderRadius: "1rem",
+                          },
+                        }}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() =>
+                                dispatch({
+                                  page: "toggle-password-visibility",
+                                  passwordField: "confirmPassword",
+                                })
+                              }
+                              edge="end"
+                            >
+                              {state.passwordStates?.confirmPassword ? (
+                                <VisibilityOff sx={{ color: "white" }} />
+                              ) : (
+                                <Visibility sx={{ color: "white" }} />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        label="Confirm New Password"
+                      />
+                    </StyledFormControl>
+                  </>
+                )}
+              </>
+            )}
+            {state.entryType == "text" && (
+              <form
+                id="form-entry-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <SingleTextField
                   sx={{
                     margin: isPhone ? "2rem 0.5rem" : "1rem",
                     width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
                   }}
-                  variant="outlined"
-                >
-                  <InputLabel htmlFor="confirm-password">
-                    Confirm New Password
-                  </InputLabel>
-                  <OutlinedInput
-                    id="confirm-password"
-                    type={
-                      state.passwordStates?.confirmPassword
-                        ? "text"
-                        : "password"
+                  onChange={(event) => {
+                    dispatch({
+                      page: "set-entry-value",
+                      setEntryValue: event.currentTarget.value,
+                    });
+                  }}
+                  onKeyDownCapture={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      (
+                        document.querySelector(
+                          "#submit-button",
+                        ) as HTMLInputElement
+                      )?.click();
                     }
-                    sx={{
-                      ".MuiOutlinedInput-input": {
-                        letterSpacing: state.passwordStates?.confirmPassword
-                          ? "normal"
-                          : "0.15rem !important",
-                      },
-                      ".MuiOutlinedInput-notchedOutline": {
-                        borderRadius: "1rem",
-                      },
-                    }}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() =>
-                            dispatch({
-                              page: "toggle-password-visibility",
-                              passwordField: "confirmPassword",
-                            })
-                          }
-                          edge="end"
-                        >
-                          {state.passwordStates?.confirmPassword ? (
-                            <VisibilityOff sx={{ color: "white" }} />
-                          ) : (
-                            <Visibility sx={{ color: "white" }} />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    label="Confirm New Password"
+                  }}
+                  autoComplete="off"
+                  inputProps={{
+                    pattern:
+                      state.entryHeader == "Delete Account"
+                        ? "DELETE"
+                        : undefined,
+                    title:
+                      state.entryHeader == "Delete Account"
+                        ? "Please type DELETE to confirm account deletion."
+                        : undefined,
+                  }}
+                  required={state.required}
+                  name="form-entry-field"
+                  label={
+                    state.entryHeader == "Delete Account"
+                      ? "Type DELETE to confirm"
+                      : state.entryHeader
+                  }
+                  defaultValue={state.entryDefaultValue}
+                />
+              </form>
+            )}
+            {state.entryType == "date" && (
+              <Box
+                sx={{
+                  width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
+                  margin: isPhone ? "2rem 0.5rem" : "2rem 1rem",
+                }}
+              >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <StyledDatePicker
+                    format="DD MMM YYYY"
+                    defaultValue={dayjs(state.entryDefaultValue)}
+                    label="Birthday"
+                    name="form-entry-date"
                   />
-                </StyledFormControl>
-              </>
+                </LocalizationProvider>
+              </Box>
             )}
             <Stack
               direction="row"
@@ -869,6 +1066,7 @@ export default function Settings() {
                   fontFamily: "Segoe UI",
                   borderRadius: "2rem",
                   padding: "0.3rem 1rem 0.4rem 1rem",
+                  color: "var(--mui-palette-text-primary)",
                 }}
                 onClick={() => {
                   dispatch({ page: "main" });
@@ -877,14 +1075,70 @@ export default function Settings() {
                 Cancel
               </Button>
               <Button
-                disabled
                 variant="contained"
+                disableElevation
+                id="submit-button"
+                disabled={
+                  state.entryValue === (state.entryDefaultValue || "").trim()
+                }
+                loading={isSubmitting}
+                onClick={() => {
+                  if (
+                    state.entryType == "text" &&
+                    state.entryHeader != "Delete Account"
+                  ) {
+                    const form = document.getElementById(
+                      "form-entry-form",
+                    ) as HTMLFormElement | null;
+                    if (form?.checkValidity()) {
+                      const input = document.querySelector(
+                        'input[name="form-entry-field"]',
+                      ) as HTMLInputElement | null;
+                      handleSubmitSettingsForm(sanitize(input?.value || ""));
+                    } else {
+                      form?.reportValidity();
+                    }
+                  } else if (
+                    state.entryType == "text" &&
+                    state.entryHeader == "Delete Account"
+                  ) {
+                    const form = document.getElementById(
+                      "form-entry-form",
+                    ) as HTMLFormElement | null;
+                    if (form?.checkValidity()) {
+                      const input = document.getElementById(
+                        "old-password",
+                      ) as HTMLInputElement | null;
+                      deleteUserAccount(
+                        accountState.userDetails?.uid || "",
+                        accountState.userDetails?.email || "",
+                        accountState.userDetails?.provider || "",
+                        input?.value || "",
+                      );
+                    } else {
+                      form?.reportValidity();
+                    }
+                  } else if (state.entryType == "date") {
+                    const input = document.querySelector(
+                      'input[name="form-entry-date"]',
+                    ) as HTMLInputElement | null;
+                    const formattedDate = dayjs(input?.value).format(
+                      "YYYY-MM-DD",
+                    );
+                    handleSubmitSettingsForm(formattedDate);
+                  }
+                }}
                 sx={{
                   textTransform: "none",
                   borderRadius: "2rem",
                   fontSize: "1rem",
                   fontFamily: "Segoe UI",
+                  color: "var(--mui-palette-text-primary)",
                   padding: "0.3rem 1.4rem 0.4rem 1.4rem",
+                  backgroundColor: "var(--mui-palette-secondary-main)",
+                  "&:hover": {
+                    backgroundColor: "var(--mui-palette-secondary-light)",
+                  },
                 }}
               >
                 {state.entryHeader == "Delete Account"
@@ -897,6 +1151,26 @@ export default function Settings() {
           </Box>
         </motion.div>
       )}
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isSuccess}
+        message="Save Successful"
+      />
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isError}
+        message={errorMessage == "" ? "Error" : `Error - ${errorMessage}`}
+      />
     </>
   );
 }

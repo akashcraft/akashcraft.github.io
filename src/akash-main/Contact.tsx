@@ -110,6 +110,9 @@ function Contact() {
             <CircularButton
               variant="text"
               onClick={() => {
+                sessionStorage.removeItem("name");
+                sessionStorage.removeItem("email");
+                sessionStorage.removeItem("message");
                 sessionStorage.setItem("homeScroll", "0");
                 navigate("/");
               }}

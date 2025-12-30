@@ -42,6 +42,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetImages } from "./Hooks";
 import { headerImages } from "./headerData";
+import { auth } from "./firebaseHooks";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const headerContainer = document.createElement("div");
@@ -156,6 +157,15 @@ function Header() {
       navigate("/web");
     } else {
       navigate("/");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      sessionStorage.removeItem("account-name");
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -342,8 +352,16 @@ function Header() {
                     <Person sx={ChipIconWithTextStyle} />
                   )
                 }
-                label={breadcrumbLabel === "Account" ? "Exit" : "Login"}
+                label={
+                  breadcrumbLabel === "Account"
+                    ? "Exit"
+                    : (sessionStorage.getItem("account-name")?.split(" ")[0] ??
+                      "Login")
+                }
                 onClick={() => {
+                  if (breadcrumbLabel === "Account") {
+                    handleLogout();
+                  }
                   navigate("/login");
                 }}
               />
@@ -434,8 +452,17 @@ function Header() {
                           <Person sx={ChipIconStyle} />
                         )
                       }
-                      label={breadcrumbLabel == "Account" ? "Exit" : "Login"}
+                      label={
+                        breadcrumbLabel == "Account"
+                          ? "Exit"
+                          : (sessionStorage
+                              .getItem("account-name")
+                              ?.split(" ")[0] ?? "Login")
+                      }
                       onClick={() => {
+                        if (breadcrumbLabel === "Account") {
+                          handleLogout();
+                        }
                         navigate("/login");
                       }}
                     />

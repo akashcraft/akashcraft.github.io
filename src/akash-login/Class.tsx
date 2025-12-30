@@ -143,7 +143,10 @@ export function Class() {
                 disableElevation
                 startIcon={<AddOutlined sx={{ color: "inherit" }} />}
                 sx={{
-                  backgroundColor: "var(--mui-palette-background-button)",
+                  backgroundColor: "var(--mui-palette-secondary-main)",
+                  "&:hover": {
+                    backgroundColor: "var(--mui-palette-secondary-light)",
+                  },
                   color: "var(--mui-palette-text-primary)",
                 }}
               >

@@ -168,6 +168,12 @@ export default function Admin() {
                 <StyledDropChip
                   icon={<ReplayOutlined sx={{ color: "white !important" }} />}
                   label="Reset"
+                  sx={{
+                    backgroundColor: "var(--mui-palette-secondary-main)",
+                    "&:hover": {
+                      backgroundColor: "var(--mui-palette-secondary-light)",
+                    },
+                  }}
                 />
               }
             >
@@ -269,6 +275,7 @@ export default function Admin() {
                   fontFamily: "Segoe UI",
                   borderRadius: "2rem",
                   padding: "0.3rem 1rem 0.4rem 1rem",
+                  color: "var(--mui-palette-text-primary)",
                 }}
                 onClick={() => {
                   dispatch({ page: "main" });
@@ -277,14 +284,19 @@ export default function Admin() {
                 Cancel
               </Button>
               <Button
-                disabled
                 variant="contained"
+                disableElevation
                 sx={{
                   textTransform: "none",
                   borderRadius: "2rem",
                   fontSize: "1rem",
                   fontFamily: "Segoe UI",
                   padding: "0.3rem 1.4rem 0.4rem 1.4rem",
+                  backgroundColor: "var(--mui-palette-secondary-main)",
+                  "&:hover": {
+                    backgroundColor: "var(--mui-palette-secondary-light)",
+                  },
+                  color: "var(--mui-palette-text-primary)",
                 }}
               >
                 {state.entryHeader == "Links" ? "Add" : "Save"}

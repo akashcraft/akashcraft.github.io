@@ -38,6 +38,14 @@ import { Links } from "./Links";
 import Admin from "./Admin";
 import { Exam } from "./Exam";
 import { Class } from "./Class";
+import {
+  AccountContext,
+  reducerAccount,
+  type AccountState,
+} from "./AccountContext";
+import { useEffect, useReducer } from "react";
+import { auth, db } from "../akash-commons/firebaseHooks";
+import { doc, onSnapshot } from "firebase/firestore";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -97,11 +105,66 @@ export function Account() {
   const isLight = mode === "light";
   const { page } = useParams();
   const selectedPage = page || "home";
-
   const navigate = useNavigate();
+  const [accountState, dispatchAccount] = useReducer(
+    reducerAccount,
+    {} as AccountState,
+  );
+
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userDocRef = doc(db, "user", user.uid);
+
+        const unsubscribeDoc = onSnapshot(
+          userDocRef,
+          (docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+
+              dispatchAccount({
+                type: "updateUserDetails",
+                userDetails: {
+                  name: data.name ?? "",
+                  email: data.email ?? "",
+                  uid: user.uid ?? "",
+                  photo: data.photo ?? "",
+                  provider: data.provider ?? "",
+                  dateOfBirth: data.dateOfBirth ?? "",
+                  university: data.university ?? "",
+                  semester: data.semester ?? "",
+                  accentColour: data.accentColour ?? "Orange",
+                  wallpaper: data.wallpaper ?? "Waves",
+                  game: data.game ?? "Dice",
+                },
+              });
+
+              if (data.name) {
+                sessionStorage.setItem("account-name", data.name);
+              }
+            }
+          },
+          (error) => {
+            console.error(error);
+          },
+        );
+
+        return () => unsubscribeDoc();
+      } else {
+        navigate("/login");
+      }
+    });
+
+    return () => unsubscribeAuth();
+  }, [navigate]);
 
   return (
-    <>
+    <AccountContext.Provider
+      value={{
+        accountState: accountState,
+        dispatch: dispatchAccount,
+      }}
+    >
       <Box
         style={{
           position: "fixed",
@@ -222,6 +285,7 @@ export function Account() {
                     onclick={() => {
                       navigate("/account/settings");
                     }}
+                    isProfilePic
                     avatar={
                       <AccountCircleOutlined
                         sx={{
@@ -231,8 +295,20 @@ export function Account() {
                         }}
                       />
                     }
-                    heading={getGreeting() + " Guest!"}
-                    description="guest@akashcraft.ca"
+                    isLoading={accountState.userDetails == undefined}
+                    heading={
+                      getGreeting() +
+                      " " +
+                      (accountState.userDetails?.name
+                        ? accountState.userDetails.name.split(" ")[0]
+                        : "Guest") +
+                      "!"
+                    }
+                    description={
+                      accountState.userDetails?.email
+                        ? accountState.userDetails.email
+                        : "guest@akashcraft.ca"
+                    }
                   />
                   <AccountHeaderBox
                     avatar={
@@ -339,7 +415,7 @@ export function Account() {
           </motion.div>
         </Stack>
       </HolderBox>
-    </>
+    </AccountContext.Provider>
   );
 }
 

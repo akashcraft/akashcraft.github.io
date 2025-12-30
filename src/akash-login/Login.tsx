@@ -28,17 +28,18 @@ import errorSound from "../assets/img-contact/error.mp3";
 import successSound from "../assets/img-contact/success.mp3";
 import { motion } from "framer-motion";
 import {
-  CheckCircleOutlineOutlined,
   Close,
   Google,
-  Facebook,
-  Apple,
   AccountCircleOutlined,
   CalendarMonthOutlined,
   BrushOutlined,
   VisibilityOff,
   Visibility,
   MoneyOffOutlined,
+  EmailOutlined,
+  KeyOutlined,
+  CheckCircleOutlineOutlined,
+  GitHub,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import {
@@ -85,9 +86,10 @@ const getErrorText = (statusCode: number): string => {
   const errorMessages: Record<number, string> = {
     400: "Incorrect Credentials Entered",
     401: "Unauthorized",
-    403: "Forbidden",
-    404: "Not Found",
-    409: "Account already exists",
+    403: "Account Disabled",
+    404: "Email Verification Pending",
+    409: "Account Already Exists",
+    410: "Authorization Denied",
     500: "Server Error",
     503: "Service Unavailable",
   };
@@ -98,9 +100,10 @@ const getErrorSubText = (statusCode: number): string => {
   const errorMessages: Record<number, string> = {
     400: "Please check your credentials and try again",
     401: "You are not authorized to access this service. Please contact an administrator.",
-    403: "You do not have permission to access this service. Please contact an administrator.",
-    404: "The requested resource was not found",
-    409: "An account with this email already exists. Please use a different email.",
+    403: "Your account has been disabled. Please contact an administrator.",
+    404: "Please verify your email before logging in. Check your inbox for a verification email.",
+    409: "An account with that email already exists. Please use a different email or provider.",
+    410: "You have rejected the authorization request from AkashCraft",
     500: "Internal server error occurred. Please try again later.",
     503: "This service is currently unavailable. Please try again later.",
   };
@@ -115,8 +118,10 @@ function Login() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isPasswordTyped, setIsPasswordTyped] = useState<boolean>(false);
+  const [isPasswordForgotten, setIsPasswordForgotten] =
+    useState<boolean>(false);
   const [isLoginPage, setIsLoginPage] = useState<boolean>(
-    sessionStorage.getItem("loggedIn") === "true",
+    localStorage.getItem("loggedIn") === "true",
   );
   const swiperRef = useRef<SwiperType | null>(null);
 
@@ -142,8 +147,15 @@ function Login() {
     submitLoginForm(data);
   };
 
-  const { isSubmitting, isError, isSuccess, statusCode, submitLoginForm } =
-    useLoginSubmit();
+  const {
+    isSubmitting,
+    isError,
+    isSuccess,
+    statusCode,
+    submitLoginForm,
+    signInWithGoogle,
+    signInWithGitHub,
+  } = useLoginSubmit();
 
   const isLoading = useGetImages([welcome1, welcome2, welcome3, logo]);
 
@@ -197,6 +209,8 @@ function Login() {
             <CircularButton
               variant="text"
               onClick={() => {
+                sessionStorage.removeItem("name");
+                sessionStorage.removeItem("email");
                 sessionStorage.setItem("homeScroll", "0");
                 navigate("/");
               }}
@@ -225,7 +239,6 @@ function Login() {
                 marginTop: "3rem",
                 marginBottom: "0rem",
                 marginLeft: "0.5rem",
-                alignSelf: "flex-start",
               }}
             >
               {!(
@@ -305,7 +318,11 @@ function Login() {
               muted
               loop
               playsInline
-              style={{ width: isPhone ? "50%" : "15rem", maxWidth: "15rem" }}
+              style={{
+                width: isPhone ? "50%" : "15rem",
+                maxWidth: "15rem",
+                marginBottom: "1.5rem",
+              }}
             />
           )}
           {!(
@@ -320,13 +337,23 @@ function Login() {
               animate={{ scale: isPhone ? [0, 1.5, 1] : [0, 2.5, 2] }}
               transition={{ duration: 0.5, ease: [0.05, 0.8, 0.35, 0.99] }}
             >
-              <AccountCircleOutlined
-                sx={{
-                  color: "var(--mui-palette-primary-main)",
-                  fontSize: isPhone ? "6rem" : "10rem",
-                  marginBottom: isPhone ? "1rem" : "0rem",
-                }}
-              />
+              {isPasswordForgotten ? (
+                <KeyOutlined
+                  sx={{
+                    color: "var(--mui-palette-primary-main)",
+                    fontSize: isPhone ? "6rem" : "10rem",
+                    marginBottom: isPhone ? "1rem" : "0rem",
+                  }}
+                />
+              ) : (
+                <AccountCircleOutlined
+                  sx={{
+                    color: "var(--mui-palette-primary-main)",
+                    fontSize: isPhone ? "6rem" : "10rem",
+                    marginBottom: isPhone ? "1rem" : "0rem",
+                  }}
+                />
+              )}
             </motion.div>
           )}
           {isSuccess && (
@@ -335,13 +362,23 @@ function Login() {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <CheckCircleOutlineOutlined
-                sx={{
-                  color: "var(--mui-palette-success-main)",
-                  fontSize: isPhone ? "6rem" : "10rem",
-                  marginBottom: "2rem",
-                }}
-              />
+              {isLoginPage && isSuccess && !isPasswordForgotten ? (
+                <CheckCircleOutlineOutlined
+                  sx={{
+                    color: "var(--mui-palette-success-main)",
+                    fontSize: isPhone ? "6rem" : "10rem",
+                    marginBottom: "1rem",
+                  }}
+                />
+              ) : (
+                <EmailOutlined
+                  sx={{
+                    color: "var(--mui-palette-success-main)",
+                    fontSize: isPhone ? "6rem" : "10rem",
+                    marginBottom: "1rem",
+                  }}
+                />
+              )}
             </motion.div>
           )}
           {isError && (
@@ -354,7 +391,6 @@ function Login() {
               style={{
                 width: isPhone ? "50%" : "15rem",
                 maxWidth: "15rem",
-                marginBottom: "2rem",
               }}
             />
           )}
@@ -362,6 +398,11 @@ function Login() {
         <Stack
           width={isPhone ? "100%" : "50%"}
           justifyContent="center"
+          alignItems={
+            isPhone && !(isSubmitting || isError || isSuccess)
+              ? "center"
+              : "flex-start"
+          }
           spacing={2}
           margin="auto"
         >
@@ -402,35 +443,46 @@ function Login() {
               >
                 {isSubmitting
                   ? isLoginPage
-                    ? "Signing you in..."
+                    ? isPasswordForgotten
+                      ? "Sending..."
+                      : "Signing you in..."
                     : "Creating your account..."
                   : isError
                     ? getErrorText(statusCode)
                     : isSuccess
-                      ? "Signed in successfully"
+                      ? isLoginPage
+                        ? isPasswordForgotten
+                          ? "Password Reset Link Sent"
+                          : "Signed in successfully"
+                        : "Account created successfully"
                       : isLoginPage
-                        ? "Sign in to AkashCraft"
+                        ? isPasswordForgotten
+                          ? "Password Reset"
+                          : "Sign in to AkashCraft"
                         : "Sign up for an account"}
               </h1>
             </Stack>
             <p
               style={{
-                marginBottom:
-                  isPhone || isSubmitting || isSuccess || isError
-                    ? "0rem"
-                    : "1rem",
+                marginRight: isPhone ? "0rem" : "10rem",
               }}
             >
               {isError
                 ? getErrorSubText(statusCode)
                 : isSuccess
-                  ? "Not Implemented"
+                  ? isLoginPage
+                    ? isPasswordForgotten
+                      ? "A password reset link has been sent to your email address"
+                      : "You should be redirected shortly"
+                    : "Please verify your email before logging in. Check your inbox for a verification email."
                   : isSubmitting
                     ? "Hang tight!"
                     : isLoginPage
-                      ? isPhone
-                        ? "Welcome back!"
-                        : "Welcome back! Please enter your credentials to sign in"
+                      ? isPasswordForgotten
+                        ? "Enter your email and we will send you a password reset link if an account with that email exists."
+                        : isPhone
+                          ? "Welcome back!"
+                          : "Welcome back! Please enter your credentials to sign in"
                       : "Access exclusive features and content by creating an AkashCraft account"}
             </p>
             {!(isSubmitting || isSuccess || isError) && (
@@ -458,6 +510,16 @@ function Login() {
                         onChange={(e) => {
                           sessionStorage.setItem("name", e.target.value);
                         }}
+                        onKeyDownCapture={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            (
+                              document.querySelector(
+                                'input[name="email"]',
+                              ) as HTMLInputElement
+                            )?.focus();
+                          }
+                        }}
                         type="text"
                         name="name"
                         placeholder="Name"
@@ -472,84 +534,127 @@ function Login() {
                       onChange={(e) => {
                         sessionStorage.setItem("email", e.target.value);
                       }}
+                      onKeyDownCapture={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          (
+                            document.querySelector(
+                              'input[name="password"]',
+                            ) as HTMLInputElement
+                          )?.focus();
+                        }
+                      }}
                       type="email"
                       name="email"
                       placeholder="Email"
                       defaultValue={sessionStorage.getItem("email") ?? ""}
                     />
                   </StyledHolder>
-                  <StyledHolder>
-                    <p>
-                      {isLoginPage
-                        ? "Enter your password"
-                        : "Create a password"}
-                    </p>
-                    <FormControl variant="standard" fullWidth>
-                      <InputBase
-                        required
-                        name="password"
-                        placeholder="Password"
-                        type={showPassword ? "text" : "password"}
-                        onChange={(value) => {
-                          if (value.currentTarget.value == "") {
-                            setIsPasswordTyped(false);
-                          } else {
-                            setIsPasswordTyped(true);
+                  {!isPasswordForgotten && (
+                    <StyledHolder>
+                      <p>
+                        {isLoginPage
+                          ? "Enter your password"
+                          : "Create a password"}
+                      </p>
+                      <FormControl variant="standard" fullWidth>
+                        <InputBase
+                          required
+                          name="password"
+                          placeholder="Password"
+                          type={showPassword ? "text" : "password"}
+                          inputProps={{ minLength: 8 }}
+                          onChange={(value) => {
+                            if (value.currentTarget.value == "") {
+                              setIsPasswordTyped(false);
+                            } else {
+                              setIsPasswordTyped(true);
+                            }
+                          }}
+                          onKeyDownCapture={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              (
+                                document.querySelector(
+                                  "#submit-button",
+                                ) as HTMLInputElement
+                              )?.click();
+                            }
+                          }}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label={
+                                  showPassword
+                                    ? "hide the password"
+                                    : "display the password"
+                                }
+                                onClick={() => setShowPassword((prev) => !prev)}
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
                           }
-                        }}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label={
-                                showPassword
-                                  ? "hide the password"
-                                  : "display the password"
-                              }
-                              onClick={() => setShowPassword((prev) => !prev)}
-                            >
-                              {showPassword ? (
-                                <VisibilityOff />
-                              ) : (
-                                <Visibility />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        sx={{
-                          padding: "0.5rem",
-                          borderRadius: "0.25rem",
-                          border: "none",
-                          fontFamily: "Segoe UI",
-                          fontSize: "1rem",
-                          height: "2.5rem",
-                          letterSpacing:
-                            showPassword || !isPasswordTyped
-                              ? "normal"
-                              : "0.15rem",
-                          backgroundColor:
-                            "var(--mui-palette-background-macosfinder)",
-                          color: "var(--mui-palette-text-secondary)",
-                          "&:active, &:focus": {
-                            outline: "none",
-                          },
-                          "&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus":
-                            {
-                              WebkitBoxShadow:
-                                "0 0 0px 1000px var(--mui-palette-background-macosfinder) inset !important",
-                              boxShadow:
-                                "0 0 0px 1000px var(--mui-palette-background-macosfinder) inset !important",
-                              WebkitTextFillColor:
-                                "var(--mui-palette-text-secondary) !important",
+                          sx={{
+                            padding: "0.5rem",
+                            borderRadius: "0.25rem",
+                            border: "none",
+                            fontFamily: "Segoe UI",
+                            fontSize: "1rem",
+                            height: "2.5rem",
+                            letterSpacing:
+                              showPassword || !isPasswordTyped
+                                ? "normal"
+                                : "0.15rem",
+                            backgroundColor:
+                              "var(--mui-palette-background-macosfinder)",
+                            color: "var(--mui-palette-text-secondary)",
+                            "&:active, &:focus": {
+                              outline: "none",
                             },
-                        }}
-                      />
-                    </FormControl>
-                  </StyledHolder>
+                            "&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus":
+                              {
+                                WebkitBoxShadow:
+                                  "0 0 0px 1000px var(--mui-palette-background-macosfinder) inset !important",
+                                boxShadow:
+                                  "0 0 0px 1000px var(--mui-palette-background-macosfinder) inset !important",
+                                WebkitTextFillColor:
+                                  "var(--mui-palette-text-secondary) !important",
+                              },
+                          }}
+                        />
+                      </FormControl>
+                    </StyledHolder>
+                  )}
                 </Stack>
+                {isLoginPage && !isPasswordForgotten && (
+                  <SubmitButton
+                    variant="text"
+                    onClick={() => {
+                      setIsPasswordForgotten(true);
+                      const email = document.querySelector(
+                        'input[name="email"]',
+                      ) as HTMLInputElement;
+                      email.value = "";
+                      email?.focus();
+                    }}
+                    sx={{
+                      color: "var(--mui-palette-primary-main)",
+                      padding: "0",
+                      width: "fit-content",
+                      alignSelf: "flex-end",
+                    }}
+                  >
+                    Forgot your password?
+                  </SubmitButton>
+                )}
               </form>
             )}
-            {!(isPhone || isSubmitting || isSuccess || isError) && <br />}
-            {!(isSubmitting || isSuccess || isError) && (
+            {!(isSubmitting || isSuccess || isError || isPasswordForgotten) && (
               <>
                 <p>
                   {isLoginPage
@@ -558,42 +663,51 @@ function Login() {
                 </p>
                 <Stack direction="row" spacing={2}>
                   <StyledTooltip title="Google" placement="bottom">
-                    <CircularButton variant="outlined" onClick={handleSubmit}>
+                    <CircularButton
+                      variant="outlined"
+                      onClick={signInWithGoogle}
+                    >
                       <Google />
                     </CircularButton>
                   </StyledTooltip>
-                  <StyledTooltip title="Facebook" placement="bottom">
-                    <CircularButton variant="outlined" onClick={handleSubmit}>
-                      <Facebook />
-                    </CircularButton>
-                  </StyledTooltip>
-                  <StyledTooltip title="Apple" placement="bottom">
-                    <CircularButton variant="outlined" onClick={handleSubmit}>
-                      <Apple />
+                  <StyledTooltip title="GitHub" placement="bottom">
+                    <CircularButton
+                      variant="outlined"
+                      onClick={signInWithGitHub}
+                    >
+                      <GitHub />
                     </CircularButton>
                   </StyledTooltip>
                 </Stack>
               </>
             )}
           </motion.div>
-          {!(isSuccess || isSubmitting || isError) && (
+          {!(isSuccess || isSubmitting || isError || isPasswordForgotten) && (
             <SwitchStack
               sx={{
-                position: isPhone ? "block" : "absolute",
-                margin: isPhone ? "1rem 0" : "none",
+                position: isPhone ? "relative" : "absolute",
+                top: isPhone ? "-0.25rem" : "unset",
+                left: isPhone ? (isLoginPage ? "0.25rem" : "-0.55rem") : "50%",
+                width: isPhone ? "100%" : "auto",
+                maxWidth: isPhone ? "95%" : "auto",
               }}
             >
               <SubmitButton
                 variant="text"
                 onClick={() => {
-                  sessionStorage.setItem(
+                  localStorage.setItem(
                     "loggedIn",
                     isLoginPage ? "false" : "true",
                   );
+                  const passwordInput = document.querySelector(
+                    'input[name="password"]',
+                  ) as HTMLInputElement | null;
+                  passwordInput!.value = "";
                   setIsLoginPage((prev) => !prev);
                 }}
                 sx={{
                   color: "var(--mui-palette-primary-main)",
+                  padding: "0",
                 }}
               >
                 {isLoginPage
@@ -603,25 +717,28 @@ function Login() {
             </SwitchStack>
           )}
           <SubmitStack
-            sx={{ position: isPhone ? "block" : "absolute" }}
-            justifyContent={
-              !isPhone
-                ? "flex-start"
-                : isSubmitting || isSuccess || isError
-                  ? "flex-end"
-                  : "space-between"
-            }
+            sx={{
+              position: isPhone ? "static" : "absolute",
+              width: isPhone ? "100%" : "auto",
+              maxWidth: isPhone ? "95%" : "auto",
+            }}
+            justifyContent={"flex-end"}
           >
             {!(isSuccess || isSubmitting) && (
               <SubmitButton
                 variant="text"
                 onClick={() => {
-                  if (isError) {
-                    window.location.reload();
+                  sessionStorage.removeItem("name");
+                  sessionStorage.removeItem("email");
+                  sessionStorage.setItem("homeScroll", "0");
+                  if (isPasswordForgotten) {
+                    (
+                      document.querySelector(
+                        'input[name="email"]',
+                      ) as HTMLInputElement
+                    ).value = "";
+                    setIsPasswordForgotten(false);
                   } else {
-                    sessionStorage.removeItem("name");
-                    sessionStorage.removeItem("email");
-                    sessionStorage.setItem("homeScroll", "0");
                     navigate("/");
                   }
                 }}
@@ -629,18 +746,17 @@ function Login() {
                   color: "var(--mui-palette-primary-main)",
                 }}
               >
-                {isError ? "Try Again" : "Cancel"}
+                {isPasswordForgotten ? "Back" : "Cancel"}
               </SubmitButton>
             )}
             <SubmitButton
               variant="contained"
+              id="submit-button"
               onClick={(e) => {
                 e.preventDefault();
                 if (isSuccess || isError) {
-                  sessionStorage.removeItem("name");
-                  sessionStorage.removeItem("email");
-                  sessionStorage.setItem("homeScroll", "0");
-                  navigate("/");
+                  localStorage.setItem("loggedIn", "true");
+                  window.location.reload();
                 } else {
                   const form = document.getElementById(
                     "login-form",
@@ -660,11 +776,13 @@ function Login() {
               disabled={isSubmitting}
               loading={isSubmitting}
             >
-              {isSuccess || isError
+              {isSuccess
                 ? "Finish"
-                : isLoginPage
-                  ? "Continue"
-                  : "Create"}
+                : isError
+                  ? "Try Again"
+                  : isLoginPage
+                    ? "Continue"
+                    : "Create"}
             </SubmitButton>
           </SubmitStack>
         </Stack>
@@ -702,8 +820,8 @@ const SubmitStack = styled(Stack)({
 
 const SwitchStack = styled(Stack)({
   flexDirection: "row",
-  bottom: "2rem",
-  left: "49.3%",
+  bottom: "2.4rem",
+  left: "50%",
   gap: "1rem",
 });
 

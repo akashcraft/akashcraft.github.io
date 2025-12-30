@@ -89,9 +89,9 @@ function Education() {
               sx={{
                 margin: "0.25rem 0.5rem",
                 marginLeft: "0rem",
-                backgroundColor: "var(--mui-palette-background-buttondark)",
+                backgroundColor: "var(--mui-palette-secondary-main)",
                 "&:hover": {
-                  backgroundColor: "var(--mui-palette-background-button)",
+                  backgroundColor: "var(--mui-palette-secondary-light)",
                 },
                 color: "var(--mui-palette-text-primary)",
               }}

@@ -1,10 +1,12 @@
 import { initializeApp } from "firebase/app";
 import {
   collection,
-  getFirestore,
   doc,
-  setDoc,
+  initializeFirestore,
   onSnapshot,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  setDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
@@ -19,6 +21,13 @@ export const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
+
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager(),
+  }),
+});
+
 export const auth = getAuth();
 
 export function useGetCount(recordName: string) {
@@ -27,7 +36,6 @@ export function useGetCount(recordName: string) {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    const db = getFirestore(app);
     const collectionRef = collection(db, "count");
     const recordRef = doc(collectionRef, recordName);
 
@@ -57,7 +65,6 @@ export function useGetCount(recordName: string) {
   return { count, loading, error };
 }
 export async function updateCount(number: number, recordName: string) {
-  const db = getFirestore(app);
   const collectionRef = collection(db, "count");
   const recordRef = doc(collectionRef, recordName);
 
@@ -85,7 +92,6 @@ export const useContactSubmit = () => {
     setIsSuccess(false);
 
     try {
-      const db = getFirestore(app);
       const collectionRef = collection(db, "contacts");
       const contactRef = doc(collectionRef);
       await setDoc(contactRef, data);

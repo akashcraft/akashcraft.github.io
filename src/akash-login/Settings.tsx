@@ -371,10 +371,8 @@ export default function Settings() {
                     sx={{
                       backgroundColor:
                         accountState.userDetails?.accentColour ?? "unset",
-                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
                       "&:hover": {
-                        backgroundColor:
-                          accountState.userDetails?.accentColour ?? "unset",
+                        bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 10%)`,
                       },
                       color: "var(--mui-palette-text-primary)",
                     }}
@@ -1320,8 +1318,8 @@ export default function Settings() {
         }}
         open={isSuccess}
         message={`${
-          state.entryType == "password" ? "Password Change" : "Save"
-        } Successful`}
+          state.entryType == "password" ? "Password changed" : "Setting updated"
+        } successfully`}
       />
       <Snackbar
         sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}

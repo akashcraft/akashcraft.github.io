@@ -441,7 +441,7 @@ export default function Admin() {
           },
         }}
         open={isError}
-        message={errorMessage == "" ? "Error" : `Error - ${errorMessage}`}
+        message={errorMessage == "" ? "Error" : `${errorMessage}`}
       />
     </>
   );

@@ -46,7 +46,7 @@ import {
 } from "./AccountContext";
 import { useEffect, useReducer } from "react";
 import { auth, db } from "../akash-commons/firebaseHooks";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import { BlobDark, BlobLight } from "../akash-svg/Blob";
 import { GradientDark, GradientLight } from "../akash-svg/Gradient";
 import { PeaksLight } from "../akash-svg/Peaks";
@@ -184,6 +184,11 @@ export function Account() {
         const userDocRef = doc(db, "user", user.uid);
         const linkGeneralRef = doc(db, "link", "general");
         const linksCollectionRef = collection(db, "link");
+        const examsCollectionRef = collection(db, "exam");
+        const examQuery = query(
+          examsCollectionRef,
+          where("uid", "==", user.uid),
+        );
 
         const unsubscribeUser = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
@@ -202,6 +207,8 @@ export function Account() {
                 accentColour: data.accentColour ?? "Orange",
                 wallpaper: data.wallpaper ?? "Waves",
                 game: data.game ?? "Dice",
+                classSharing: data.classSharing ?? false,
+                examSharing: data.examSharing ?? false,
               },
             });
             if (data.name) sessionStorage.setItem("account-name", data.name);
@@ -233,10 +240,36 @@ export function Account() {
           });
         });
 
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const unsubscribeExams = onSnapshot(examQuery, (querySnap) => {
+          const allExams = querySnap.docs
+            .map((doc) => {
+              const data = doc.data();
+              return {
+                courseName: data.courseName,
+                date: data.date,
+                time: data.time,
+                uid: doc.id,
+              };
+            })
+            .filter((exam) => new Date(exam.date) >= now)
+            .sort(
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            );
+
+          dispatchAccount({
+            type: "updateExams",
+            exams: allExams,
+          });
+        });
+
         return () => {
           unsubscribeUser();
           unsubscribeGeneral();
           unsubscribeLinks();
+          unsubscribeExams();
         };
       } else {
         navigate("/login");
@@ -470,7 +503,21 @@ export function Account() {
                         />
                       }
                       heading="Next Exam"
-                      description="DEMO 1000 in 10 days"
+                      description={
+                        accountState.exams?.length > 0
+                          ? `${accountState.exams[0].courseName} in ${Math.max(
+                              0,
+                              Math.ceil(
+                                (new Date(
+                                  `${accountState.exams[0].date}`,
+                                ).getTime() -
+                                  new Date().getTime()) /
+                                  (1000 * 60 * 60 * 24),
+                              ),
+                            )} days`
+                          : "Hooray! No Exams"
+                      }
+                      isLoading={accountState.exams == undefined}
                     />
                     {accountState.general?.privateAnnouncement ? (
                       <AccountHeaderBox
@@ -560,6 +607,7 @@ export function Account() {
                         <h3 style={{ margin: "0 0 1rem 0" }}>Exam Schedule</h3>
                         <Box sx={{ height: "calc(100% - 2.75rem)" }}>
                           <ExamSchedule
+                            accountState={accountState}
                             onEmpty={() => {
                               navigate(`/account/exam`);
                               window.scrollTo(0, 0);
@@ -585,6 +633,7 @@ export function Account() {
                               navigate(`/account/class`);
                               window.scrollTo(0, 0);
                             }}
+                            accountState={accountState}
                           />
                         </Box>
                       </StyledHeaderPaper>

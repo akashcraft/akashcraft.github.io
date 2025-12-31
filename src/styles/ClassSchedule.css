@@ -1,27 +1,51 @@
-/* Reduce row height & soften grid */
+.fc {
+  --fc-border-color: var(--mui-palette-text-light2);
+}
+
+.fc-scrollgrid-sync-inner,
+.fc-timegrid-axis {
+  border: none;
+  box-shadow: none;
+  background-color: color-mix(in srgb, var(--calendar-accent), black 20%) !important;
+}
+
+.fc-col-header-cell-cushion {
+  color: white !important;
+}
+
+.fc-timegrid-axis-frame {
+  background-color: color-mix(in srgb, var(--calendar-accent), black 20%) !important;
+}
+
 .fc-timegrid-slot.fc-timegrid-slot-lane {
   height: 20px !important;
 }
 
-/* Event card (orange blocks) */
 .fc-event {
-  background-color: #f28c28;
-  border: none;
-  padding: 10px;
-  text-align: center;
-  width: calc(100% + 0.05rem);
+  background-color: color-mix(in srgb, var(--calendar-accent), transparent 15%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  padding: 2px 4px !important;
+  border-radius: 4px;
+  width: auto !important;
+  transition: transform 0.2s ease-in-out, background-color 0.2s !important;
+  cursor: pointer;
+  z-index: 1;
 }
 
-.fc-scrollgrid-sync-inner {
-  border: none;
-  box-shadow: none;
-  background-color: #97502d;
+.fc-event:hover {
+  transform: scale(1.05);
+  z-index: 10 !important;
+  background-color: var(--calendar-accent) !important;
+  filter: brightness(1.1);
 }
 
-.fc-timegrid-axis {
-  background-color: #97502d;
+.fc-event-main {
+  color: white !important;
+  font-size: 0.75rem !important;
+  line-height: 1.2;
 }
 
-.fc {
-  --fc-border-color: var(--mui-palette-text-light2);
+.fc-event-time {
+  font-weight: bold !important;
+  margin-bottom: 2px;
 }

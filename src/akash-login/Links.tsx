@@ -18,6 +18,7 @@ import EmptyState from "./EmptyState";
 import { AccountContext } from "./AccountContext";
 import { useContext, useState } from "react";
 import { useAdminLinkDelete } from "./AuthHooks";
+import { StyledHeaderPaper } from "./AccountHeaderBox";
 
 const adminUID = "NBH76id0H9gunlBAxynGWjsSomP2";
 
@@ -48,18 +49,20 @@ export function Links() {
         )}
       </Stack>
       {accountState.links?.length === 0 ? (
-        <EmptyState
-          header="No links available"
-          height="70dvh"
-          icon={
-            <LinkOffOutlined
-              style={{
-                fontSize: "4rem",
-                color: "var(--mui-palette-background-button)",
-              }}
-            />
-          }
-        />
+        <StyledHeaderPaper elevation={0}>
+          <EmptyState
+            header="No links available"
+            height="70dvh"
+            icon={
+              <LinkOffOutlined
+                style={{
+                  fontSize: "4rem",
+                  color: "var(--mui-palette-background-button)",
+                }}
+              />
+            }
+          />
+        </StyledHeaderPaper>
       ) : (
         <StyledList>
           {accountState.links?.map((item, index) => (
@@ -104,8 +107,8 @@ export function Links() {
                   <Delete
                     sx={{
                       ...IconStyle,
-                      marginRight: "1rem",
-                      color: "red !important",
+                      color: "var(--mui-palette-secondary-dark) !important",
+                      marginRight: "0.5rem",
                     }}
                   />
                 </ListItemButton>
@@ -135,7 +138,7 @@ export function Links() {
           },
         }}
         open={isSuccess}
-        message="Link Delete Successful"
+        message="Link deleted successfully"
       />
       <Snackbar
         sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}

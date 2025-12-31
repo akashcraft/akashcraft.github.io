@@ -10,11 +10,12 @@ import {
   styled,
   useMediaQuery,
 } from "@mui/material";
+import "dayjs/locale/en-gb";
 import { StyledHeader } from "./Account";
 import { StyledHeaderPaper } from "./AccountHeaderBox";
 import ExamSchedule from "./ExamSchedule";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   AddOutlined,
   ArrowDropDown,
@@ -29,11 +30,13 @@ import { StyledDatePicker, StyledTimePicker } from "./Pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { AccountContext } from "./AccountContext";
+import { useExamHooks } from "./AuthHooks";
 
 export function Exam() {
   const isPhone = useMediaQuery("(max-width:800px)");
   const navigate = useNavigate();
-  const [isSharing, setIsSharing] = useState<boolean>(true);
+  const { accountState } = useContext(AccountContext);
+
   const [isSnackBarOpen, setSnackBarOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -48,7 +51,23 @@ export function Exam() {
     setAnchorEl(null);
   };
 
-  const { accountState } = useContext(AccountContext);
+  const {
+    isSuccess,
+    successText,
+    isError,
+    isSharing,
+    errorMessage,
+    setIsSharing,
+    updateSharing,
+    addExam,
+    deleteExam,
+  } = useExamHooks();
+
+  useEffect(() => {
+    if (accountState.userDetails?.examSharing !== undefined) {
+      setIsSharing(accountState.userDetails.examSharing);
+    }
+  }, [accountState.userDetails?.examSharing]);
 
   return (
     <>
@@ -82,20 +101,41 @@ export function Exam() {
                 required
                 id="exam-entry-field"
                 label="Course Name"
+                autoComplete="off"
+                inputProps={{ style: { textTransform: "uppercase" } }}
               />
               <Box sx={{ width: isPhone ? "100%" : "48%", flexGrow: 1 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <StyledDatePicker format="DD/MM/YYYY" label="Date" />
+                  <StyledDatePicker
+                    format="DD MMM YYYY"
+                    name="date-picker"
+                    label="Date"
+                    disablePast
+                  />
                 </LocalizationProvider>
               </Box>
               <Box sx={{ width: isPhone ? "100%" : "48%", flexGrow: 1 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <StyledTimePicker format="HH:mm" label="Start Time" />
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en-gb"
+                >
+                  <StyledTimePicker
+                    views={["hours", "minutes"]}
+                    label="Start Time"
+                    name="start-time-picker"
+                  />
                 </LocalizationProvider>
               </Box>
               <Box sx={{ width: isPhone ? "100%" : "48%", flexGrow: 1 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <StyledTimePicker format="HH:mm" label="End Time" />
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en-gb"
+                >
+                  <StyledTimePicker
+                    views={["hours", "minutes"]}
+                    label="End Time"
+                    name="end-time-picker"
+                  />
                 </LocalizationProvider>
               </Box>
             </Stack>
@@ -108,6 +148,20 @@ export function Exam() {
               <ControlButton
                 variant="outlined"
                 startIcon={<PrintOutlined sx={{ color: "inherit" }} />}
+                sx={{
+                  color: "var(--mui-palette-background-paper)",
+                  borderColor: `color-mix(in srgb, var(--mui-palette-background-paper), transparent 50%)`,
+                  borderWidth: 1,
+
+                  "&:hover": {
+                    borderColor:
+                      accountState.userDetails?.accentColour ?? "grey",
+                    backgroundColor: `color-mix(in srgb, var(--mui-palette-background-button), transparent 80%)`,
+                  },
+                  "& p": {
+                    color: "var(--mui-palette-background-paper)",
+                  },
+                }}
               >
                 <p
                   style={{ margin: 0, position: "relative", bottom: "0.07rem" }}
@@ -122,12 +176,31 @@ export function Exam() {
                 sx={{
                   backgroundColor:
                     accountState.userDetails?.accentColour ?? "unset",
-                  bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
                   "&:hover": {
-                    backgroundColor:
-                      accountState.userDetails?.accentColour ?? "unset",
+                    bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 10%)`,
                   },
                   color: "var(--mui-palette-text-primary)",
+                }}
+                onClick={() => {
+                  const courseInput = document.getElementById(
+                    "exam-entry-field",
+                  ) as HTMLInputElement | null;
+                  const dateInput = document.querySelector(
+                    'input[name="date-picker"]',
+                  ) as HTMLInputElement | null;
+                  const startTimeInput = document.querySelector(
+                    'input[name="start-time-picker"]',
+                  ) as HTMLInputElement | null;
+                  const endTimeInput = document.querySelector(
+                    'input[name="end-time-picker"]',
+                  ) as HTMLInputElement | null;
+                  addExam(
+                    accountState.userDetails?.uid ?? "",
+                    courseInput?.value ?? "",
+                    dateInput?.value ?? "",
+                    startTimeInput?.value ?? "",
+                    endTimeInput?.value ?? "",
+                  );
                 }}
               >
                 <p
@@ -162,12 +235,15 @@ export function Exam() {
                     borderRadius: "1rem",
                     padding: "0 0.5rem",
                   }}
-                  value="https://akashcraft.ca/#/account/exam/demo-link"
+                  value={`https://akashcraft.ca/#/exam/${accountState.userDetails?.uid}`}
                   disabled={!isSharing}
                 />
               </StyledFormControl>
             ) : (
-              <EmptyState header="Not Available" height="3.5rem" />
+              <EmptyState
+                header={isSharing === undefined ? "Loading" : "Not Available"}
+                height="3.5rem"
+              />
             )}
             <Stack
               direction="row-reverse"
@@ -176,6 +252,7 @@ export function Exam() {
               sx={{ marginTop: "1rem" }}
             >
               <StyledDropChip
+                disabled={isSharing === undefined}
                 icon={
                   <Avatar
                     sx={{
@@ -250,7 +327,10 @@ export function Exam() {
                   <MenuItem
                     key={option}
                     onClick={() => {
-                      setIsSharing(option === "Anyone with the link");
+                      updateSharing(
+                        accountState.userDetails?.uid ?? "",
+                        option === "Anyone with the link",
+                      );
                       handleClose();
                     }}
                     sx={{
@@ -267,8 +347,31 @@ export function Exam() {
               <ControlButton
                 variant="outlined"
                 startIcon={<LinkOutlined sx={{ color: "inherit" }} />}
+                sx={{
+                  color: "var(--mui-palette-background-paper)",
+                  borderColor: `color-mix(in srgb, var(--mui-palette-background-paper), transparent 50%)`,
+                  borderWidth: 1,
+
+                  "&:hover": {
+                    borderColor:
+                      accountState.userDetails?.accentColour ?? "grey",
+                    backgroundColor: `color-mix(in srgb, var(--mui-palette-background-button), transparent 80%)`,
+                  },
+                  "& p": {
+                    color: "var(--mui-palette-background-paper)",
+                  },
+                  "&:disabled": {
+                    "& p": {
+                      color: `color-mix(in srgb, var(--mui-palette-background-buttondark), transparent 30%)`,
+                    },
+                  },
+                }}
                 disabled={!isSharing}
                 onClick={() => {
+                  const link = document.getElementById(
+                    "sharing-link",
+                  ) as HTMLInputElement | null;
+                  if (link) navigator.clipboard.writeText(link.value);
                   setSnackBarOpen(true);
                 }}
               >
@@ -306,13 +409,38 @@ export function Exam() {
           }}
         >
           <ExamSchedule
+            accountState={accountState}
             onEmpty={() => {
               navigate(`/account/exam`);
               window.scrollTo(0, 0);
             }}
+            enableDelete
+            onDelete={(examId: string) => {
+              deleteExam(examId);
+            }}
           />
         </StyledHeaderPaper>
       </Stack>
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isSuccess}
+        message={successText}
+      />
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isError}
+        message={errorMessage}
+      />
     </>
   );
 }

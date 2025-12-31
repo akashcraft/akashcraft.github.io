@@ -53,6 +53,8 @@ export function useLoginSubmit() {
               email: newUser.email || "",
               photo: newUser.photoURL || "",
               provider: "google",
+              classSharing: false,
+              examSharing: false,
             },
             { merge: true },
           );
@@ -99,6 +101,8 @@ export function useLoginSubmit() {
               email: newUser.email || "",
               photo: newUser.photoURL || "",
               provider: "google",
+              classSharing: false,
+              examSharing: false,
             },
             { merge: true },
           );
@@ -150,6 +154,8 @@ export function useLoginSubmit() {
             email: data.email,
             photo: "",
             provider: "email",
+            classSharing: false,
+            examSharing: false,
           });
           await sendEmailVerification(newUser);
           await auth.signOut();
@@ -561,5 +567,172 @@ export function useAdminLinkDelete() {
     isError,
     isSuccess,
     deleteLink,
+  };
+}
+
+export function useExamHooks() {
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successText, setSuccessText] = useState("");
+  const [isSharing, setIsSharing] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess || isError) {
+      const timer = setTimeout(() => {
+        setIsSuccess(false);
+        setIsError(false);
+        setSuccessText("");
+        setErrorMessage("");
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess, isError]);
+
+  const updateSharing = async (uid: string, value: boolean) => {
+    setIsError(false);
+    setErrorMessage("");
+
+    try {
+      const userRef = doc(db, "user", uid);
+      await updateDoc(userRef, { examSharing: value });
+      setIsSharing(value);
+      setSuccessText(value ? "Sharing Enabled" : "Sharing Disabled");
+      setIsSuccess(true);
+    } catch (error) {
+      setErrorMessage((error as FirebaseError).message || "Error");
+      setIsError(true);
+    }
+  };
+
+  const addExam = async (
+    uid: string,
+    courseName: string,
+    date: string,
+    startTime: string,
+    endTime: string,
+  ) => {
+    if (!uid) {
+      setErrorMessage("Unauthorized");
+      setIsError(true);
+      return;
+    }
+    if (!courseName || !date) {
+      setErrorMessage("Course Name and Date are required");
+      setIsError(true);
+      return;
+    }
+
+    let timeRange = "";
+    if (!startTime && !endTime) {
+      timeRange = "Not Set";
+    } else if (!startTime) {
+      timeRange = `Until ${endTime}`;
+    } else if (!endTime) {
+      timeRange = `From ${startTime}`;
+    } else {
+      timeRange = `${startTime} - ${endTime}`;
+    }
+
+    setIsError(false);
+    setIsSuccess(false);
+    setErrorMessage("");
+
+    try {
+      const examRef = collection(db, "exam");
+      await addDoc(examRef, {
+        uid: uid,
+        courseName: courseName,
+        date: date,
+        time: timeRange,
+      });
+
+      setSuccessText("Exam added successfully");
+      setIsSuccess(true);
+    } catch (error) {
+      setErrorMessage((error as FirebaseError).message || "Error");
+      setIsError(true);
+    }
+  };
+
+  const deleteExam = async (examId: string) => {
+    setIsError(false);
+    setIsSuccess(false);
+    setErrorMessage("");
+
+    try {
+      const examDocRef = doc(db, "exam", examId);
+      await deleteDoc(examDocRef);
+      setSuccessText("Exam deleted");
+      setIsSuccess(true);
+    } catch (error) {
+      setErrorMessage(
+        (error as FirebaseError).message || "Error deleting exam",
+      );
+      setIsError(true);
+    }
+  };
+
+  return {
+    isSuccess,
+    successText,
+    isError,
+    errorMessage,
+    isSharing,
+    setIsSharing,
+    updateSharing,
+    addExam,
+    deleteExam,
+  };
+}
+
+export function useClassHooks() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successText, setSuccessText] = useState("");
+  const [isSharing, setIsSharing] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    if (isSuccess || isError) {
+      const timer = setTimeout(() => {
+        setIsSuccess(false);
+        setIsError(false);
+        setSuccessText("");
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess, isError]);
+
+  const updateSharing = async (uid: string, value: boolean) => {
+    setIsSubmitting(true);
+    setIsError(false);
+    setIsSuccess(false);
+
+    try {
+      const userRef = doc(db, "user", uid);
+      await updateDoc(userRef, {
+        classSharing: value,
+      });
+
+      setSuccessText(value ? "Sharing Enabled" : "Sharing Disabled");
+      setIsSharing(value);
+      setIsSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    isSuccess,
+    successText,
+    isError,
+    isSubmitting,
+    isSharing,
+    setIsSharing,
+    updateSharing,
   };
 }

@@ -14,7 +14,7 @@ import {
 import { StyledHeader } from "./Account";
 import { StyledHeaderPaper } from "./AccountHeaderBox";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   AddOutlined,
   ArrowDropDown,
@@ -30,11 +30,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ClassSchedule from "./ClassSchedule";
 import { AccountContext } from "./AccountContext";
+import { useClassHooks } from "./AuthHooks";
 
 export function Class() {
   const isPhone = useMediaQuery("(max-width:800px)");
   const navigate = useNavigate();
-  const [isSharing, setIsSharing] = useState<boolean>(true);
   const [isSnackBarOpen, setSnackBarOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedDays, setSelectedDays] = useState<boolean[]>([
@@ -57,6 +57,22 @@ export function Class() {
   };
 
   const { accountState } = useContext(AccountContext);
+
+  const {
+    isSuccess,
+    successText,
+    isError,
+    isSubmitting,
+    isSharing,
+    setIsSharing,
+    updateSharing,
+  } = useClassHooks();
+
+  useEffect(() => {
+    if (accountState.userDetails?.classSharing !== undefined) {
+      setIsSharing(accountState.userDetails.classSharing);
+    }
+  }, [accountState.userDetails?.classSharing]);
 
   return (
     <>
@@ -90,6 +106,8 @@ export function Class() {
                 required
                 id="class-entry-field"
                 label="Course Name"
+                autoComplete="off"
+                inputProps={{ style: { textTransform: "uppercase" } }}
               />
               <Stack
                 gap={0.5}
@@ -115,13 +133,27 @@ export function Class() {
                 ))}
               </Stack>
               <Box sx={{ width: isPhone ? "100%" : "48%", flexGrow: 1 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <StyledTimePicker format="HH:mm" label="Start Time" />
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en-gb"
+                >
+                  <StyledTimePicker
+                    views={["hours", "minutes"]}
+                    label="Start Time"
+                    name="start-time-picker"
+                  />
                 </LocalizationProvider>
               </Box>
               <Box sx={{ width: isPhone ? "100%" : "48%", flexGrow: 1 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <StyledTimePicker format="HH:mm" label="End Time" />
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale="en-gb"
+                >
+                  <StyledTimePicker
+                    views={["hours", "minutes"]}
+                    label="End Time"
+                    name="end-time-picker"
+                  />
                 </LocalizationProvider>
               </Box>
             </Stack>
@@ -134,6 +166,20 @@ export function Class() {
               <ControlButton
                 variant="outlined"
                 startIcon={<PrintOutlined sx={{ color: "inherit" }} />}
+                sx={{
+                  color: "var(--mui-palette-background-paper)",
+                  borderColor: `color-mix(in srgb, var(--mui-palette-background-paper), transparent 50%)`,
+                  borderWidth: 1,
+
+                  "&:hover": {
+                    borderColor:
+                      accountState.userDetails?.accentColour ?? "grey",
+                    backgroundColor: `color-mix(in srgb, var(--mui-palette-background-button), transparent 80%)`,
+                  },
+                  "& p": {
+                    color: "var(--mui-palette-background-paper)",
+                  },
+                }}
               >
                 <p
                   style={{ margin: 0, position: "relative", bottom: "0.07rem" }}
@@ -148,10 +194,8 @@ export function Class() {
                 sx={{
                   backgroundColor:
                     accountState.userDetails?.accentColour ?? "unset",
-                  bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
                   "&:hover": {
-                    backgroundColor:
-                      accountState.userDetails?.accentColour ?? "unset",
+                    bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 10%)`,
                   },
                   color: "var(--mui-palette-text-primary)",
                 }}
@@ -180,6 +224,7 @@ export function Class() {
                   width: "100%",
                 }}
                 variant="outlined"
+                disabled={isSubmitting}
               >
                 <OutlinedInput
                   id="sharing-link"
@@ -188,12 +233,15 @@ export function Class() {
                     borderRadius: "1rem",
                     padding: "0 0.5rem",
                   }}
-                  value="https://akashcraft.ca/#/account/class/demo-link"
+                  value={`https://akashcraft.ca/#/class/${accountState.userDetails?.uid}`}
                   disabled={!isSharing}
                 />
               </StyledFormControl>
             ) : (
-              <EmptyState header="Not Available" height="3.5rem" />
+              <EmptyState
+                header={isSharing === undefined ? "Loading" : "Not Available"}
+                height="3.5rem"
+              />
             )}
             <Stack
               direction="row-reverse"
@@ -202,6 +250,7 @@ export function Class() {
               sx={{ marginTop: "1rem" }}
             >
               <StyledDropChip
+                disabled={isSharing === undefined || isSubmitting}
                 icon={
                   <Avatar
                     sx={{
@@ -276,7 +325,10 @@ export function Class() {
                   <MenuItem
                     key={option}
                     onClick={() => {
-                      setIsSharing(option === "Anyone with the link");
+                      updateSharing(
+                        accountState.userDetails?.uid ?? "",
+                        option === "Anyone with the link",
+                      );
                       handleClose();
                     }}
                     sx={{
@@ -293,8 +345,31 @@ export function Class() {
               <ControlButton
                 variant="outlined"
                 startIcon={<LinkOutlined sx={{ color: "inherit" }} />}
-                disabled={!isSharing}
+                sx={{
+                  color: "var(--mui-palette-background-paper)",
+                  borderColor: `color-mix(in srgb, var(--mui-palette-background-paper), transparent 50%)`,
+                  borderWidth: 1,
+
+                  "&:hover": {
+                    borderColor:
+                      accountState.userDetails?.accentColour ?? "grey",
+                    backgroundColor: `color-mix(in srgb, var(--mui-palette-background-button), transparent 80%)`,
+                  },
+                  "& p": {
+                    color: "var(--mui-palette-background-paper)",
+                  },
+                  "&:disabled": {
+                    "& p": {
+                      color: `color-mix(in srgb, var(--mui-palette-background-buttondark), transparent 30%)`,
+                    },
+                  },
+                }}
+                disabled={!isSharing || isSubmitting}
                 onClick={() => {
+                  const link = document.getElementById(
+                    "sharing-link",
+                  ) as HTMLInputElement | null;
+                  if (link) navigator.clipboard.writeText(link.value);
                   setSnackBarOpen(true);
                 }}
               >
@@ -334,9 +409,30 @@ export function Class() {
               navigate(`/account/class`);
               window.scrollTo(0, 0);
             }}
+            accountState={accountState}
           />
         </StyledHeaderPaper>
       </Stack>
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isSuccess}
+        message={successText}
+      />
+      <Snackbar
+        sx={{ bottom: isPhone ? "4.5rem" : "2rem" }}
+        ContentProps={{
+          sx: {
+            fontFamily: "Segoe UI",
+          },
+        }}
+        open={isError}
+        message="Error"
+      />
     </>
   );
 }

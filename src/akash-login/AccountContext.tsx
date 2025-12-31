@@ -13,6 +13,8 @@ export type AccountState = {
     accentColour?: string;
     wallpaper?: string;
     game?: string;
+    classSharing?: boolean;
+    examSharing?: boolean;
   };
   general: {
     publicAnnouncement?: string;
@@ -23,6 +25,12 @@ export type AccountState = {
     header?: string;
     description?: string;
     url?: string;
+    uid?: string;
+  }[];
+  exams: {
+    courseName?: string;
+    date?: string;
+    time?: string;
     uid?: string;
   }[];
 };
@@ -41,6 +49,8 @@ export type AccountAction = {
     accentColour?: string;
     wallpaper?: string;
     game?: string;
+    classSharing?: boolean;
+    examSharing?: boolean;
   };
   general?: {
     publicAnnouncement?: string;
@@ -51,6 +61,12 @@ export type AccountAction = {
     header?: string;
     description?: string;
     url?: string;
+    uid?: string;
+  }[];
+  exams?: {
+    courseName?: string;
+    date?: string;
+    time?: string;
     uid?: string;
   }[];
 };
@@ -74,6 +90,11 @@ export const reducerAccount: Reducer<AccountState, AccountAction> = (
       return {
         ...state,
         links: action.links!,
+      };
+    case "updateExams":
+      return {
+        ...state,
+        exams: action.exams!,
       };
     default:
       return state;

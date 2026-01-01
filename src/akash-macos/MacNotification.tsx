@@ -19,11 +19,14 @@ export function MacNotification({ text }: { text: string | null }) {
   const isPhone = useMediaQuery("(max-width: 800px)");
   const isLoading = useGetImages([macInfo]);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsDismissed(true);
-    }, 15000);
+      sessionStorage.setItem("remove-notice", "true");
+    }, 20000);
+    return () => clearTimeout(timer);
   }, []);
 
   const isVisible =
@@ -43,24 +46,23 @@ export function MacNotification({ text }: { text: string | null }) {
               : { x: 300, y: 0, opacity: 0 }
           }
           animate={{ x: 0, y: 0, opacity: 1 }}
+          transition={{ ease: "easeInOut", duration: 0.3, delay: 0.3 }}
           exit={isPhone ? { y: -100, opacity: 0 } : { x: 100, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
           style={{
             position: "fixed",
-            top: "4.5rem",
+            top: "4.75rem",
             right: isPhone ? "5%" : "0.5rem",
             left: isPhone ? "5%" : "auto",
             zIndex: 1300,
           }}
         >
           <Stack
-            flexDirection="row"
-            alignItems="center"
-            gap={2}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             sx={{
               bgcolor: isLight
-                ? "color-mix(in srgb, var(--mui-palette-background-normal), transparent 50%)"
-                : "color-mix(in srgb, var(--mui-palette-background-paper), transparent 20%)",
+                ? `color-mix(in srgb, var(--mui-palette-background-normal), transparent ${isPhone ? 0 : 50}%)`
+                : `color-mix(in srgb, var(--mui-palette-background-paper), transparent ${isPhone ? 0 : 20}%)`,
               backdropFilter: "blur(1px) saturate(1.1) url('#glassfilter')",
               padding: "1rem",
               borderRadius: "1rem",
@@ -71,46 +73,62 @@ export function MacNotification({ text }: { text: string | null }) {
               position: "relative",
             }}
           >
-            <img
-              src={macInfo}
-              style={{ width: "4rem", height: "auto" }}
-              alt="mac-info"
-            />
-            <Box sx={{ position: "relative", overflow: "visible" }}>
-              <IconChip
-                variant="filled"
-                icon={<Close sx={{ fontSize: "1rem", color: "white" }} />}
-                onClick={() => {
-                  sessionStorage.setItem("remove-notice", "true");
-                  setIsDismissed(true);
-                }}
-                sx={{
-                  position: "absolute",
-                  top: "-1.7rem",
-                  left: "-6.7rem",
-                  opacity: 0,
-                  transition: "all 0.2s ease",
-                  "&:hover": {
-                    backgroundColor: "var(--mui-palette-background-macos)",
-                    opacity: 1,
-                  },
-                }}
+            <Stack flexDirection="row" alignItems="center" gap={2}>
+              <img
+                src={macInfo}
+                style={{ width: "4rem", height: "auto" }}
+                alt="mac-info"
               />
-              <Stack>
-                <Typography
-                  sx={{
-                    fontFamily: "San Francisco Bold",
-                    margin: 0,
-                    fontWeight: "bold",
+              <Box sx={{ position: "relative", overflow: "visible" }}>
+                <IconChip
+                  variant="filled"
+                  icon={<Close sx={{ fontSize: "1rem", color: "white" }} />}
+                  onClick={() => {
+                    sessionStorage.setItem("remove-notice", "true");
+                    setIsDismissed(true);
                   }}
-                >
-                  Notice
-                </Typography>
-                <Typography sx={{ fontFamily: "San Francisco", margin: 0 }}>
-                  {text}
-                </Typography>
-              </Stack>
-            </Box>
+                  sx={{
+                    position: "absolute",
+                    top: "-1.69rem",
+                    left: "-6.81rem",
+                    opacity: isPhone ? 1 : isHovered ? 1 : 0,
+                    backgroundColor: "var(--mui-palette-background-macos)",
+                    "&:hover": {
+                      backgroundColor: "var(--mui-palette-background-macos)",
+                    },
+                    transition: "opacity 0.3s ease-in-out",
+                  }}
+                />
+                <Stack>
+                  <Typography
+                    sx={{
+                      fontFamily: "San Francisco Bold",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Notice
+                  </Typography>
+                  <Typography sx={{ fontFamily: "San Francisco" }}>
+                    {text}
+                  </Typography>
+                </Stack>
+              </Box>
+            </Stack>
+            <motion.div
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ duration: 20, ease: "linear" }}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: "1rem",
+                right: "1rem",
+                height: "0.2rem",
+                backgroundColor: "#2854c5",
+                transformOrigin: "left",
+                borderRadius: "5rem",
+              }}
+            />
           </Stack>
         </motion.div>
       )}

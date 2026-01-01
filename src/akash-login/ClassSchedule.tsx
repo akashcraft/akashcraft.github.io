@@ -5,7 +5,7 @@ import { Box, Modal, Stack, useMediaQuery } from "@mui/material";
 import "../styles/ClassSchedule.css";
 import EmptyState from "./EmptyState";
 import {
-  AddCircleOutlined,
+  CalendarMonthOutlined,
   CoPresentOutlined,
   Delete,
 } from "@mui/icons-material";
@@ -67,11 +67,11 @@ export default function ClassSchedule({
 
   return events.length === 0 ? (
     <EmptyState
-      header="Get Started"
+      header="No Classes"
       height="100%"
       minHeight="20rem"
       icon={
-        <AddCircleOutlined
+        <CalendarMonthOutlined
           style={{
             fontSize: "4rem",
             color: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,

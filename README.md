@@ -1,8 +1,7 @@
 # Main Website
 The working directory of my Developer Portfolio Website
 
-> [!CAUTION]
-> This project is in still in development. All builds are canary and may contain bugs. Visit [akashcraft.ca](https://akashcraft.ca) to view the completed website.
+<img width="600" alt="banner12" src="https://github.com/user-attachments/assets/9f1d70c5-3547-457f-9922-1cb10fed9f1d" />
 
 ## Installation Guide
 

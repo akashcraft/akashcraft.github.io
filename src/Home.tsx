@@ -2,8 +2,8 @@ import "./styles/App.css";
 import Header from "./akash-commons/Header";
 import { Box, Skeleton, Stack, useMediaQuery } from "@mui/material";
 import styled from "@emotion/styled";
-import logo from "./assets/logo.png";
-import reactLogo from "./assets/reactLogo.png";
+import logo from "./assets/logo2.jpeg";
+import christmasHat from "./assets/img-main/christmas.png";
 import packageJson from "../package.json";
 import {
   codingData,
@@ -14,13 +14,8 @@ import {
   workData,
   workDataPhone,
 } from "./akash-main/appData";
-import {
-  openMainWebsite,
-  openGitHub,
-  openLinkedIn,
-  openYouTube,
-} from "./akash-commons/Utils";
-import { orange, grey, red, blue } from "@mui/material/colors";
+import { openGitHub, openLinkedIn, openYouTube } from "./akash-commons/Utils";
+import { grey, red, blue } from "@mui/material/colors";
 import TopChip from "./akash-main/TopChip";
 import MainSection from "./akash-main/MainSection";
 import {
@@ -45,12 +40,6 @@ function Home() {
   const [openMacDialog, setOpenMacDialog] = useState<boolean>(false);
 
   useEffect(() => {
-    window.addEventListener("load", () => {
-      const splash = document.getElementById("splash");
-      if (splash) {
-        splash.remove();
-      }
-    });
     const saved = sessionStorage.getItem("homeScroll");
     if (saved) {
       window.scrollTo(0, Number(saved));
@@ -74,6 +63,8 @@ function Home() {
   const isPhone = useMediaQuery("(max-width:1000px)");
 
   const { publicAnnouncement, aboutMe: aboutMeText } = useGeneralInfo();
+  const month = new Date().getMonth();
+  const isWinter = month === 10 || month === 11 || month === 0 || month === 1;
 
   return (
     <>
@@ -103,14 +94,26 @@ function Home() {
             {isLoading && (
               <Skeleton variant="circular" width={88} height={88} />
             )}
-            <StyledImg
-              src={logo}
-              style={{ display: isLoading ? "none" : "block" }}
-            />
-            <StyledImg2
-              src={reactLogo}
-              style={{ display: isLoading ? "none" : "block" }}
-            />
+            <Box sx={{ position: "relative" }}>
+              <StyledImg
+                src={logo}
+                style={{
+                  display: isLoading ? "none" : "block",
+                  borderRadius: "50%",
+                }}
+              />
+              {isWinter && (
+                <img
+                  src={christmasHat}
+                  style={{
+                    position: "absolute",
+                    width: "3rem",
+                    top: "-0.1rem",
+                    right: "2rem",
+                  }}
+                />
+              )}
+            </Box>
           </Stack>
           <Stack
             direction="column"
@@ -124,7 +127,7 @@ function Home() {
             }}
           >
             <h2 className="about">
-              Canary Build <StyledSpan>{packageJson.version}</StyledSpan>
+              Release Candidate <StyledSpan>{packageJson.version}</StyledSpan>
             </h2>
             {!aboutMeText ? (
               <>
@@ -153,12 +156,6 @@ function Home() {
             flexWrap="wrap"
             sx={{ maxWidth: "fit-content", margin: "0 auto" }}
           >
-            <TopChip
-              img={logo}
-              title="AkashCraft"
-              color={orange}
-              link={openMainWebsite}
-            />
             <TopChip title="LinkedIn" color={blue} link={openLinkedIn} />
             <TopChip title="GitHub" color={grey} link={openGitHub} />
             <TopChip title="YouTube" color={red} link={openYouTube} />
@@ -227,11 +224,6 @@ const StyledSpan = styled.span`
 
 const StyledImg = styled.img`
   width: 5.5rem;
-`;
-
-const StyledImg2 = styled.img`
-  width: 6rem;
-  animation: logo-spin 20s linear infinite;
 `;
 
 const ChipIconStyle = { color: "white !important", fontSize: "2rem" };

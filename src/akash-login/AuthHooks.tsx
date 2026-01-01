@@ -26,9 +26,12 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
   writeBatch,
 } from "firebase/firestore";
 
@@ -58,7 +61,8 @@ export function useLoginSubmit() {
             },
             { merge: true },
           );
-          window.location.href = "/#/account/home";
+          setIsSuccess(true);
+          localStorage.setItem("loggedIn", "true");
         } else {
           setIsError(true);
           setStatusCode(500);
@@ -107,6 +111,7 @@ export function useLoginSubmit() {
             { merge: true },
           );
           setIsSuccess(true);
+          localStorage.setItem("loggedIn", "true");
         } else {
           setIsError(true);
           setStatusCode(500);
@@ -150,7 +155,7 @@ export function useLoginSubmit() {
         const newUser = auth.currentUser;
         if (newUser) {
           await setDoc(doc(db, "user", newUser.uid), {
-            name: data.name,
+            name: data.name.charAt(0).toUpperCase() + data.name.slice(1),
             email: data.email,
             photo: "",
             provider: "email",
@@ -296,10 +301,32 @@ export function useSettingsSubmit() {
         const credential = EmailAuthProvider.credential(email, password ?? "");
         await reauthenticateWithCredential(currentUser!, credential);
       }
+
       if (currentUser && currentUser.uid === uid) {
+        const examQuery = query(
+          collection(db, "exam"),
+          where("uid", "==", uid),
+        );
+        const examSnap = await getDocs(examQuery);
+        const examDeletions = examSnap.docs.map((d) => deleteDoc(d.ref));
+
+        const classQuery = query(
+          collection(db, "class"),
+          where("uid", "==", uid),
+        );
+        const classSnap = await getDocs(classQuery);
+        const classDeletions = classSnap.docs.map((d) => deleteDoc(d.ref));
+
+        await Promise.all([...examDeletions, ...classDeletions]);
+
         await deleteUser(currentUser);
         await deleteDoc(recordRef);
+
         setIsSuccess(true);
+        localStorage.removeItem("loggedIn");
+        sessionStorage.removeItem("account-photo");
+        sessionStorage.removeItem("account-name");
+        sessionStorage.removeItem("account-game");
         await auth.signOut();
       } else {
         throw new Error("No authenticated user found to delete.");
@@ -407,15 +434,12 @@ export function usePhotoUpload() {
     const userDocRef = doc(db, "user", uid);
 
     try {
-      // 1. Delete from Storage
       await deleteObject(storageRef);
 
-      // 2. Clear the field in Firestore
       await updateDoc(userDocRef, {
         photo: "",
       });
     } catch (error) {
-      // If the file doesn't exist in storage, we should still clear Firestore
       if ((error as FirebaseError).code === "storage/object-not-found") {
         await updateDoc(userDocRef, { photo: "" });
       } else {
@@ -642,7 +666,7 @@ export function useExamHooks() {
       const examRef = collection(db, "exam");
       await addDoc(examRef, {
         uid: uid,
-        courseName: courseName,
+        courseName: courseName.toUpperCase(),
         date: date,
         time: timeRange,
       });
@@ -763,7 +787,7 @@ export function useClassHooks() {
       const classRef = collection(db, "class");
       await addDoc(classRef, {
         uid,
-        className,
+        className: className.toUpperCase(),
         daysOfWeek,
         startTime,
         endTime,
@@ -806,4 +830,169 @@ export function useClassHooks() {
     addClass,
     deleteClass,
   };
+}
+
+export function useExamSharing(uid: string | undefined) {
+  const [data, setData] = useState<{
+    exams: unknown[];
+    name: string;
+    university: string;
+    semester: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>("Invalid URL");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!uid) return;
+
+    const fetchAllData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const userDocRef = doc(db, "user", uid);
+        const userSnap = await getDoc(userDocRef);
+
+        if (!userSnap.exists()) {
+          setError("Invalid URL");
+          setLoading(false);
+          return;
+        }
+
+        const userData = userSnap.data();
+
+        if (!userData.examSharing && uid !== auth.currentUser?.uid) {
+          setError("Invalid URL");
+          setData(null);
+          setLoading(false);
+          return;
+        }
+
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const examQuery = query(
+          collection(db, "exam"),
+          where("uid", "==", uid),
+        );
+        const examSnap = await getDocs(examQuery);
+
+        const examList = examSnap.docs
+          .map((doc) => {
+            const data = doc.data();
+            return {
+              courseName: data.courseName,
+              date: data.date,
+              time: data.time,
+              uid: doc.id,
+            };
+          })
+          .filter((exam) => new Date(exam.date) >= now)
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+          );
+
+        setData({
+          exams: examList,
+          name: userData.name || "",
+          university: userData.university || "",
+          semester: userData.semester || "",
+        });
+      } catch (err) {
+        console.error("Error fetching exam data:", err);
+        setError("500 - Internal Server Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [uid]);
+
+  return { data, error, loading };
+}
+
+export function useClassSharing(uid: string | undefined) {
+  const [data, setData] = useState<{
+    events: unknown[];
+    name: string;
+    university: string;
+    semester: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>("Invalid URL");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!uid) return;
+
+    const fetchAllData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const userDocRef = doc(db, "user", uid);
+        const userSnap = await getDoc(userDocRef);
+
+        if (!userSnap.exists()) {
+          setError("Invalid URL");
+          setLoading(false);
+          return;
+        }
+
+        const userData = userSnap.data();
+
+        if (!userData.classSharing && uid !== auth.currentUser?.uid) {
+          setError("Invalid URL");
+          setData(null);
+          setLoading(false);
+          return;
+        }
+
+        const classQuery = query(
+          collection(db, "class"),
+          where("uid", "==", uid),
+        );
+        const classSnap = await getDocs(classQuery);
+        const dayMap: { [key: string]: number } = {
+          M: 1,
+          T: 2,
+          W: 3,
+          R: 4,
+          F: 5,
+        };
+
+        const classList = classSnap.docs.map((doc) => {
+          const data = doc.data();
+
+          const numericDays = data.daysOfWeek
+            ? data.daysOfWeek.split("").map((char: string) => dayMap[char])
+            : [];
+
+          return {
+            title: data.className,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            daysOfWeek: numericDays,
+            uid: doc.id,
+          };
+        });
+
+        setData({
+          events: classList,
+          name: userData.name || "",
+          university: userData.university || "",
+          semester: userData.semester || "",
+        });
+      } catch (err) {
+        console.error("Error fetching class data:", err);
+        setError("500 - Internal Server Error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [uid]);
+
+  return { data, error, loading };
 }

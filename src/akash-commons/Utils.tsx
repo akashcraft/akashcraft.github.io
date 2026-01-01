@@ -27,10 +27,6 @@ export function openDonatePageInNewTab() {
   );
 }
 
-export function openMainWebsite() {
-  window.location.href = "https://akashcraft.ca";
-}
-
 export function openGitHub() {
   window.open("https://github.com/akashcraft", "_blank");
 }

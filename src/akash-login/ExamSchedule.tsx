@@ -46,21 +46,21 @@ export default function ExamSchedule({
         <TableRow>
           <StyledTableHead
             sx={{
-              backgroundColor: `color-mix(in srgb, ${accountState.userDetails.accentColour ?? "unset"}, black 20%)`,
+              backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
             }}
           >
             Course
           </StyledTableHead>
           <StyledTableHead
             sx={{
-              backgroundColor: `color-mix(in srgb, ${accountState.userDetails.accentColour ?? "unset"}, black 20%)`,
+              backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
             }}
           >
             Date
           </StyledTableHead>
           <StyledTableHead
             sx={{
-              backgroundColor: `color-mix(in srgb, ${accountState.userDetails.accentColour ?? "unset"}, black 20%)`,
+              backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
             }}
           >
             Time
@@ -68,7 +68,7 @@ export default function ExamSchedule({
           {enableDelete && (
             <StyledTableHead
               sx={{
-                backgroundColor: `color-mix(in srgb, ${accountState.userDetails.accentColour ?? "unset"}, black 20%)`,
+                backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
               }}
             ></StyledTableHead>
           )}
@@ -77,7 +77,7 @@ export default function ExamSchedule({
       <TableBody>
         {rows.map((row) => (
           <TableRow
-            key={row.courseName}
+            key={row.uid}
             sx={{
               "&:last-child td, &:last-child th": { border: 0 },
             }}

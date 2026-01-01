@@ -1,0 +1,33 @@
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    size: landscape;
+  }
+
+  * {
+    color: black !important;
+    text-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .MuiPaper-root {
+    background-color: transparent !important;
+  }
+
+  .MuiAppBar-root {
+    display: none !important;
+  }
+
+  #print-chip {
+    display: none !important;
+  }
+
+  #brand-logo {
+    display: block !important;
+  }
+}

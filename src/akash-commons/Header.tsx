@@ -149,6 +149,10 @@ function Header() {
     if (path === "/") return "";
     if (path.includes("/account/")) {
       return "Account";
+    } else if (path.includes("/exam/")) {
+      return "Sharing";
+    } else if (path.includes("/class/")) {
+      return "Sharing";
     } else if (path.includes("/verafin/")) {
       return "Verafin";
     }

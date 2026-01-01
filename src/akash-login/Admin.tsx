@@ -280,7 +280,7 @@ export default function Admin() {
                     margin: isPhone ? "2rem 0.5rem" : "1rem",
                     width: isPhone ? "calc(100% - 1rem)" : "calc(100% - 2rem)",
                   }}
-                  multiline
+                  multiline={state.entryHeader != "Links"}
                   rows={5}
                   id="form-entry-field"
                   required={state.entryHeader == "Links"}

@@ -29,7 +29,10 @@ function MainSection({
         spacing={0}
         justifyContent="center"
         flexWrap="wrap"
-        sx={{ width: "100%", margin: "0 auto" }}
+        sx={{
+          width: "100%",
+          margin: "0 auto",
+        }}
       >
         {genericData.map((data: genericAppData, index: number) => (
           <MainCard

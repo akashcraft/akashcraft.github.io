@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export function NotFound() {
   // Media Query
-  const isPhone = useMediaQuery("(min-width:600px)");
+  const isPhone = useMediaQuery("(min-width:800px)");
   return (
     <HolderBox>
       <Stack

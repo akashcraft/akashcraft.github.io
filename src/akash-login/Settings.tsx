@@ -1236,7 +1236,12 @@ export default function Settings() {
                       const input = document.querySelector(
                         'input[name="form-entry-field"]',
                       ) as HTMLInputElement | null;
-                      handleSubmitSettingsForm(sanitize(input?.value || ""));
+                      handleSubmitSettingsForm(
+                        sanitize(
+                          (input?.value.charAt(0).toUpperCase() || "") +
+                            input?.value.slice(1),
+                        ),
+                      );
                     } else {
                       form?.reportValidity();
                     }

@@ -424,7 +424,11 @@ function Login() {
               direction="row"
               alignItems="center"
               gap={2}
-              justifyContent={isPhone ? "center" : "flex-start"}
+              justifyContent={
+                isPhone && !(isError || isSuccess || isSubmitting)
+                  ? "center"
+                  : "flex-start"
+              }
             >
               {!(isError || isSuccess || isSubmitting) && (
                 <Avatar>
@@ -468,8 +472,14 @@ function Login() {
             <p
               style={{
                 marginRight: isPhone ? "0rem" : "10rem",
-                justifySelf: isPhone ? "center" : "flex-start",
-                textAlign: isPhone ? "center" : "left",
+                justifySelf:
+                  isPhone && !(isError || isSuccess || isSubmitting)
+                    ? "center"
+                    : "flex-start",
+                textAlign:
+                  isPhone && !(isError || isSuccess || isSubmitting)
+                    ? "center"
+                    : "left",
               }}
             >
               {isError
@@ -498,7 +508,10 @@ function Login() {
                   flexDirection: "column",
                   gap: "1rem",
                   maxWidth: "30rem",
-                  width: "100%",
+                  width: isPhone && isPasswordForgotten ? "90%" : "100%",
+                  margin: isPhone && isPasswordForgotten ? "0 auto" : "unset",
+                  marginBottom:
+                    isPhone && isPasswordForgotten ? "3rem" : "unset",
                   fontSize: isPhone ? "smaller" : "1rem",
                   justifySelf: isPhone ? "center" : "flex-start",
                 }}
@@ -513,6 +526,7 @@ function Login() {
                     <StyledHolder>
                       <p>Enter your name</p>
                       <StyledInput
+                        maxLength={60}
                         required
                         onKeyDownCapture={(e) => {
                           if (e.key === "Enter") {
@@ -535,6 +549,7 @@ function Login() {
                     <p>Enter your email</p>
                     <StyledInput
                       required
+                      maxLength={60}
                       onKeyDownCapture={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -564,7 +579,7 @@ function Login() {
                           name="password"
                           placeholder="Password"
                           type={showPassword ? "text" : "password"}
-                          inputProps={{ minLength: 8 }}
+                          inputProps={{ minLength: 8, maxLength: 60 }}
                           onChange={(value) => {
                             if (value.currentTarget.value == "") {
                               setIsPasswordTyped(false);
@@ -653,7 +668,7 @@ function Login() {
                     Forgot your password?
                   </SubmitButton>
                 )}
-                {isPhone && (
+                {isPhone && !isPasswordForgotten && (
                   <SubmitButton
                     variant="text"
                     onClick={() => {
@@ -670,6 +685,7 @@ function Login() {
                     sx={{
                       color: "var(--mui-palette-primary-main)",
                       padding: "0",
+                      marginBottom: isPhone ? "0.25rem" : "0rem",
                     }}
                   >
                     {isLoginPage
@@ -680,29 +696,34 @@ function Login() {
               </form>
             )}
             {!(isSubmitting || isSuccess || isError || isPasswordForgotten) && (
-              <Stack alignItems={isPhone ? "center" : "flex-start"}>
+              <Stack
+                alignItems={isPhone ? "center" : "flex-start"}
+                mt={isLoginPage ? 0 : 2}
+              >
                 <p style={{ display: "inline-block" }}>
                   {isLoginPage
                     ? "More ways to sign in"
                     : "More ways to sign up"}
                 </p>
-                <Stack direction="row" spacing={2}>
-                  <StyledTooltip title="Google" placement="bottom">
-                    <CircularButton
-                      variant="outlined"
-                      onClick={signInWithGoogle}
-                    >
-                      <Google />
-                    </CircularButton>
-                  </StyledTooltip>
-                  <StyledTooltip title="GitHub" placement="bottom">
-                    <CircularButton
-                      variant="outlined"
-                      onClick={signInWithGitHub}
-                    >
-                      <GitHub />
-                    </CircularButton>
-                  </StyledTooltip>
+                <Stack direction="row" spacing={1.5}>
+                  <CircularButton
+                    variant="outlined"
+                    onClick={signInWithGoogle}
+                    startIcon={<Google />}
+                  >
+                    <span style={{ position: "relative", bottom: "0.06rem" }}>
+                      Google
+                    </span>
+                  </CircularButton>
+                  <CircularButton
+                    variant="outlined"
+                    onClick={signInWithGitHub}
+                    startIcon={<GitHub />}
+                  >
+                    <span style={{ position: "relative", bottom: "0.06rem" }}>
+                      GitHub
+                    </span>
+                  </CircularButton>
                 </Stack>
                 <br />
               </Stack>
@@ -851,11 +872,11 @@ const SwitchStack = styled(Stack)({
 });
 
 const CircularButton = styled(Button)({
-  borderRadius: "50%",
-  width: "3rem",
+  borderRadius: "2rem",
   height: "3rem",
-  minWidth: "3rem",
-  padding: "0",
+  padding: "0 1rem",
+  fontFamily: "Segoe UI",
+  textTransform: "none",
 });
 
 const StyledHolder = styled(Stack)({

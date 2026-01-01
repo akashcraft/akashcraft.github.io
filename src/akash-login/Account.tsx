@@ -53,6 +53,7 @@ import { RingsDark, RingsLight } from "../akash-svg/Rings";
 import { StarsDark, StarsLight } from "../akash-svg/Stars";
 import { StepsDark, StepsLight } from "../akash-svg/Steps";
 import { NoneDark, NoneLight } from "../akash-svg/None";
+import Loading from "../akash-commons/Loading";
 
 const adminUID = "NBH76id0H9gunlBAxynGWjsSomP2";
 
@@ -216,7 +217,11 @@ export function Account() {
                 examSharing: data.examSharing ?? false,
               },
             });
-            if (data.name) sessionStorage.setItem("account-name", data.name);
+            if (data.name)
+              sessionStorage.setItem(
+                "account-name",
+                data.name.charAt(0).toUpperCase() + data.name.slice(1),
+              );
             if (data.photo) sessionStorage.setItem("account-photo", data.photo);
             sessionStorage.setItem("account-game", data.game ?? "Dice");
           }
@@ -327,6 +332,7 @@ export function Account() {
         dispatch: dispatchAccount,
       }}
     >
+      {!accountState.userDetails && <Loading text="Preparing Account" />}
       <Box
         style={{
           position: "fixed",
@@ -347,6 +353,7 @@ export function Account() {
       </Box>
       <Box
         sx={{
+          display: accountState.userDetails ? "block" : "none",
           "--mui-palette-background-light": light,
           "--mui-palette-background-light2": `${dark}cc`,
           "--mui-palette-background-button": dark,
@@ -512,7 +519,11 @@ export function Account() {
                         ) +
                         " " +
                         (accountState.userDetails?.name
-                          ? accountState.userDetails.name.split(" ")[0]
+                          ? accountState.userDetails.name
+                              .split(" ")[0]
+                              .charAt(0)
+                              .toUpperCase() +
+                            accountState.userDetails.name.split(" ")[0].slice(1)
                           : "Guest") +
                         "!"
                       }
@@ -580,6 +591,7 @@ export function Account() {
                     ) : accountState.userDetails?.university &&
                       accountState.userDetails?.semester ? (
                       <AccountHeaderBox
+                        isAnnouncement
                         avatar={
                           <SchoolOutlined
                             sx={{

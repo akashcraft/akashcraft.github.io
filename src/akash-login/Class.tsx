@@ -74,7 +74,7 @@ export function Class() {
     if (accountState.userDetails?.classSharing !== undefined) {
       setIsSharing(accountState.userDetails.classSharing);
     }
-  }, [accountState.userDetails?.classSharing]);
+  }, [accountState.userDetails?.classSharing, setIsSharing]);
 
   return (
     <>
@@ -170,8 +170,7 @@ export function Class() {
                 startIcon={<PrintOutlined sx={{ color: "inherit" }} />}
                 sx={{
                   color: accountState.userDetails?.accentColour,
-                  borderColor: `color-mix(in srgb,${accountState.userDetails?.accentColour ?? "var(--mui-palette-text-primary)"} transparent 50%)`,
-                  borderWidth: 1,
+                  border: `1px solid ${accountState.userDetails?.accentColour}`,
 
                   "&:hover": {
                     borderColor:
@@ -181,6 +180,12 @@ export function Class() {
                   "& p": {
                     color: accountState.userDetails?.accentColour,
                   },
+                }}
+                onClick={() => {
+                  window.open(
+                    `https://${window.location.host}/#/class/${accountState.userDetails?.uid}?print`,
+                    "_blank",
+                  );
                 }}
               >
                 <p
@@ -258,7 +263,7 @@ export function Class() {
                     borderRadius: "1rem",
                     padding: "0 0.5rem",
                   }}
-                  value={`https://akashcraft.ca/#/class/${accountState.userDetails?.uid}`}
+                  value={`https://${window.location.host}/#/class/${accountState.userDetails?.uid}`}
                   disabled={!isSharing}
                 />
               </StyledFormControl>
@@ -372,8 +377,7 @@ export function Class() {
                 startIcon={<LinkOutlined sx={{ color: "inherit" }} />}
                 sx={{
                   color: accountState.userDetails?.accentColour,
-                  borderColor: `color-mix(in srgb,${accountState.userDetails?.accentColour ?? "var(--mui-palette-text-primary)"} transparent 50%)`,
-                  borderWidth: 1,
+                  border: `1px solid ${accountState.userDetails?.accentColour}`,
 
                   "&:hover": {
                     borderColor:

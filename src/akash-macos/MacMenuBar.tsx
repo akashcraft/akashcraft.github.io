@@ -207,7 +207,7 @@ export function MacMenuBar() {
         type: "SET_DIALOG_PROPS",
         dialogProps: {
           heading: "Already on the latest version",
-          description: `Canary Build ${packageJson.version}`,
+          description: `Release Candidate ${packageJson.version}`,
           imgCode: 2,
           primaryButtonText: "OK",
           primaryAction: () => {

@@ -17,12 +17,11 @@ const peakAnimation = `
 `;
 
 export function PeaksLight({ colours }: PeakProps) {
-  // Use the 4 colors, then derive shades or reuse for the 7 paths
   const c = [
-    colours?.[0] ?? "#931C1C", // Background
-    colours?.[1] ?? "#f5730a", // Peak 1 & 2
-    colours?.[2] ?? "#d15308", // Peak 3 & 4
-    colours?.[3] ?? "#992503", // Peak 5, 6, 7
+    colours?.[0] ?? "#931C1C",
+    colours?.[1] ?? "#f5730a",
+    colours?.[2] ?? "#d15308",
+    colours?.[3] ?? "#992503",
   ];
 
   return (
@@ -35,7 +34,6 @@ export function PeaksLight({ colours }: PeakProps) {
     >
       <style>{peakAnimation}</style>
       <rect width="900" height="600" fill={c[0]} />
-      {/* Back to Front Peaks */}
       <path
         className="peak peak-1"
         d="M0 326L129 311L257 242L386 310L514 202L643 271L771 208L900 273L900 601L0 601Z"

@@ -687,11 +687,11 @@ export function useExamHooks() {
 }
 
 export function useClassHooks() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [successText, setSuccessText] = useState("");
-  const [isSharing, setIsSharing] = useState<boolean | undefined>(undefined);
+  const [isSharing, setIsSharing] = useState(false);
 
   useEffect(() => {
     if (isSuccess || isError) {
@@ -699,30 +699,99 @@ export function useClassHooks() {
         setIsSuccess(false);
         setIsError(false);
         setSuccessText("");
+        setErrorMessage("");
       }, 4000);
       return () => clearTimeout(timer);
     }
   }, [isSuccess, isError]);
 
   const updateSharing = async (uid: string, value: boolean) => {
-    setIsSubmitting(true);
     setIsError(false);
     setIsSuccess(false);
+    setErrorMessage("");
 
     try {
       const userRef = doc(db, "user", uid);
-      await updateDoc(userRef, {
-        classSharing: value,
-      });
-
+      await updateDoc(userRef, { classSharing: value });
       setSuccessText(value ? "Sharing Enabled" : "Sharing Disabled");
       setIsSharing(value);
       setIsSuccess(true);
     } catch (error) {
-      console.error(error);
+      setErrorMessage((error as FirebaseError).message || "Error");
       setIsError(true);
-    } finally {
-      setIsSubmitting(false);
+    }
+  };
+
+  const addClass = async (
+    uid: string,
+    className: string,
+    daysOfWeek: string,
+    startTime: string,
+    endTime: string,
+  ) => {
+    if (!uid) {
+      setErrorMessage("Unauthorized");
+      setIsError(true);
+      return;
+    }
+
+    if (!startTime || !endTime || !className || !daysOfWeek) {
+      setErrorMessage("All fields are required");
+      setIsError(true);
+      return;
+    }
+
+    const getMinutes = (timeStr: string) => {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      return hours * 60 + minutes;
+    };
+
+    const startMinutes = getMinutes(startTime);
+    const endMinutes = getMinutes(endTime);
+
+    if (endMinutes <= startMinutes) {
+      setErrorMessage("End time must be after Start time");
+      setIsError(true);
+      return;
+    }
+
+    setIsError(false);
+    setIsSuccess(false);
+    setErrorMessage("");
+
+    try {
+      const classRef = collection(db, "class");
+      await addDoc(classRef, {
+        uid,
+        className,
+        daysOfWeek,
+        startTime,
+        endTime,
+      });
+
+      setSuccessText("Class added successfully");
+      setIsSuccess(true);
+    } catch (error) {
+      setErrorMessage((error as FirebaseError).message || "Error");
+      setIsError(true);
+    }
+  };
+
+  const deleteClass = async (classId: string) => {
+    setIsError(false);
+    setIsSuccess(false);
+    setErrorMessage("");
+
+    try {
+      const classDocRef = doc(db, "class", classId);
+      await deleteDoc(classDocRef);
+      setSuccessText("Class deleted");
+      setIsSuccess(true);
+    } catch (error) {
+      setErrorMessage(
+        (error as FirebaseError).message || "Error deleting class",
+      );
+      setIsError(true);
     }
   };
 
@@ -730,9 +799,11 @@ export function useClassHooks() {
     isSuccess,
     successText,
     isError,
-    isSubmitting,
     isSharing,
+    errorMessage,
     setIsSharing,
     updateSharing,
+    addClass,
+    deleteClass,
   };
 }

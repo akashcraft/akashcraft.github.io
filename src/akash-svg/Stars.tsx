@@ -26,7 +26,7 @@ const scatterAnimation = `
   .speed-5 { animation: breatheRotate 25s ease-in-out infinite; }
 `;
 
-export function ScatterLight({ colours }: ScatterProps) {
+export function StarsLight({ colours }: ScatterProps) {
   const bg = colours?.[0] ?? "#001829";
   const starFill = colours?.[3] ?? "#297EA6";
 
@@ -47,8 +47,6 @@ export function ScatterLight({ colours }: ScatterProps) {
       <style>{scatterAnimation}</style>
       <rect width="900" height="600" fill={bg} />
       <g fill={starFill}>
-        {/* We keep the translate in a wrapper <g> to position them, 
-            and apply the animation to the <path> so they rotate in place */}
         <g transform="translate(570 187)">
           <path
             className="star speed-1"
@@ -84,7 +82,7 @@ export function ScatterLight({ colours }: ScatterProps) {
   );
 }
 
-export function ScatterDark() {
+export function StarsDark() {
   const bg = "#000d17";
   const starFill = "#1a4d66";
 

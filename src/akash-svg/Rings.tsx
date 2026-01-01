@@ -19,7 +19,7 @@ const ringAnimation = `
 
 export function RingsLight({ colours }: RingProps) {
   const bg = colours?.[0] ?? "#931F1F";
-  const stroke = colours?.[3] ?? "#F7760E"; // Using index 3 for contrast
+  const stroke = colours?.[3] ?? "#F7760E";
 
   return (
     <svg
@@ -103,7 +103,7 @@ export function RingsLight({ colours }: RingProps) {
 
 export function RingsDark() {
   const bg = "#0a0a0a";
-  const stroke = "#4a4a4a"; // Darker contrast for dark mode
+  const stroke = "#4a4a4a";
 
   return (
     <svg

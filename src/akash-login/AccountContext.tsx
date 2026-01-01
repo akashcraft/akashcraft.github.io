@@ -33,6 +33,13 @@ export type AccountState = {
     time?: string;
     uid?: string;
   }[];
+  events?: {
+    title: string;
+    startTime: string;
+    endTime: string;
+    daysOfWeek: number[];
+    uid: string;
+  }[];
 };
 
 export type AccountAction = {
@@ -69,6 +76,13 @@ export type AccountAction = {
     time?: string;
     uid?: string;
   }[];
+  events?: {
+    title: string;
+    startTime: string;
+    endTime: string;
+    daysOfWeek: number[];
+    uid: string;
+  }[];
 };
 
 export const reducerAccount: Reducer<AccountState, AccountAction> = (
@@ -95,6 +109,11 @@ export const reducerAccount: Reducer<AccountState, AccountAction> = (
       return {
         ...state,
         exams: action.exams!,
+      };
+    case "updateEvents":
+      return {
+        ...state,
+        events: action.events!,
       };
     default:
       return state;

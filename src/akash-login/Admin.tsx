@@ -211,10 +211,12 @@ export default function Admin() {
                   icon={<ReplayOutlined sx={{ color: "white !important" }} />}
                   label="Reset"
                   sx={{
-                    backgroundColor: "var(--mui-palette-secondary-main)",
+                    backgroundColor:
+                      accountState.userDetails?.accentColour ?? "unset",
                     "&:hover": {
-                      backgroundColor: "var(--mui-palette-secondary-light)",
+                      bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 10%)`,
                     },
+                    color: "var(--mui-palette-text-primary)",
                   }}
                   onClick={() => {
                     resetAirportSchedules();

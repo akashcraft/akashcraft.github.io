@@ -4,60 +4,67 @@ import type { EventInput } from "@fullcalendar/core";
 import { Box, Modal, Stack, useMediaQuery } from "@mui/material";
 import "../styles/ClassSchedule.css";
 import EmptyState from "./EmptyState";
-import { AddCircleOutlined, CalendarMonthOutlined } from "@mui/icons-material";
+import {
+  AddCircleOutlined,
+  CoPresentOutlined,
+  Delete,
+} from "@mui/icons-material";
 import type { AccountState } from "./AccountContext";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { PopupButton, StyledPopupBox } from "./Settings";
 import { motion } from "framer-motion";
 
-const events: EventInput[] = [
-  {
-    title: "DEMO 1000",
-    start: "2025-03-10T12:00:00",
-    end: "2025-03-10T13:00:00",
-  },
-  {
-    title: "DEMO 1000",
-    start: "2025-03-12T12:00:00",
-    end: "2025-03-12T13:00:00",
-  },
-  {
-    title: "DEMO 1500",
-    start: "2025-03-12T12:30:00",
-    end: "2025-03-12T13:00:00",
-  },
-  {
-    title: "DEMO 1000",
-    start: "2025-03-14T12:00:00",
-    end: "2025-03-14T13:00:00",
-  },
-  {
-    title: "DEMO 2000",
-    start: "2025-03-11T13:00:00",
-    end: "2025-03-11T14:15:00",
-  },
-  {
-    title: "DEMO 2000",
-    start: "2025-03-13T13:00:00",
-    end: "2025-03-13T14:15:00",
-  },
-];
+const getTimeBounds = (events: EventInput[]) => {
+  if (!events || events.length === 0) {
+    return { min: "08:00:00", max: "18:00:00" };
+  }
+
+  const startTimes = events.map((e) => e.startTime);
+  const endTimes = events.map((e) => e.endTime);
+
+  const minTime = startTimes.sort()[0];
+  const maxTime = endTimes.sort().reverse()[0];
+
+  const minHour = Math.max(0, parseInt(minTime.split(":")[0]) - 1);
+  const maxHour = Math.min(23, parseInt(maxTime.split(":")[0]) + 1);
+
+  return {
+    min: `${String(minHour).padStart(2, "0")}:00:00`,
+    max: `${String(maxHour).padStart(2, "0")}:00:00`,
+  };
+};
 
 export default function ClassSchedule({
   onEmpty,
   accountState,
+  enableDelete,
+  onDelete,
 }: {
   onEmpty: () => void;
   accountState: AccountState;
+  enableDelete?: boolean;
+  onDelete?: (classId: string) => void;
 }) {
   const isPhone = useMediaQuery("(max-width:800px)");
   const [selectedEvent, setSelectedEvent] = useState<{
     title: string;
     start: string;
     end: string;
+    id: string;
   } | null>(null);
   const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
+
+  const events: EventInput[] = (accountState.events ?? []).map((event) => ({
+    title: event.title,
+    daysOfWeek: event.daysOfWeek,
+    startTime: event.startTime,
+    endTime: event.endTime,
+    id: event.uid,
+  }));
+
+  const bounds = getTimeBounds(events);
+
   return events.length === 0 ? (
     <EmptyState
       header="Get Started"
@@ -86,17 +93,16 @@ export default function ClassSchedule({
         <FullCalendar
           plugins={[timeGridPlugin]}
           initialView="timeGridWeek"
-          initialDate="2025-03-10"
           height="auto"
           contentHeight="auto"
           headerToolbar={false}
           weekends={false}
           firstDay={1}
           allDaySlot={false}
-          slotMinTime="11:00:00"
-          slotMaxTime="15:00:00"
-          slotDuration="00:15:00"
-          snapDuration="00:15:00"
+          slotMinTime={bounds.min}
+          slotMaxTime={bounds.max}
+          slotDuration="00:30:00"
+          snapDuration="00:30:00"
           eventMinHeight={10}
           slotLabelFormat={{
             hour: "numeric",
@@ -108,13 +114,19 @@ export default function ClassSchedule({
             minute: "2-digit",
             hour12: false,
           }}
-          dayHeaderFormat={{ weekday: isPhone ? "narrow" : "short" }}
+          dayHeaderFormat={{
+            weekday: isPhone ? "narrow" : "short",
+            month: undefined,
+            day: undefined,
+            year: undefined,
+          }}
           events={events}
           eventClick={(info) => {
             setSelectedEvent({
               title: info.event.title,
               start: info.event.startStr,
               end: info.event.endStr,
+              id: info.event.id,
             });
             setIsEventDialogOpen(true);
           }}
@@ -144,9 +156,7 @@ export default function ClassSchedule({
               animate={{ y: 0, opacity: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
-              <CalendarMonthOutlined
-                sx={{ fontSize: "5rem", color: "white" }}
-              />
+              <CoPresentOutlined sx={{ fontSize: "5rem", color: "white" }} />
             </motion.div>
 
             <h4
@@ -168,18 +178,44 @@ export default function ClassSchedule({
             </p>
 
             <Stack width="100%" gap={1} alignItems="center" mt={2}>
+              {enableDelete && (
+                <PopupButton
+                  startIcon={
+                    <Delete
+                      sx={{ scale: 1.2, position: "relative", top: "0.1rem" }}
+                    />
+                  }
+                  sx={{
+                    color: "white",
+                    backgroundColor:
+                      accountState.userDetails?.accentColour ?? "unset",
+                    bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 0, 0, 0.2)",
+                    },
+                  }}
+                  variant="text"
+                  onClick={() => {
+                    if (selectedEvent?.id && onDelete) {
+                      onDelete(selectedEvent.id);
+                      setIsEventDialogOpen(false);
+                    }
+                  }}
+                >
+                  Delete Class
+                </PopupButton>
+              )}
+
               <PopupButton
                 sx={{
-                  backgroundColor:
-                    accountState.userDetails?.accentColour ?? "unset",
-                  bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 30%)`,
                   "&:hover": {
                     backgroundColor:
                       accountState.userDetails?.accentColour ?? "unset",
+                    bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 10%)`,
                   },
                   color: "var(--mui-palette-text-primary)",
                 }}
-                variant="contained"
+                variant="text"
                 disableElevation
                 onClick={() => setIsEventDialogOpen(false)}
               >

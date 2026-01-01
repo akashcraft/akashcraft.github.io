@@ -62,10 +62,12 @@ export function Class() {
     isSuccess,
     successText,
     isError,
-    isSubmitting,
     isSharing,
+    errorMessage,
     setIsSharing,
     updateSharing,
+    addClass,
+    deleteClass,
   } = useClassHooks();
 
   useEffect(() => {
@@ -199,6 +201,30 @@ export function Class() {
                   },
                   color: "var(--mui-palette-text-primary)",
                 }}
+                onClick={() => {
+                  let daysOfWeek = "";
+                  selectedDays.forEach((selected, index) => {
+                    if (selected) {
+                      daysOfWeek += ["M", "T", "W", "R", "F"][index];
+                    }
+                  });
+                  const courseInput = document.getElementById(
+                    "class-entry-field",
+                  ) as HTMLInputElement | null;
+                  const startTimeInput = document.querySelector(
+                    'input[name="start-time-picker"]',
+                  ) as HTMLInputElement | null;
+                  const endTimeInput = document.querySelector(
+                    'input[name="end-time-picker"]',
+                  ) as HTMLInputElement | null;
+                  addClass(
+                    accountState.userDetails?.uid ?? "",
+                    courseInput?.value ?? "",
+                    daysOfWeek,
+                    startTimeInput?.value ?? "",
+                    endTimeInput?.value ?? "",
+                  );
+                }}
               >
                 <p
                   style={{ margin: 0, position: "relative", bottom: "0.07rem" }}
@@ -224,7 +250,6 @@ export function Class() {
                   width: "100%",
                 }}
                 variant="outlined"
-                disabled={isSubmitting}
               >
                 <OutlinedInput
                   id="sharing-link"
@@ -250,7 +275,7 @@ export function Class() {
               sx={{ marginTop: "1rem" }}
             >
               <StyledDropChip
-                disabled={isSharing === undefined || isSubmitting}
+                disabled={isSharing === undefined}
                 icon={
                   <Avatar
                     sx={{
@@ -364,7 +389,7 @@ export function Class() {
                     },
                   },
                 }}
-                disabled={!isSharing || isSubmitting}
+                disabled={!isSharing}
                 onClick={() => {
                   const link = document.getElementById(
                     "sharing-link",
@@ -410,6 +435,8 @@ export function Class() {
               window.scrollTo(0, 0);
             }}
             accountState={accountState}
+            enableDelete
+            onDelete={deleteClass}
           />
         </StyledHeaderPaper>
       </Stack>
@@ -431,7 +458,7 @@ export function Class() {
           },
         }}
         open={isError}
-        message="Error"
+        message={errorMessage}
       />
     </>
   );

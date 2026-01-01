@@ -386,6 +386,7 @@ function Header() {
                       "&:hover": {
                         backgroundColor:
                           accountState.userDetails?.accentColour ?? "unset",
+                        bgcolor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 10%)`,
                       },
                       color: "var(--mui-palette-text-primary)",
                     }}

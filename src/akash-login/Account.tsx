@@ -48,11 +48,11 @@ import { useEffect, useReducer } from "react";
 import { auth, db } from "../akash-commons/firebaseHooks";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import { BlobDark, BlobLight } from "../akash-svg/Blob";
-import { GradientDark, GradientLight } from "../akash-svg/Gradient";
 import { PeaksLight } from "../akash-svg/Peaks";
 import { RingsDark, RingsLight } from "../akash-svg/Rings";
-import { ScatterDark, ScatterLight } from "../akash-svg/Scatter";
+import { StarsDark, StarsLight } from "../akash-svg/Stars";
 import { StepsDark, StepsLight } from "../akash-svg/Steps";
+import { NoneDark, NoneLight } from "../akash-svg/None";
 
 const adminUID = "NBH76id0H9gunlBAxynGWjsSomP2";
 
@@ -77,14 +77,14 @@ function getLightBackground(wallpaper?: string, accentColour?: string) {
       return <BlobLight colours={getColours(accentColour ?? "Grey")} />;
     case "Waves":
       return <ContactWavesLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Gradient":
-      return <GradientLight colours={getColours(accentColour ?? "Grey")} />;
+    case "None":
+      return <NoneLight colours={getColours(accentColour ?? "Grey")} />;
     case "Peaks":
       return <PeaksLight colours={getColours(accentColour ?? "Grey")} />;
     case "Rings":
       return <RingsLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Scatter":
-      return <ScatterLight colours={getColours(accentColour ?? "Grey")} />;
+    case "Stars":
+      return <StarsLight colours={getColours(accentColour ?? "Grey")} />;
     case "Steps":
       return <StepsLight colours={getColours(accentColour ?? "Grey")} />;
     default:
@@ -98,14 +98,14 @@ function getDarkBackground(wallpaper?: string) {
       return <BlobDark />;
     case "Waves":
       return <ContactWavesDark />;
-    case "Gradient":
-      return <GradientDark />;
+    case "None":
+      return <NoneDark />;
     case "Peaks":
       return <PeaksLight />;
     case "Rings":
       return <RingsDark />;
-    case "Scatter":
-      return <ScatterDark />;
+    case "Stars":
+      return <StarsDark />;
     case "Steps":
       return <StepsDark />;
     default:
@@ -189,6 +189,11 @@ export function Account() {
           examsCollectionRef,
           where("uid", "==", user.uid),
         );
+        const classesCollectionRef = collection(db, "class");
+        const classQuery = query(
+          classesCollectionRef,
+          where("uid", "==", user.uid),
+        );
 
         const unsubscribeUser = onSnapshot(userDocRef, (docSnap) => {
           if (docSnap.exists()) {
@@ -265,11 +270,43 @@ export function Account() {
           });
         });
 
+        const unsubscribeClasses = onSnapshot(classQuery, (querySnap) => {
+          const dayMap: { [key: string]: number } = {
+            M: 1,
+            T: 2,
+            W: 3,
+            R: 4,
+            F: 5,
+          };
+
+          const allEvents = querySnap.docs.map((doc) => {
+            const data = doc.data();
+
+            const numericDays = data.daysOfWeek
+              ? data.daysOfWeek.split("").map((char: string) => dayMap[char])
+              : [];
+
+            return {
+              title: data.className,
+              startTime: data.startTime,
+              endTime: data.endTime,
+              daysOfWeek: numericDays,
+              uid: doc.id,
+            };
+          });
+
+          dispatchAccount({
+            type: "updateEvents",
+            events: allEvents,
+          });
+        });
+
         return () => {
           unsubscribeUser();
           unsubscribeGeneral();
           unsubscribeLinks();
           unsubscribeExams();
+          unsubscribeClasses();
         };
       } else {
         navigate("/login");

@@ -21,7 +21,7 @@ import { MacContext } from "./MacContext";
 import { reducerMacSystem } from "./MacHook";
 
 function MacDock() {
-  const isPhone = useMediaQuery("(min-width:900px)");
+  const isPhone = useMediaQuery("(min-width:1000px)");
   const { mode } = useColorScheme();
   const isLight = mode === "light";
   const isLoading = useGetImages(dockImages);

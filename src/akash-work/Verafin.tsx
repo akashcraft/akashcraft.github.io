@@ -20,7 +20,7 @@ function Verafin() {
   // Media Query and Images
   const isLoading = useGetImages(images);
   const selectedId = parseInt(useParams().id ?? "1");
-  const isPhone = useMediaQuery("(min-width:600px)");
+  const isPhone = useMediaQuery("(min-width:800px)");
 
   return (
     <HolderBox>
@@ -28,7 +28,7 @@ function Verafin() {
         {verafinData
           .filter((item) => item.id === selectedId)
           .map((item) => (
-            <Container key={item.id}>
+            <Container sx={{ padding: "0" }} key={item.id}>
               <HeaderRowPaper data={item.headerData} />
               <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} mt={1.5}>
                 {item.id % 2 === 0 ? (
@@ -52,7 +52,7 @@ function Verafin() {
                     <SidePaper
                       title="Description"
                       description={item.description}
-                      style={{ width: isPhone ? "80%" : "100%" }}
+                      style={{ width: isPhone ? "calc(100%-1re)" : "100%" }}
                     />
                   </>
                 ) : (

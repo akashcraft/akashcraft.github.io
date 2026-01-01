@@ -1,10 +1,15 @@
 import {
+  Avatar,
   Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
   Chip,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
   Skeleton,
   Stack,
   styled,
@@ -12,7 +17,12 @@ import {
 } from "@mui/material";
 import type { WebDataType } from "./webData";
 import { useState } from "react";
-import { GitHub, PlayArrow, WarningAmberOutlined } from "@mui/icons-material";
+import {
+  GitHub,
+  OpenInNew,
+  PlayArrow,
+  WarningAmberOutlined,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 
@@ -34,8 +44,133 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
     setHovered(false);
   };
 
-  return (
-    <StyledCard sx={{ width: isPhone ? "18rem" : "100%" }}>
+  return !isPhone ? (
+    <List sx={{ gap: "0.5rem", width: "100%", alignSelf: "center" }}>
+      <ListItemButton
+        sx={{
+          width: "100%",
+          maxWidth: "40rem",
+          padding: "1rem",
+          alignSelf: "center",
+          gap: "1rem",
+          backgroundColor: "var(--mui-palette-background-paper)",
+          ":hover": { backgroundColor: "var(--mui-palette-action-hover)" },
+          borderRadius: "1rem",
+        }}
+        onClick={() => {
+          if (data.smallChipLinks[0].includes(".html")) {
+            window.location.href = data.smallChipLinks[0];
+          } else if (!data.smallChipLinks[0].includes("https://")) {
+            navigate(data.smallChipLinks[0]);
+          }
+        }}
+      >
+        <ListItemAvatar>
+          <Avatar
+            src={data.image}
+            variant="rounded"
+            sx={{ transform: "scale(1.7)", margin: "0 1rem" }}
+          />
+        </ListItemAvatar>
+
+        <ListItemText
+          primary={
+            <Stack
+              direction="row"
+              width="100%"
+              justifyContent="space-between"
+              gap={1}
+              alignItems="center"
+            >
+              <span style={{ fontWeight: "bold" }}>{data.appName}</span>
+              <OpenInNew sx={{ fontSize: "1.2rem", opacity: 0.7 }} />
+            </Stack>
+          }
+          secondary={
+            <Stack
+              direction="column"
+              gap={1}
+              mt={1}
+              component="div"
+              sx={{ color: "var(--mui-palette-text-primary)" }}
+            >
+              <span>{data.description}</span>
+
+              {/* Chips Section */}
+              <Stack direction="row" gap={1.5} mt={0.5} flexWrap="wrap">
+                {data.smallChipLabel.map((label, index) => {
+                  const isStartChip = label.includes("Start");
+                  const isWarningChip = data.isWideOnly ?? false;
+
+                  return (
+                    <Chip
+                      key={index}
+                      size="small"
+                      sx={{
+                        cursor: "pointer",
+                        fontSize: "0.9rem",
+                        padding: "1rem 0.75rem",
+                        borderRadius: "1rem",
+                        backgroundColor: isStartChip
+                          ? isWarningChip
+                            ? "#d29914ff"
+                            : "var(--mui-palette-secondary-main)"
+                          : "rgba(255,255,255,0.1)",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: isStartChip
+                            ? isWarningChip
+                              ? "#8c660cff"
+                              : "var(--mui-palette-secondary-dark)"
+                            : "rgba(255,255,255,0.2)",
+                        },
+                      }}
+                      label={
+                        isWarningChip && isStartChip
+                          ? "Screen Width Low"
+                          : label
+                      }
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        if (data.smallChipLinks[index].includes("https://")) {
+                          window.open(data.smallChipLinks[index], "_blank");
+                        } else if (
+                          data.smallChipLinks[index].includes(".html")
+                        ) {
+                          window.location.href = data.smallChipLinks[index];
+                        } else {
+                          navigate(data.smallChipLinks[index]);
+                        }
+                      }}
+                      icon={
+                        isStartChip ? (
+                          isWarningChip ? (
+                            <WarningAmberOutlined
+                              style={{ color: "white", fontSize: "1rem" }}
+                            />
+                          ) : (
+                            <PlayArrow
+                              style={{ color: "white", fontSize: "1rem" }}
+                            />
+                          )
+                        ) : (
+                          <GitHub
+                            style={{ color: "white", fontSize: "1rem" }}
+                          />
+                        )
+                      }
+                    />
+                  );
+                })}
+              </Stack>
+            </Stack>
+          }
+          secondaryTypographyProps={{ component: "div" }}
+        />
+      </ListItemButton>
+    </List>
+  ) : (
+    <StyledCard sx={{ width: "18rem" }}>
       <CardActionArea
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -68,7 +203,7 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
             minHeight: "12rem",
             display: "flex",
             flexDirection: "column",
-            alignItems: !isPhone ? "center" : "flex-start",
+            alignItems: "flex-start",
             gap: "0.5rem",
           }}
         >
@@ -83,39 +218,33 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
           >
             {data.description}
           </Typography>
+
           <Box sx={{ flexGrow: 1 }} />
-          <Stack direction={isPhone ? "row" : "column"} gap={1}>
+
+          <Stack direction="row" gap={1}>
             {data.smallChipLabel.map((label, index) => {
               const isStartChip = data.smallChipLabel[index].includes("Start");
-              const isWarningChip = (data.isWideOnly ?? false) && !isPhone;
               return (
                 <Chip
                   sx={{
                     cursor: "pointer",
-                    minWidth: !isPhone ? "60%" : "fit-content",
-                    padding: !isPhone ? "1.2rem" : "none",
-                    fontSize: !isPhone ? "1rem" : "0.8rem",
-                    borderRadius: !isPhone ? "2rem" : "1rem",
+                    minWidth: "fit-content",
+                    padding: "none",
+                    fontSize: "0.8rem",
+                    borderRadius: "1rem",
                     backgroundColor: isStartChip
-                      ? isWarningChip
-                        ? "#d29914ff"
-                        : "var(--mui-palette-secondary-main)"
+                      ? "var(--mui-palette-secondary-main)"
                       : "none",
                     "&:hover": {
                       backgroundColor: isStartChip
-                        ? isWarningChip
-                          ? "#8c660cff"
-                          : "var(--mui-palette-secondary-dark)"
+                        ? "var(--mui-palette-secondary-dark)"
                         : "none",
                     },
                   }}
                   key={index}
-                  label={
-                    isWarningChip && label == "Start"
-                      ? "Screen Width Low"
-                      : label
-                  }
-                  onClick={() => {
+                  label={label}
+                  onClick={(event) => {
+                    event.stopPropagation();
                     if (data.smallChipLinks[index].includes("https://")) {
                       window.open(data.smallChipLinks[index], "_blank");
                     } else if (data.smallChipLinks[index].includes(".html")) {
@@ -127,8 +256,6 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
                   icon={
                     !isStartChip ? (
                       <GitHub sx={{ color: "white!important" }} />
-                    ) : isWarningChip ? (
-                      <WarningAmberOutlined sx={{ color: "white!important" }} />
                     ) : (
                       <PlayArrow sx={{ color: "white!important" }} />
                     )

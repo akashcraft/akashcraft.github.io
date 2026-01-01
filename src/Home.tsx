@@ -1,18 +1,18 @@
 import "./styles/App.css";
 import Header from "./akash-commons/Header";
-import { Box, Skeleton, Stack } from "@mui/material";
+import { Box, Skeleton, Stack, useMediaQuery } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo.png";
 import reactLogo from "./assets/reactLogo.png";
 import packageJson from "../package.json";
 import {
-  aboutMeText,
   codingData,
   educationData,
   images,
   otherData,
   videoEditingData,
   workData,
+  workDataPhone,
 } from "./akash-main/appData";
 import {
   openMainWebsite,
@@ -38,6 +38,8 @@ import MacDialog from "./akash-commons/MacDialog";
 import { MacDialogContext } from "./akash-main/appData";
 import MacDock from "./akash-macos/MacDock";
 import Background from "./Background";
+import useGeneralInfo from "./akash-commons/firebaseHooks";
+import { MacNotification } from "./akash-macos/MacNotification";
 
 function Home() {
   const [openMacDialog, setOpenMacDialog] = useState<boolean>(false);
@@ -69,11 +71,15 @@ function Home() {
   }, []);
 
   const isLoading = useGetImages(images);
+  const isPhone = useMediaQuery("(max-width:1000px)");
+
+  const { publicAnnouncement, aboutMe: aboutMeText } = useGeneralInfo();
 
   return (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <Header />
+      <MacNotification text={publicAnnouncement} />
       <motion.div
         style={{ transformOrigin: "top center" }}
         initial={{
@@ -111,8 +117,8 @@ function Home() {
             spacing={1}
             alignItems="center"
             sx={{
-              maxWidth: "65rem",
-              width: "80%",
+              maxWidth: "55rem",
+              width: "calc(100% - 2rem)",
               textAlign: "center",
               margin: "0 auto",
             }}
@@ -120,7 +126,24 @@ function Home() {
             <h2 className="about">
               Canary Build <StyledSpan>{packageJson.version}</StyledSpan>
             </h2>
-            <p className="about">{aboutMeText}</p>
+            {!aboutMeText ? (
+              <>
+                <Skeleton variant="text" width="100%" animation="wave" />
+                <Skeleton variant="text" width="100%" animation="wave" />
+                <Skeleton variant="text" width="100%" animation="wave" />
+                <Skeleton variant="text" width="100%" animation="wave" />
+              </>
+            ) : (
+              <p
+                className="about"
+                style={{
+                  fontSize: isPhone ? "0.9rem" : "1rem",
+                  marginTop: "0.75rem",
+                }}
+              >
+                {aboutMeText}
+              </p>
+            )}
           </Stack>
           <br />
           <Stack
@@ -146,7 +169,7 @@ function Home() {
           >
             <MacDialog
               heading="Not Implemented"
-              description="This feature is still under development. You can view the completed website on akashcraft.ca."
+              description="This feature is still under development. Stay tuned for updates!"
               visible={openMacDialog}
               onClose={() => setOpenMacDialog(false)}
             />
@@ -166,7 +189,7 @@ function Home() {
               <MainSection
                 heading="Work Experience"
                 icon={<Work sx={ChipIconStyle} />}
-                genericData={workData}
+                genericData={isPhone ? workDataPhone : workData}
                 isLoading={isLoading}
                 isDuration
               />

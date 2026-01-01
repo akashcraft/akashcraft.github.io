@@ -855,6 +855,9 @@ export default function Settings() {
                 borderBottomLeftRadius: "1rem",
                 borderBottomRightRadius: "1rem",
               }}
+              disabled={
+                accountState.userDetails?.uid === "NBH76id0H9gunlBAxynGWjsSomP2"
+              }
               onClick={() => {
                 dispatch({
                   page: "form-entry",
@@ -869,7 +872,15 @@ export default function Settings() {
               <ListItemIcon>
                 <DeleteOutlined sx={{ ...IconStyle, color: "red" }} />
               </ListItemIcon>
-              <StyledListItemText primary="Delete Account" />
+              <StyledListItemText
+                primary="Delete Account"
+                secondary={
+                  accountState.userDetails?.uid ===
+                  "NBH76id0H9gunlBAxynGWjsSomP2"
+                    ? "Cannot delete Administrator Account"
+                    : ""
+                }
+              />
             </StyledListItemButton>
           </StyledList>
         </>
@@ -1144,6 +1155,7 @@ export default function Settings() {
                   }}
                   autoComplete="off"
                   inputProps={{
+                    maxLength: 60,
                     pattern:
                       state.entryHeader == "Delete Account"
                         ? "DELETE"

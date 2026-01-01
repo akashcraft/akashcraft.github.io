@@ -4,7 +4,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
   List,
   ListItem,
   ListItemIcon,
@@ -27,13 +26,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import type { JSX } from "react";
 import FeaturedCard from "./FeaturedCard";
 
-function App() {
-  const isPhone = useMediaQuery("(min-width:900px)");
+export function Application() {
+  const isPhone = useMediaQuery("(min-width:800px)");
   const isLoading = useGetImages(images);
 
   return (
     <HolderBox>
-      <Box flexGrow={1}>
+      <Stack width="100%">
         <FeaturedCard
           header="Featured"
           appData={appData}
@@ -76,13 +75,12 @@ function App() {
             </AccordionDetails>
           </StyledAccordion>
         </StyledStack>
-      </Box>
+      </Stack>
     </HolderBox>
   );
 }
 
 const StyledStack = styled(Stack)({
-  marginTop: "2rem",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -116,5 +114,3 @@ const IconStyle = {
   position: "relative",
   bottom: "0.1rem",
 };
-
-export default App;

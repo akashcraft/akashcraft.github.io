@@ -151,6 +151,8 @@ function EyePort() {
                 margin: "0.5rem",
                 marginTop: "0",
                 marginLeft: isPhone ? "0rem" : "0.5rem",
+                width: isPhone ? "min-content" : "100%",
+                maxWidth: isPhone ? "unset" : "14rem",
               }}
               size="medium"
               onClick={() => {
@@ -169,6 +171,8 @@ function EyePort() {
                 margin: "0.5rem",
                 marginTop: "0",
                 marginLeft: isPhone ? "0rem" : "0.5rem",
+                width: isPhone ? "min-content" : "100%",
+                maxWidth: isPhone ? "unset" : "14rem",
               }}
               size="medium"
               onClick={() =>
@@ -283,6 +287,8 @@ function EyePort() {
                 margin: "0.5rem",
                 marginTop: "1rem",
                 marginLeft: isPhone ? "0rem" : "0.5rem",
+                width: isPhone ? "min-content" : "100%",
+                maxWidth: isPhone ? "unset" : "15rem",
               }}
               size="medium"
               onClick={() => openDetailedExplanation()}
@@ -330,6 +336,8 @@ function EyePort() {
                 margin: "0.5rem",
                 marginTop: "0",
                 marginLeft: isPhone ? "0rem" : "0.5rem",
+                width: isPhone ? "min-content" : "100%",
+                maxWidth: isPhone ? "unset" : "14rem",
               }}
               size="medium"
               color="secondary"

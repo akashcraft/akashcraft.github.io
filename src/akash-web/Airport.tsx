@@ -199,7 +199,7 @@ export default function Airport() {
             ))}
 
           <Alert
-            sx={{ borderRadius: "2rem", marginTop: "1.5rem" }}
+            sx={{ borderRadius: "1rem", marginTop: "1.5rem" }}
             severity="info"
           >
             {isEnglish

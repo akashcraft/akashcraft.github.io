@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import {
   collection,
   doc,
+  getDoc,
   initializeFirestore,
   onSnapshot,
   persistentLocalCache,
@@ -109,3 +110,53 @@ export const useContactSubmit = () => {
 
   return { isSubmitting, isError, isSuccess, submitContactForm };
 };
+
+export default function useGeneralInfo() {
+  const [publicAnnouncement, setPublicAnnouncement] = useState("");
+  const [aboutMe, setAboutMe] = useState("");
+
+  const getLocalHoliday = () => {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+
+    if (month === 1 && day === 1) return "Happy New Year!";
+    if (month === 2 && day === 14) return "Happy Valentine's Day!";
+    if (month === 3 && day === 14) return "PI Day!";
+    if (month === 4 && day === 1) return "April Fools!";
+    if (month === 5 && day === 1) return "May Day!";
+    if (month === 7 && day === 3) return "My Best Friend's Birthday!";
+    if (month === 10 && day === 28) return "It's my Birthday!";
+    if (month === 10 && day === 31) return "Happy Halloween!";
+    if (month === 12 && day === 18) return "Qatar National Day!";
+    if (month === 12 && day === 24) return "Christmas Eve!";
+    if (month === 12 && day === 25) return "Merry Christmas!";
+    if (month === 12 && day === 31) return "Happy New Year's Eve!";
+
+    return "";
+  };
+
+  useEffect(() => {
+    const fetchGeneralInfo = async () => {
+      try {
+        const docRef = doc(db, "link", "general");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setPublicAnnouncement(data.publicAnnouncement || getLocalHoliday());
+          setAboutMe(data.aboutMe || "Not Set");
+        } else {
+          setPublicAnnouncement(getLocalHoliday());
+        }
+      } catch (error) {
+        console.error(error);
+        setPublicAnnouncement(getLocalHoliday());
+      }
+    };
+
+    fetchGeneralInfo();
+  }, []);
+
+  return { publicAnnouncement, aboutMe };
+}

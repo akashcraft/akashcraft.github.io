@@ -4,6 +4,7 @@ import banner3 from "../assets/img-main/banner3.png";
 import banner4 from "../assets/img-main/banner4.png";
 import banner5 from "../assets/img-main/banner5.png";
 import banner6 from "../assets/img-main/banner6.png";
+import banner5phone from "../assets/img-main/banner5phone.png";
 import banner7 from "../assets/img-main/banner7.png";
 import banner8 from "../assets/img-main/banner8.png";
 import banner9 from "../assets/img-main/banner9.png";
@@ -20,6 +21,7 @@ export const images = [
   banner4,
   banner5,
   banner6,
+  banner5phone,
   banner7,
   banner8,
   banner9,
@@ -37,9 +39,6 @@ export type genericAppData = {
   linkText: string;
   link?: string;
 };
-
-export const aboutMeText: string =
-  "Hello! My name is Akash Samanta. You are viewing an upcoming build of my website. Development started on 12 October 2025. The purpose of this new build is to migrate from vanilla HTML, CSS, JavaScript, PHP, and MySQL to a more modern framework of React, Material UI, and Firebase. The final build may differ from what is already there. You can always view the completed website at akashcraft.ca.";
 
 export const codingData: genericAppData[] = [
   {
@@ -91,6 +90,35 @@ export const workData = [
     description:
       "Worked with Nasdaq Verafin in the Warehouse Data Preparation Team",
     image: banner6,
+    linkText: "Learn More",
+    link: "verafin/2",
+  },
+];
+
+export const workDataPhone = [
+  {
+    title: "Research and Development",
+    subtitle: "8 months",
+    description:
+      "Worked with Marine Institute and MUN to develop an automated eye tracking software.",
+    image: banner4,
+    linkText: "Learn More",
+    link: "eyeport",
+  },
+  {
+    title: "UI Developer",
+    subtitle: "8 months",
+    description: "Worked with Nasdaq Verafin in the Front-End Development Team",
+    image: banner5phone,
+    linkText: "Learn More",
+    link: "verafin/1",
+  },
+  {
+    title: "Datalakes Developer",
+    subtitle: "4 months",
+    description:
+      "Worked with Nasdaq Verafin in the Warehouse Data Preparation Team",
+    image: banner5phone,
     linkText: "Learn More",
     link: "verafin/2",
   },

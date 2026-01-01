@@ -227,7 +227,7 @@ export default function AirportCard({
 }
 
 const StyledCard = styled(Card)({
-  borderRadius: "2rem",
+  borderRadius: "1rem",
   margin: "1rem 0",
 });
 

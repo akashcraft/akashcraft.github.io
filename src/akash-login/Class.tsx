@@ -169,8 +169,8 @@ export function Class() {
                 variant="outlined"
                 startIcon={<PrintOutlined sx={{ color: "inherit" }} />}
                 sx={{
-                  color: "var(--mui-palette-background-paper)",
-                  borderColor: `color-mix(in srgb, var(--mui-palette-background-paper), transparent 50%)`,
+                  color: accountState.userDetails?.accentColour,
+                  borderColor: `color-mix(in srgb,${accountState.userDetails?.accentColour ?? "var(--mui-palette-text-primary)"} transparent 50%)`,
                   borderWidth: 1,
 
                   "&:hover": {
@@ -179,7 +179,7 @@ export function Class() {
                     backgroundColor: `color-mix(in srgb, var(--mui-palette-background-button), transparent 80%)`,
                   },
                   "& p": {
-                    color: "var(--mui-palette-background-paper)",
+                    color: accountState.userDetails?.accentColour,
                   },
                 }}
               >
@@ -371,8 +371,8 @@ export function Class() {
                 variant="outlined"
                 startIcon={<LinkOutlined sx={{ color: "inherit" }} />}
                 sx={{
-                  color: "var(--mui-palette-background-paper)",
-                  borderColor: `color-mix(in srgb, var(--mui-palette-background-paper), transparent 50%)`,
+                  color: accountState.userDetails?.accentColour,
+                  borderColor: `color-mix(in srgb,${accountState.userDetails?.accentColour ?? "var(--mui-palette-text-primary)"} transparent 50%)`,
                   borderWidth: 1,
 
                   "&:hover": {
@@ -381,7 +381,7 @@ export function Class() {
                     backgroundColor: `color-mix(in srgb, var(--mui-palette-background-button), transparent 80%)`,
                   },
                   "& p": {
-                    color: "var(--mui-palette-background-paper)",
+                    color: accountState.userDetails?.accentColour,
                   },
                   "&:disabled": {
                     "& p": {

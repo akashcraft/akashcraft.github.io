@@ -18,6 +18,7 @@ export function reducerFilter(
     payload: WebFilterType;
   },
 ): FilteredWebData {
+  window.scrollTo(0, 0);
   switch (action.type) {
     case "ADD_TYPE": {
       const newSelected = [...state.selectedTypes, action.payload];

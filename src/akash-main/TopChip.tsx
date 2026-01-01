@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Chip, useMediaQuery } from "@mui/material";
+import { Chip } from "@mui/material";
 import { GitHub, YouTube, LinkedIn } from "@mui/icons-material";
 
 type TopChipProps = {
@@ -39,9 +39,6 @@ function getIcon(title: string, img?: string) {
 }
 
 function TopChip({ img, title, color, link }: TopChipProps) {
-  // Media Query
-  const phone = useMediaQuery("(min-width:600px)");
-
   return (
     <StyledChip
       variant="filled"
@@ -49,7 +46,7 @@ function TopChip({ img, title, color, link }: TopChipProps) {
       sx={{
         backgroundColor: color[800],
         ":hover": { backgroundColor: color[900] },
-        width: phone ? "9rem" : "15rem",
+        width: "9rem",
       }}
       onClick={link}
       label={title}

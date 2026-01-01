@@ -7,6 +7,10 @@ import {
   Typography,
   useMediaQuery,
   Skeleton,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { MacDialogContext, type genericAppData } from "./appData";
@@ -57,137 +61,191 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
   }
 
   // Media Query
-  const phone = useMediaQuery("(min-width:600px)");
+  const isPhone = useMediaQuery("(max-width:1000px)");
 
-  return (
-    <>
-      <StyledCard
-        sx={{
-          margin: phone ? "0.5rem" : "1rem",
-        }}
-      >
-        <CardActionArea
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={handleClick}
-        >
-          <motion.div
-            style={{ y: 0 }}
-            initial={{ scale: 1, y: 0 }}
-            animate={{ scale: hovered ? 1.05 : 1, y: hovered ? -4 : 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+  return isPhone ? (
+    <ListItemButton
+      sx={{
+        width: "calc(100% - 2rem)",
+        maxWidth: "40rem",
+        padding: "1rem",
+        alignSelf: "center",
+        marginBottom: "1rem",
+        gap: "1rem",
+        backgroundColor: "var(--mui-palette-background-paper)",
+        ":hover": { backgroundColor: "var(--mui-palette-action-hover)" },
+        borderRadius: "1rem",
+      }}
+      onClick={handleClick}
+    >
+      <ListItemAvatar>
+        <Avatar
+          src={data.image}
+          variant="rounded"
+          sx={{ transform: "scale(1.7)", margin: "0 1rem" }}
+        />
+      </ListItemAvatar>
+      <ListItemText
+        primary={
+          <Stack
+            direction="row"
+            width="100%"
+            justifyContent="space-between"
+            gap={1}
+            alignItems="center"
           >
-            {isLoading && (
-              <Skeleton variant="rectangular" animation="wave" height={170} />
+            {data.title}
+            {isReset ? (
+              <RefreshIcon />
+            ) : isPrivate ? (
+              <BlockIcon />
+            ) : (
+              <OpenInNew />
             )}
-            <CardMedia
-              component="img"
-              style={{ display: isLoading ? "none" : "block" }}
-              height="170"
-              image={data.image}
-            />
-          </motion.div>
-          <CardContent>
-            <div style={{ position: "relative", height: "2rem" }}>
-              <motion.div
-                key="left"
-                initial={{ opacity: 1, x: 0 }}
-                animate={{ opacity: hovered ? 0 : 1, x: hovered ? 25 : 0 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  textAlign: "left",
-                }}
-              >
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="h6">{data.title}</Typography>
-                  {isReset ? <RefreshIcon /> : <OpenInNew />}
-                </Stack>
-              </motion.div>
-
-              <motion.div
-                key="center"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -25 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  textAlign: "center",
-                }}
+          </Stack>
+        }
+        secondary={
+          <Stack
+            direction="column"
+            gap={1}
+            mt={1}
+            component="div"
+            sx={{ color: "var(--mui-palette-text-primary)" }}
+          >
+            {isDuration && <span>{subtitle}</span>}
+            <span>{data.description}</span>
+          </Stack>
+        }
+        secondaryTypographyProps={{ component: "div" }}
+      />
+    </ListItemButton>
+  ) : (
+    <StyledCard
+      sx={{
+        margin: "0.5rem",
+      }}
+    >
+      <CardActionArea
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+      >
+        <motion.div
+          style={{ y: 0 }}
+          initial={{ scale: 1, y: 0 }}
+          animate={{ scale: hovered ? 1.05 : 1, y: hovered ? -4 : 0 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+        >
+          {isLoading && (
+            <Skeleton variant="rectangular" animation="wave" height={170} />
+          )}
+          <CardMedia
+            component="img"
+            style={{ display: isLoading ? "none" : "block" }}
+            height="170"
+            image={data.image}
+          />
+        </motion.div>
+        <CardContent>
+          <div style={{ position: "relative", height: "2rem" }}>
+            <motion.div
+              key="left"
+              initial={{ opacity: 1, x: 0 }}
+              animate={{ opacity: hovered ? 0 : 1, x: hovered ? 25 : 0 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                position: "absolute",
+                width: "100%",
+                textAlign: "left",
+              }}
+            >
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
                 <Typography variant="h6">{data.title}</Typography>
-              </motion.div>
-            </div>
+                {isReset ? <RefreshIcon /> : <OpenInNew />}
+              </Stack>
+            </motion.div>
 
             <motion.div
-              initial={{ opacity: 1, y: 5 }}
-              animate={{ opacity: hovered ? 0 : 1, y: 5 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+              key="center"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -25 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                position: "absolute",
+                width: "100%",
+                textAlign: "center",
+              }}
             >
-              <Typography
-                variant="subtitle1"
-                color="text.primary"
-                marginBottom={"1rem"}
-              >
-                {subtitle}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.primary"
-                marginBottom={"1rem"}
-              >
-                {data.description}
-              </Typography>
+              <Typography variant="h6">{data.title}</Typography>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: -40 }}
-              animate={{ opacity: hovered ? 1 : 0, y: hovered ? -50 : 40 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 1, y: 5 }}
+            animate={{ opacity: hovered ? 0 : 1, y: 5 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            <Typography
+              variant="subtitle1"
+              color="text.primary"
+              marginBottom={"1rem"}
             >
-              <StyledStack
-                sx={{
-                  backgroundColor: isReset
-                    ? "green"
-                    : isPrivate
-                      ? "red"
-                      : "var(--mui-palette-secondary-main)",
-                }}
-                direction="row"
-                spacing={"1rem"}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <p>{data.linkText}</p>
-                {isReset ? (
-                  <RefreshIcon />
-                ) : isPrivate ? (
-                  <BlockIcon />
-                ) : (
-                  <motion.div
-                    initial={{ x: -10, y: 2.75 }}
-                    animate={{ x: 10, y: 2.75 }}
-                    transition={{
-                      duration: 0.4,
-                      ease: "linear",
-                      repeat: Infinity,
-                      repeatType: "reverse",
-                    }}
-                  >
-                    <ArrowForwardIcon />
-                  </motion.div>
-                )}
-              </StyledStack>
-            </motion.div>
-          </CardContent>
-        </CardActionArea>
-      </StyledCard>
-    </>
+              {subtitle}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.primary"
+              marginBottom={"1rem"}
+            >
+              {data.description}
+            </Typography>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: hovered ? 1 : 0, y: hovered ? -50 : 40 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            <StyledStack
+              sx={{
+                backgroundColor: isReset
+                  ? "green"
+                  : isPrivate
+                    ? "red"
+                    : "var(--mui-palette-secondary-main)",
+              }}
+              direction="row"
+              spacing={"1rem"}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <p>{data.linkText}</p>
+              {isReset ? (
+                <RefreshIcon />
+              ) : isPrivate ? (
+                <BlockIcon />
+              ) : (
+                <motion.div
+                  initial={{ x: -10, y: 2.75 }}
+                  animate={{ x: 10, y: 2.75 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "linear",
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  }}
+                >
+                  <ArrowForwardIcon />
+                </motion.div>
+              )}
+            </StyledStack>
+          </motion.div>
+        </CardContent>
+      </CardActionArea>
+    </StyledCard>
   );
 }
 

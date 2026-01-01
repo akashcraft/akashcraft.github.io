@@ -21,8 +21,8 @@ function HolderBox({
   disableFooter = false,
 }: HolderBoxProps) {
   // Media Query
-  const isPhone = useMediaQuery("(min-width:600px)");
-  const isMid = useMediaQuery("(min-width:900px)");
+  const isPhone = useMediaQuery("(min-width:800px)");
+  const isMid = useMediaQuery("(min-width:1000px)");
   const isLarge = useMediaQuery("(min-width:1200px)");
   sessionStorage.setItem("hintShown", "true");
 
@@ -34,7 +34,7 @@ function HolderBox({
         ? "2rem 5%"
         : isPhone
           ? "2rem 4%"
-          : "1.5rem";
+          : "1.5rem 1rem";
   } else {
     padding = isLarge
       ? "2rem 20%"
@@ -42,7 +42,7 @@ function HolderBox({
         ? "2rem 15%"
         : isPhone
           ? "2rem 8%"
-          : "1.5rem";
+          : "1.5rem 1rem";
   }
 
   return (

@@ -74,7 +74,7 @@ export default function ClassSchedule({
         <AddCircleOutlined
           style={{
             fontSize: "4rem",
-            color: "var(--mui-palette-background-button)",
+            color: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
           }}
         />
       }

@@ -28,7 +28,7 @@ import { useGetImages } from "../akash-commons/Hooks";
 import WebCard from "./WebCard";
 
 function Web() {
-  const isPhone = useMediaQuery("(min-width:900px)");
+  const isPhone = useMediaQuery("(min-width:800px)");
   const isLoading = useGetImages(images);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const filterOpen = Boolean(anchorEl);
@@ -47,7 +47,12 @@ function Web() {
 
   return (
     <HolderBox isWide>
-      <Stack direction={{ xs: "column", sm: "row" }} mt={1} gap={3.5}>
+      <Stack
+        direction={isPhone ? "row" : "column"}
+        alignItems={isPhone ? "flex-start" : "center"}
+        mt={1}
+        gap={isPhone ? 3.5 : 0}
+      >
         {isPhone && (
           <SidePaper
             title="Filters"
@@ -188,10 +193,10 @@ function Web() {
           )}
           <Stack
             sx={{ flexGrow: 1 }}
-            direction={isPhone ? "row" : "column"}
-            alignItems={isPhone ? "flex-start" : "center"}
-            flexWrap="wrap"
-            gap={isPhone ? "1.5rem" : "2rem"}
+            direction={!isPhone ? "column" : "row"}
+            width="100%"
+            flexWrap={!isPhone ? "nowrap" : "wrap"}
+            gap={!isPhone ? "0rem" : "1.5rem"}
           >
             {filterState.filteredData.map((item, index) => (
               <WebCard

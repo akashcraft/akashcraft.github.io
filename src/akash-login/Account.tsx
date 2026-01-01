@@ -376,13 +376,11 @@ export function Account() {
                         : "inline-flex",
                     transition: "background-color 0.3s",
                     "&.Mui-selected": {
-                      // 50% opacity using color-mix
                       backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "Grey"}, transparent 80%) !important`,
                       "&:hover": {
                         backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "Grey"}, transparent 40%) !important`,
                       },
                     },
-                    // Keep text and icons sharp at 100% opacity
                     "&.Mui-selected .MuiTypography-root, &.Mui-selected .MuiListItemIcon-root":
                       {
                         color: "#ffffff",

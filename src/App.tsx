@@ -25,6 +25,7 @@ import { Account } from "./akash-login/Account.tsx";
 import { useEffect, useState } from "react";
 import { auth } from "./akash-commons/firebaseHooks.tsx";
 import type { User } from "firebase/auth";
+import { Application } from "./akash-app/Application.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -127,7 +128,7 @@ export function App() {
           <Route path="/verafin/:id" element={<Verafin />} />
           <Route path="/eyeport" element={<EyePort />} />
           <Route path="/web" element={<Web />} />
-          <Route path="/app" element={<App />} />
+          <Route path="/app" element={<Application />} />
           <Route path="/mahjong" element={<Mahjong />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/contact-legacy" element={<ContactLegacy />} />

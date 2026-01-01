@@ -105,6 +105,8 @@ function Networking() {
                 fontSize: "1rem",
                 padding: "1.25rem 1rem",
                 borderRadius: "1.5rem",
+                width: isPhone ? "min-content" : "100%",
+                maxWidth: isPhone ? "unset" : "14rem",
               }}
               size="medium"
               onClick={() =>

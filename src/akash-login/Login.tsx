@@ -420,7 +420,12 @@ function Login() {
               duration: 0.5,
             }}
           >
-            <Stack direction="row" alignItems="center" gap={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={2}
+              justifyContent={isPhone ? "center" : "flex-start"}
+            >
               {!(isError || isSuccess || isSubmitting) && (
                 <Avatar>
                   <img
@@ -463,6 +468,8 @@ function Login() {
             <p
               style={{
                 marginRight: isPhone ? "0rem" : "10rem",
+                justifySelf: isPhone ? "center" : "flex-start",
+                textAlign: isPhone ? "center" : "left",
               }}
             >
               {isError
@@ -491,7 +498,9 @@ function Login() {
                   flexDirection: "column",
                   gap: "1rem",
                   maxWidth: "30rem",
+                  width: "100%",
                   fontSize: isPhone ? "smaller" : "1rem",
+                  justifySelf: isPhone ? "center" : "flex-start",
                 }}
               >
                 <Stack
@@ -638,17 +647,41 @@ function Login() {
                       color: "var(--mui-palette-primary-main)",
                       padding: "0",
                       width: "fit-content",
-                      alignSelf: "flex-end",
+                      alignSelf: isPhone ? "center" : "flex-end",
                     }}
                   >
                     Forgot your password?
                   </SubmitButton>
                 )}
+                {isPhone && (
+                  <SubmitButton
+                    variant="text"
+                    onClick={() => {
+                      localStorage.setItem(
+                        "loggedIn",
+                        isLoginPage ? "false" : "true",
+                      );
+                      const passwordInput = document.querySelector(
+                        'input[name="password"]',
+                      ) as HTMLInputElement | null;
+                      passwordInput!.value = "";
+                      setIsLoginPage((prev) => !prev);
+                    }}
+                    sx={{
+                      color: "var(--mui-palette-primary-main)",
+                      padding: "0",
+                    }}
+                  >
+                    {isLoginPage
+                      ? "Sign up for an account"
+                      : "Already have an account?"}
+                  </SubmitButton>
+                )}
               </form>
             )}
             {!(isSubmitting || isSuccess || isError || isPasswordForgotten) && (
-              <>
-                <p>
+              <Stack alignItems={isPhone ? "center" : "flex-start"}>
+                <p style={{ display: "inline-block" }}>
                   {isLoginPage
                     ? "More ways to sign in"
                     : "More ways to sign up"}
@@ -671,43 +704,45 @@ function Login() {
                     </CircularButton>
                   </StyledTooltip>
                 </Stack>
-              </>
+                <br />
+              </Stack>
             )}
           </motion.div>
-          {!(isSuccess || isSubmitting || isError || isPasswordForgotten) && (
-            <SwitchStack
-              sx={{
-                position: isPhone ? "relative" : "absolute",
-                top: isPhone ? "-0.25rem" : "unset",
-                left: isPhone ? (isLoginPage ? "0.25rem" : "-0.55rem") : "50%",
-                width: isPhone ? "100%" : "auto",
-                maxWidth: isPhone ? "95%" : "auto",
-              }}
-            >
-              <SubmitButton
-                variant="text"
-                onClick={() => {
-                  localStorage.setItem(
-                    "loggedIn",
-                    isLoginPage ? "false" : "true",
-                  );
-                  const passwordInput = document.querySelector(
-                    'input[name="password"]',
-                  ) as HTMLInputElement | null;
-                  passwordInput!.value = "";
-                  setIsLoginPage((prev) => !prev);
-                }}
+          {!(isSuccess || isSubmitting || isError || isPasswordForgotten) &&
+            !isPhone && (
+              <SwitchStack
                 sx={{
-                  color: "var(--mui-palette-primary-main)",
-                  padding: "0",
+                  position: "absolute",
+                  top: "unset",
+                  left: "50%",
+                  width: "auto",
+                  maxWidth: "auto",
                 }}
               >
-                {isLoginPage
-                  ? "Sign up for an account"
-                  : "Already have an account?"}
-              </SubmitButton>
-            </SwitchStack>
-          )}
+                <SubmitButton
+                  variant="text"
+                  onClick={() => {
+                    localStorage.setItem(
+                      "loggedIn",
+                      isLoginPage ? "false" : "true",
+                    );
+                    const passwordInput = document.querySelector(
+                      'input[name="password"]',
+                    ) as HTMLInputElement | null;
+                    passwordInput!.value = "";
+                    setIsLoginPage((prev) => !prev);
+                  }}
+                  sx={{
+                    color: "var(--mui-palette-primary-main)",
+                    padding: "0",
+                  }}
+                >
+                  {isLoginPage
+                    ? "Sign up for an account"
+                    : "Already have an account?"}
+                </SubmitButton>
+              </SwitchStack>
+            )}
           <SubmitStack
             sx={{
               position: isPhone ? "static" : "absolute",

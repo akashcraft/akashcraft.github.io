@@ -164,16 +164,44 @@ export function useLoginSubmit() {
           });
           await sendEmailVerification(newUser);
           await auth.signOut();
+          localStorage.setItem("loggedIn", "true");
           setIsSuccess(true);
         } else {
+          localStorage.setItem("loggedIn", "false");
           setIsError(true);
           setStatusCode(500);
         }
       } catch (error) {
-        setIsError(true);
         if ((error as FirebaseError).code === "auth/email-already-in-use") {
-          setStatusCode(409);
+          try {
+            const userCredential = await signInWithEmailAndPassword(
+              auth,
+              data.email,
+              data.password!,
+            );
+            const existingUser = userCredential.user;
+
+            if (!existingUser.emailVerified) {
+              await sendEmailVerification(existingUser);
+              await auth.signOut();
+
+              localStorage.setItem("loggedIn", "true");
+              setIsSuccess(true);
+              return;
+            } else {
+              localStorage.setItem("loggedIn", "false");
+              setIsError(true);
+              setStatusCode(409);
+            }
+          } catch (error) {
+            localStorage.setItem("loggedIn", "false");
+            console.error(error);
+            setIsError(true);
+            setStatusCode(409);
+          }
         } else {
+          localStorage.setItem("loggedIn", "false");
+          setIsError(true);
           setStatusCode(500);
         }
       } finally {
@@ -190,8 +218,10 @@ export function useLoginSubmit() {
           setIsSubmitting(false);
           return;
         }
+        localStorage.setItem("loggedIn", "true");
         setIsSuccess(true);
       } catch (error) {
+        localStorage.setItem("loggedIn", "true");
         setIsError(true);
         switch ((error as FirebaseError).code) {
           case "auth/invalid-credential":
@@ -221,6 +251,7 @@ export function useLoginSubmit() {
         setStatusCode(500);
       } finally {
         setIsSubmitting(false);
+        localStorage.setItem("loggedIn", "true");
       }
     }
   };

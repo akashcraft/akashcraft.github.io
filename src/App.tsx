@@ -28,6 +28,7 @@ import type { User } from "firebase/auth";
 import { Application } from "./akash-app/Application.tsx";
 import ExamShare from "./akash-login/ExamShare.tsx";
 import ClassShare from "./akash-login/ClassShare.tsx";
+import { AuthHandler } from "./akash-login/AuthHandler.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -143,6 +144,7 @@ export function App() {
           <Route path="/account/:page" element={<Account />} />
           <Route path="/exam/:uid" element={<ExamShare />} />
           <Route path="/class/:uid" element={<ClassShare />} />
+          <Route path="/auth-handler" element={<AuthHandler />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

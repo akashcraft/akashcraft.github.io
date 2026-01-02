@@ -101,8 +101,8 @@ const getErrorSubText = (statusCode: number): string => {
     400: "Please check your credentials and try again",
     401: "You are not authorized to access this service. Please contact an administrator.",
     403: "Your account has been disabled. Please contact an administrator.",
-    404: "Please verify your email before logging in. Check your inbox for a verification email.",
-    409: "An account with that email already exists. Please use a different email or provider.",
+    404: "Check your inbox for a verification email. If you need a new link, please register again..",
+    409: "An account with that email already exists. Please use a different email or third-party login.",
     410: "You have rejected the authorization request from AkashCraft",
     500: "Internal server error occurred. Please try again later.",
     503: "This service is currently unavailable. Please try again later.",
@@ -188,7 +188,7 @@ function Login() {
         }
         sx={{
           height: isPhone ? "auto" : "90vh",
-          padding: isPhone ? "2rem 1rem" : "0",
+          padding: isPhone ? "1rem" : "0",
           margin: isPhone ? "1rem auto" : "none",
           transition: "opacity 0.25s ease-in-out",
         }}
@@ -419,6 +419,7 @@ function Login() {
             transition={{
               duration: 0.5,
             }}
+            style={{ width: "100%" }}
           >
             <Stack
               direction="row"
@@ -553,11 +554,19 @@ function Login() {
                       onKeyDownCapture={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
-                          (
-                            document.querySelector(
-                              'input[name="password"]',
-                            ) as HTMLInputElement
-                          )?.focus();
+                          if (isPasswordForgotten) {
+                            (
+                              document.querySelector(
+                                "#submit-button",
+                              ) as HTMLInputElement
+                            )?.click();
+                          } else {
+                            (
+                              document.querySelector(
+                                'input[name="password"]',
+                              ) as HTMLInputElement
+                            )?.focus();
+                          }
                         }
                       }}
                       type="email"
@@ -768,7 +777,6 @@ function Login() {
             sx={{
               position: isPhone ? "static" : "absolute",
               width: isPhone ? "100%" : "auto",
-              maxWidth: isPhone ? "95%" : "auto",
             }}
             justifyContent={"flex-end"}
           >
@@ -801,7 +809,6 @@ function Login() {
               onClick={(e) => {
                 e.preventDefault();
                 if (isSuccess || isError) {
-                  localStorage.setItem("loggedIn", "true");
                   window.location.reload();
                 } else {
                   const form = document.getElementById(

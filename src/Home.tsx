@@ -59,7 +59,7 @@ function Home() {
     };
   }, []);
 
-  const isLoading = useGetImages(images);
+  const isLoading = useGetImages([...images, christmasHat, logo]);
   const isPhone = useMediaQuery("(max-width:1000px)");
 
   const { publicAnnouncement, aboutMe: aboutMeText } = useGeneralInfo();
@@ -102,7 +102,7 @@ function Home() {
                   borderRadius: "50%",
                 }}
               />
-              {isWinter && (
+              {isWinter && !isLoading && (
                 <img
                   src={christmasHat}
                   style={{

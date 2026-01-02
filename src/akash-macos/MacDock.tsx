@@ -144,7 +144,7 @@ function MacDock() {
                   <Stack direction="row" key={index}>
                     <StyledHolder>
                       <StyledTooltip
-                        open={tooltipOpen}
+                        open={tooltipOpen && !isLoading}
                         title="Try out Finder"
                         arrow
                         placement="top"

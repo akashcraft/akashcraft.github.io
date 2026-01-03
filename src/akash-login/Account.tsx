@@ -18,21 +18,12 @@ import {
   AccountCircleOutlined,
   CampaignOutlined,
   CalendarMonthOutlined,
-  CoPresentOutlined,
-  HomeOutlined,
-  LinkOutlined,
-  SettingsOutlined,
-  AdminPanelSettingsOutlined,
   SchoolOutlined,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import AccountHeaderBox, { StyledHeaderPaper } from "./AccountHeaderBox";
 import ClassSchedule from "./ClassSchedule";
 import ExamSchedule from "./ExamSchedule";
-import {
-  ContactWavesDark,
-  ContactWavesLight,
-} from "../akash-main/ContactWaves";
 import Settings from "./Settings";
 import { motion } from "framer-motion";
 import { Links } from "./Links";
@@ -47,125 +38,16 @@ import {
 import { useEffect, useReducer } from "react";
 import { auth, db } from "../akash-commons/firebaseHooks";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
-import { BlobDark, BlobLight } from "../akash-svg/Blob";
-import { PeaksLight } from "../akash-svg/Peaks";
-import { RingsDark, RingsLight } from "../akash-svg/Rings";
-import { StarsDark, StarsLight } from "../akash-svg/Stars";
-import { StepsDark, StepsLight } from "../akash-svg/Steps";
-import { NoneDark, NoneLight } from "../akash-svg/None";
 import Loading from "../akash-commons/Loading";
+import {
+  accountMenuOptions,
+  getColours,
+  getDarkBackground,
+  getLightBackground,
+  getGreeting,
+} from "./AccountUtils";
 
 const adminUID = "NBH76id0H9gunlBAxynGWjsSomP2";
-
-function getColours(colourName: string): string[] {
-  const colours: Record<string, string[]> = {
-    Red: ["#ff8080", "#ff4d4d", "#cc0000", "#990000"],
-    Orange: ["#d9a38c", "#b27e64", "#864f33", "#6c402a"],
-    Yellow: ["#f4d03f", "#f1c40f", "#d4ac0d", "#9a7d0a"],
-    Green: ["#58d68d", "#27ae60", "#1e8449", "#145a32"],
-    Blue: ["#5dade2", "#2980b9", "#21618c", "#1a5276"],
-    Indigo: ["#7986cb", "#3f51b5", "#303f9f", "#1a237e"],
-    Purple: ["#af7ac5", "#8e44ad", "#713d84", "#4a235a"],
-    Grey: ["#bdc3c7", "#7f8c8d", "#34495e", "#2c3e50"],
-  };
-
-  return colours[colourName] || colours["Grey"];
-}
-
-function getLightBackground(wallpaper?: string, accentColour?: string) {
-  switch (wallpaper) {
-    case "Blob":
-      return <BlobLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Waves":
-      return <ContactWavesLight colours={getColours(accentColour ?? "Grey")} />;
-    case "None":
-      return <NoneLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Peaks":
-      return <PeaksLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Rings":
-      return <RingsLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Stars":
-      return <StarsLight colours={getColours(accentColour ?? "Grey")} />;
-    case "Steps":
-      return <StepsLight colours={getColours(accentColour ?? "Grey")} />;
-    default:
-      return null;
-  }
-}
-
-function getDarkBackground(wallpaper?: string) {
-  switch (wallpaper) {
-    case "Blob":
-      return <BlobDark />;
-    case "Waves":
-      return <ContactWavesDark />;
-    case "None":
-      return <NoneDark />;
-    case "Peaks":
-      return <PeaksLight />;
-    case "Rings":
-      return <RingsDark />;
-    case "Stars":
-      return <StarsDark />;
-    case "Steps":
-      return <StepsDark />;
-    default:
-      return null;
-  }
-}
-
-function getGreeting(isBirthday: boolean): string {
-  if (isBirthday) return "Happy Birthday";
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning";
-  if (hour < 16) return "Good Afternoon";
-  return "Good Evening";
-}
-
-const accountMenuOptions = [
-  {
-    title: "Home",
-    icon: <HomeOutlined />,
-    fgcolor: "#1c419a",
-    bgcolor: "#aec6f6",
-    id: "home",
-  },
-  {
-    title: "Exam Schedule",
-    icon: <CalendarMonthOutlined />,
-    fgcolor: "#3e7d32",
-    bgcolor: "#88d393",
-    id: "exam",
-  },
-  {
-    title: "Class Schedule",
-    icon: <CoPresentOutlined />,
-    fgcolor: "#6a1b9a",
-    bgcolor: "#d4bbf9",
-    id: "class",
-  },
-  {
-    title: "Links",
-    icon: <LinkOutlined />,
-    fgcolor: "#b71c1c",
-    bgcolor: "#f3b2e1",
-    id: "links",
-  },
-  {
-    title: "Settings",
-    icon: <SettingsOutlined />,
-    fgcolor: "#7f4c00",
-    bgcolor: "#f4b98b",
-    id: "settings",
-  },
-  {
-    title: "Admin",
-    icon: <AdminPanelSettingsOutlined />,
-    fgcolor: "#880e4f",
-    bgcolor: "#fe5d5d",
-    id: "admin",
-  },
-];
 
 export function Account() {
   const isPhone = useMediaQuery("(max-width:800px)");

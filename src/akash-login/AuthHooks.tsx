@@ -56,8 +56,6 @@ export function useLoginSubmit() {
               email: newUser.email || "",
               photo: newUser.photoURL || "",
               provider: "google",
-              classSharing: false,
-              examSharing: false,
             },
             { merge: true },
           );
@@ -105,8 +103,6 @@ export function useLoginSubmit() {
               email: newUser.email || "",
               photo: newUser.photoURL || "",
               provider: "google",
-              classSharing: false,
-              examSharing: false,
             },
             { merge: true },
           );
@@ -870,7 +866,7 @@ export function useExamSharing(uid: string | undefined) {
     university: string;
     semester: string;
   } | null>(null);
-  const [error, setError] = useState<string | null>("Invalid URL");
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -950,7 +946,7 @@ export function useClassSharing(uid: string | undefined) {
     university: string;
     semester: string;
   } | null>(null);
-  const [error, setError] = useState<string | null>("Invalid URL");
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

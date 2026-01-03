@@ -1,14 +1,40 @@
 @media print {
-  body {
+  @page {
+    margin: 0;
+  }
+
+  * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  * {
+  #main-box {
+    justify-content: flex-start !important;
+    margin-top: 2rem !important;
+  }
+
+  #background-box {
+    display: none !important;
+  }
+
+  #header-paper,
+  #normal-chip,
+  .MuiTableCell-root,
+  #row-cell {
     color: black !important;
-    text-shadow: none !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+
+  }
+
+  #row-cell {
+    color: white !important;
+  }
+
+  #stamp-chip {
+    display: flex !important;
+
+    * {
+      color: black !important;
+    }
   }
 
   .MuiPaper-root {

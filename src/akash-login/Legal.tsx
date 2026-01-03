@@ -27,6 +27,7 @@ export function Policy() {
 
   return (
     <HolderBox isWide>
+      <title>Legal</title>
       <Portal container={headerContainer}>
         <TableOfContentsLink handler={handleScrollTo} />
       </Portal>
@@ -49,7 +50,6 @@ export function Policy() {
         <Box flexGrow={1}>
           <p id="link1" style={{ position: "relative", bottom: "5rem" }}></p>
           <h2>Terms of Service</h2>
-
           <p>By using AkashCraft, you agree to the following terms:</p>
           <ul>
             <li>
@@ -70,7 +70,6 @@ export function Policy() {
               violation of these terms.
             </li>
           </ul>
-
           <p>
             <b>Liability:</b> AkashCraft is provided "as is." I am not liable
             for any damages arising from the use of this service. You are solely
@@ -86,21 +85,33 @@ export function Policy() {
           />
 
           <p id="link2" style={{ position: "relative", bottom: "5rem" }}></p>
-
           <h2>Privacy Policy</h2>
-
           <p>
             Your privacy is important. Data collected on AkashCraft is handled
             with the following principles:
           </p>
           <ul>
             <li>
-              Data is only processed and stored to provide you with the services
-              offered.
+              Specific Google user data (such as your email address) is accessed
+              and processed only to provide the services offered.
             </li>
             <li>
               Your personal data is never shared with third parties for revenue
               or advertising purposes.
+            </li>
+            <li>
+              <b>Google Limited Use:</b> AkashCraft's use and transfer to any
+              other app of information received from Google APIs will adhere to
+              the{" "}
+              <a
+                href="https://developers.google.com/terms/api-services-user-data-policy"
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: "orange" }}
+              >
+                Google API Services User Data Policy
+              </a>
+              , including the Limited Use requirements.
             </li>
             <li>
               All user passwords are encrypted using industry-standard hashing
@@ -120,10 +131,16 @@ export function Policy() {
           </p>
 
           <p>
-            <b>User Control:</b> You retain full control over your data. You may
-            modify or delete your stored schedules at any time. If you wish to
-            delete your entire account and associated data, you can do so
-            through the account settings or by contacting support.
+            <b>User Control & Deletion:</b> You retain full control over your
+            data. You may modify or delete your stored schedules at any time. If
+            you wish to delete your entire account and associated data, you can
+            do so through the account settings.
+          </p>
+
+          <p>
+            <b>Contact:</b> If you have any questions about these terms or your
+            data, please contact me at <b>akashcraft2@gmail.com</b>. You may
+            also use the contact form available in AkashCraft.
           </p>
         </Box>
       </Stack>

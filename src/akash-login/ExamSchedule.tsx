@@ -45,6 +45,7 @@ export default function ExamSchedule({
       <TableHead>
         <TableRow>
           <StyledTableHead
+            id="row-cell"
             sx={{
               backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
             }}
@@ -52,6 +53,7 @@ export default function ExamSchedule({
             Course
           </StyledTableHead>
           <StyledTableHead
+            id="row-cell"
             sx={{
               backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
             }}
@@ -59,6 +61,7 @@ export default function ExamSchedule({
             Date
           </StyledTableHead>
           <StyledTableHead
+            id="row-cell"
             sx={{
               backgroundColor: `color-mix(in srgb, ${accountState.userDetails?.accentColour ?? "unset"}, black 20%)`,
             }}

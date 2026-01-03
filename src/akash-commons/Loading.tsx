@@ -1,8 +1,10 @@
+import spinnerImg from "../assets/img-commons/spinner.png";
+
 export default function Loading({ text }: { text: string }) {
   return (
     <div className="loading" id="splash">
       <div className="loadwrapper">
-        <img src="src/assets/img-commons/spinner.png" />
+        <img src={spinnerImg} />
       </div>
       <p
         style={{

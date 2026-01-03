@@ -1,5 +1,6 @@
 .fc {
   --fc-border-color: var(--mui-palette-text-light2);
+  font-family: "Segoe UI";
 }
 
 .fc-scrollgrid-sync-inner,

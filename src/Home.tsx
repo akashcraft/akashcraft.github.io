@@ -150,15 +150,31 @@ function Home() {
           </Stack>
           <br />
           <Stack
-            direction="row"
+            direction={isPhone ? "column" : "row"}
             spacing={0}
             justifyContent="center"
+            alignItems="center"
             flexWrap="wrap"
-            sx={{ maxWidth: "fit-content", margin: "0 auto" }}
+            sx={{ width: "100%", margin: "0" }}
           >
-            <TopChip title="LinkedIn" color={blue} link={openLinkedIn} />
-            <TopChip title="GitHub" color={grey} link={openGitHub} />
-            <TopChip title="YouTube" color={red} link={openYouTube} />
+            <TopChip
+              isPhone={isPhone}
+              title="LinkedIn"
+              color={blue}
+              link={openLinkedIn}
+            />
+            <TopChip
+              isPhone={isPhone}
+              title="GitHub"
+              color={grey}
+              link={openGitHub}
+            />
+            <TopChip
+              isPhone={isPhone}
+              title="YouTube"
+              color={red}
+              link={openYouTube}
+            />
           </Stack>
           <MacDock />
           <MacDialogContext.Provider

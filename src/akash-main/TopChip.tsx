@@ -38,7 +38,13 @@ function getIcon(title: string, img?: string) {
   }
 }
 
-function TopChip({ img, title, color, link }: TopChipProps) {
+function TopChip({
+  img,
+  title,
+  color,
+  link,
+  isPhone,
+}: TopChipProps & { isPhone: boolean }) {
   return (
     <StyledChip
       variant="filled"
@@ -46,7 +52,7 @@ function TopChip({ img, title, color, link }: TopChipProps) {
       sx={{
         backgroundColor: color[800],
         ":hover": { backgroundColor: color[900] },
-        width: "9rem",
+        width: isPhone ? "12rem" : "9rem",
       }}
       onClick={link}
       label={title}

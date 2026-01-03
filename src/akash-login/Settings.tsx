@@ -12,6 +12,7 @@ import {
   KeyOutlined,
   PhotoCameraOutlined,
   PhotoLibraryOutlined,
+  PolicyOutlined,
   SchoolOutlined,
   TollOutlined,
   Visibility,
@@ -51,6 +52,7 @@ import { StyledDatePicker } from "./Pickers";
 import { AccountContext } from "./AccountContext";
 import dayjs from "dayjs";
 import { usePhotoUpload, useSettingsSubmit } from "./AuthHooks";
+import { useNavigate } from "react-router-dom";
 
 const sanitize = (value: string): string => {
   return value
@@ -276,6 +278,8 @@ export default function Settings() {
 
   const { uploadPhoto, deletePhoto, isUploading, uploadError } =
     usePhotoUpload();
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -883,6 +887,23 @@ export default function Settings() {
               />
             </StyledListItemButton>
           </StyledList>
+          <StyledHeader>Other</StyledHeader>
+          <StyledList>
+            <StyledListItemButton
+              sx={{ borderRadius: "1rem", borderBottom: "none" }}
+              onClick={() => {
+                navigate("/legal");
+              }}
+            >
+              <ListItemIcon>
+                <PolicyOutlined sx={IconStyle} />
+              </ListItemIcon>
+              <StyledListItemText
+                primary="Legal"
+                secondary="Review AkashCraft's Terms of Service and Privacy Policy"
+              />
+            </StyledListItemButton>
+          </StyledList>
         </>
       )}
       {state.selectedPage === "form-entry" && (
@@ -1255,7 +1276,24 @@ export default function Settings() {
                     const form2 = document.getElementById(
                       "form-entry-form",
                     ) as HTMLFormElement | null;
-                    if (form?.checkValidity() && form2?.checkValidity()) {
+                    if (
+                      accountState.userDetails.provider === "email" &&
+                      form2?.checkValidity() &&
+                      form?.checkValidity()
+                    ) {
+                      const input = document.getElementById(
+                        "old-password",
+                      ) as HTMLInputElement | null;
+                      deleteUserAccount(
+                        accountState.userDetails?.uid || "",
+                        accountState.userDetails?.email || "",
+                        accountState.userDetails?.provider || "",
+                        input?.value || "",
+                      );
+                    } else if (
+                      accountState.userDetails.provider !== "email" &&
+                      form2?.checkValidity()
+                    ) {
                       const input = document.getElementById(
                         "old-password",
                       ) as HTMLInputElement | null;

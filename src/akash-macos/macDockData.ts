@@ -174,7 +174,7 @@ export const dockData = [
 
 export const macFinderContent = {
   names: [
-    "Web Developement",
+    "Web Development",
     "App Development",
     "Game Development",
     "Resume",

@@ -163,7 +163,7 @@ export function Exam() {
                 }}
                 onClick={() => {
                   window.open(
-                    `https://${window.location.host}/#/exam/${accountState.userDetails?.uid}?print`,
+                    `https://${window.location.host}/#/exam/${accountState.userDetails?.uid}?print&wallpaper=${accountState.userDetails?.wallpaper}&colour=${accountState.userDetails?.accentColour}`,
                     "_blank",
                   );
                 }}

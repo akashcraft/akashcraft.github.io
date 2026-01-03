@@ -29,6 +29,7 @@ import { Application } from "./akash-app/Application.tsx";
 import ExamShare from "./akash-login/ExamShare.tsx";
 import ClassShare from "./akash-login/ClassShare.tsx";
 import { AuthHandler } from "./akash-login/AuthHandler.tsx";
+import { Policy } from "./akash-login/Legal.tsx";
 
 const appTheme = createTheme({
   cssVariables: {
@@ -137,6 +138,7 @@ export function App() {
           <Route path="/contact-legacy" element={<ContactLegacy />} />
           <Route path="/airport/yyt" element={<Airport />} />
           <Route path="/questplunge" element={<QuestPlunge />} />
+          <Route path="/legal" element={<Policy />} />
           <Route
             path="/login"
             element={user ? <Navigate to="/account/home" /> : <Login />}

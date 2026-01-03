@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import { Box, Chip, useMediaQuery } from "@mui/material";
-import { CopyrightOutlined } from "@mui/icons-material";
+import { Box, Chip, Stack, useMediaQuery } from "@mui/material";
+import { CopyrightOutlined, PolicyOutlined } from "@mui/icons-material";
 import "../styles/Footer.css";
+import { useNavigate } from "react-router-dom";
 
 function Footer() {
   function dateYear() {
@@ -9,6 +10,7 @@ function Footer() {
     return currentDate.getFullYear();
   }
 
+  const navigate = useNavigate();
   const isPhone = useMediaQuery("(max-width:800px)");
 
   return (
@@ -22,12 +24,39 @@ function Footer() {
           backgroundColor: "#c62368",
         }}
       >
-        <StyledChip
-          variant="filled"
-          icon={<CopyrightOutlined sx={{ color: "white !important" }} />}
-          label={`Copyright ${dateYear()} AkashCraft`}
-          style={{ bottom: isPhone ? "1rem" : "-2.5rem" }}
-        />
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={1}
+          sx={{
+            left: "50%",
+            transform: "translateX(-50%)",
+            position: "absolute",
+            bottom: isPhone ? "1rem" : "-2.5rem",
+          }}
+        >
+          <StyledChip
+            variant="filled"
+            icon={<CopyrightOutlined sx={{ color: "white !important" }} />}
+            label={`Copyright ${dateYear()} AkashCraft`}
+          />
+          <StyledChip
+            variant="filled"
+            icon={<PolicyOutlined sx={{ color: "white !important" }} />}
+            onClick={() => {
+              navigate("/legal");
+            }}
+            label={
+              <a
+                href="https://akashcraft.ca/#/legal"
+                style={{ color: "white", textDecoration: "none" }}
+              >
+                Legal
+              </a>
+            }
+          />
+        </Stack>
         <Box
           sx={{
             position: "absolute",
@@ -75,9 +104,6 @@ const StyledChip = styled(Chip)({
   justifyContent: "center",
   borderRadius: "1.5rem",
   fontSize: "1rem",
-  left: "50%",
-  transform: "translateX(-50%)",
-  position: "absolute",
   zIndex: 0,
 });
 

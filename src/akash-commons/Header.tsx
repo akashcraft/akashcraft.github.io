@@ -167,6 +167,7 @@ function Header() {
         "/airport/yyt",
         "/questplunge",
         "/login",
+        "/legal",
       ].includes(path)
     ) {
       if (path === "/eyeport") {

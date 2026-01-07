@@ -1,5 +1,5 @@
 export function openResumeInNewTab() {
-  window.open("/resume.pdf", "_blank");
+  window.open("/Resume.pdf", "_blank");
 }
 
 export function openDetailedExplanation() {

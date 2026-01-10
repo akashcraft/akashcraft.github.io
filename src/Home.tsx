@@ -4,7 +4,6 @@ import { Box, Skeleton, Stack, useMediaQuery } from "@mui/material";
 import styled from "@emotion/styled";
 import logo from "./assets/logo2.jpeg";
 import christmasHat from "./assets/img-main/christmas.png";
-import packageJson from "../package.json";
 import {
   codingData,
   educationData,
@@ -24,6 +23,7 @@ import {
   SchoolOutlined as School,
   DescriptionOutlined as NoteAdd,
   YouTube,
+  PersonOutlined,
 } from "@mui/icons-material";
 import Footer from "./akash-commons/Footer";
 import { motion } from "framer-motion";
@@ -35,6 +35,7 @@ import MacDock from "./akash-macos/MacDock";
 import Background from "./Background";
 import useGeneralInfo from "./akash-commons/firebaseHooks";
 import { MacNotification } from "./akash-macos/MacNotification";
+import HeaderChip from "./akash-main/HeaderChip";
 
 function Home() {
   const [openMacDialog, setOpenMacDialog] = useState<boolean>(false);
@@ -126,9 +127,11 @@ function Home() {
               margin: "0 auto",
             }}
           >
-            <h2 className="about">
-              Release Candidate <StyledSpan>{packageJson.version}</StyledSpan>
-            </h2>
+            <HeaderChip
+              title="About Me"
+              logo={<PersonOutlined sx={ChipIconStyle} />}
+            />
+            <Box height="0.5rem" />
             {!aboutMeText ? (
               <>
                 <Skeleton variant="text" width="100%" animation="wave" />
@@ -232,11 +235,6 @@ function Home() {
     </>
   );
 }
-
-const StyledSpan = styled.span`
-  font-weight: normal;
-  font-size: 0.75rem;
-`;
 
 const StyledImg = styled.img`
   width: 5.5rem;

@@ -433,16 +433,7 @@ export function Account() {
                       heading="Next Exam"
                       description={
                         accountState.exams?.length > 0
-                          ? `${accountState.exams[0].courseName} in ${Math.max(
-                              0,
-                              Math.ceil(
-                                (new Date(
-                                  `${accountState.exams[0].date}`,
-                                ).getTime() -
-                                  new Date().getTime()) /
-                                  (1000 * 60 * 60 * 24),
-                              ),
-                            )} days`
+                          ? getExamCountdown()
                           : "Hooray! No Exams"
                       }
                       isLoading={accountState.exams == undefined}
@@ -610,6 +601,20 @@ export function Account() {
       </Box>
     </AccountContext.Provider>
   );
+
+  function getExamCountdown(): string {
+    const days = Math.max(
+      0,
+      Math.ceil(
+        (new Date(`${accountState.exams[0].date}`).getTime() -
+          new Date().getTime()) /
+          (1000 * 60 * 60 * 24),
+      ),
+    );
+    if (days === 0) return `${accountState.exams[0].courseName} today`;
+    if (days === 1) return `${accountState.exams[0].courseName} tomorrow`;
+    return `${accountState.exams[0].courseName} in ${days} days`;
+  }
 }
 
 export const StyledHeader = styled("h2")({

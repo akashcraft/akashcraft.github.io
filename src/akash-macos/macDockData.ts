@@ -197,7 +197,7 @@ export const macFinderContent = {
     "/#/web",
     "/#/app",
     "/#/game",
-    "/resume.pdf",
+    "/Resume.pdf",
     "/#/eyeport",
     "/#/verafin/1",
     "/#/verafin/2",

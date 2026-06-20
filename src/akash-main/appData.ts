@@ -11,6 +11,7 @@ import banner9 from "../assets/img-main/banner9.png";
 import banner10 from "../assets/img-main/banner10.png";
 import banner11 from "../assets/img-main/banner11.png";
 import banner12 from "../assets/img-main/banner12.png";
+import banner13 from "../assets/img-main/banner13.png";
 import macSetupLogo from "../assets/img-macos/macSetup.png";
 import { createContext } from "react";
 
@@ -86,9 +87,9 @@ export const workData = [
   },
   {
     title: "Datalakes Developer",
-    subtitle: "4 months",
+    subtitle: "Present",
     description:
-      "Worked with Nasdaq Verafin in the Warehouse Data Preparation Team",
+      "Working with Nasdaq Verafin in the Datalakes Implementation Team",
     image: banner6,
     linkText: "Learn More",
     link: "verafin/2",
@@ -115,9 +116,9 @@ export const workDataPhone = [
   },
   {
     title: "Datalakes Developer",
-    subtitle: "4 months",
+    subtitle: "Present",
     description:
-      "Worked with Nasdaq Verafin in the Warehouse Data Preparation Team",
+      "Working with Nasdaq Verafin in the Datalakes Implementation Team",
     image: banner5phone,
     linkText: "Learn More",
     link: "verafin/2",
@@ -127,8 +128,8 @@ export const workDataPhone = [
 export const educationData = [
   {
     title: "Computer Engineering",
-    subtitle: "Current GPA: 4.0/4.0",
-    description: "Studying in Memorial University of Newfoundland",
+    subtitle: "GPA: 4.0/4.0",
+    description: "Graduated from Memorial University of Newfoundland (B. Eng.)",
     image: banner7,
     linkText: "Learn More",
     link: "education",
@@ -159,6 +160,14 @@ export const videoEditingData = [
     image: banner11,
     linkText: "Watch Now",
     link: "https://www.youtube.com/playlist?list=PLtbdWMYTs1LT1OG8O3EiDLtWg_OIxND1k",
+  },
+  {
+    title: "Aircraft Simulator",
+    description:
+      "I have a passion for aviation and flight simulators. Check out some of my flights.",
+    image: banner13,
+    linkText: "Watch Now",
+    link: "https://www.youtube.com/playlist?list=PLtbdWMYTs1LQHZuXn3LP98NkXfOEKzseN",
   },
 ];
 

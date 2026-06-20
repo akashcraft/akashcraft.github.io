@@ -19,13 +19,13 @@ export const verafinData: {
         <Avatar sx={{ width: "1.4rem", height: "1.4rem" }} src={nasdaqLogo} />,
       ],
       statLabel: ["Duration"],
-      statValue: ["4 months"],
-      statSubLabel: ["Fall 2025"],
+      statValue: ["Present"],
+      statSubLabel: ["Since Fall 2025"],
     },
     description: [
-      "•	Worked in the Warehouse Data Preparation Team in Verafin.",
-      "•	Developed scala composers, unit tests, and pipeline tests to contribute to a newer pipeline migration based on Apache Spark and Hudi from an older RDS company database.",
-      "•	Validated AWS step function runs in AWS workspaces with existing data to ensure data consistency. Raised and merged 10 Pull Requests to the company repository.",
+      "•	Working in the Warehouse Data Preparation Team in Verafin.",
+      "•	Developing scala composers, unit tests, and pipeline tests to contribute to a newer pipeline migration based on Apache Spark, Hudi, Iceberg from an older RDS company database.",
+      "•	Validating AWS step function runs in AWS workspaces with existing data to ensure data consistency.",
     ],
   },
   {

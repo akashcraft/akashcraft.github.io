@@ -101,7 +101,7 @@ const getErrorSubText = (statusCode: number): string => {
     400: "Please check your credentials and try again",
     401: "You are not authorized to access this service. Please contact an administrator.",
     403: "Your account has been disabled. Please contact an administrator.",
-    404: "Check your inbox for a verification email. If you need a new link, please register again..",
+    404: "Check your inbox for a verification email. If you need a new link, please register again.",
     409: "An account with that email already exists. Please use a different email or third-party login.",
     410: "You have rejected the authorization request from AkashCraft",
     500: "Internal server error occurred. Please try again later.",

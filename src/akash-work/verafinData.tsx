@@ -32,13 +32,7 @@ export const verafinData: {
     id: 1,
     headerData: {
       title: "UI Developer",
-      chipLabels: [
-        "Nasdaq Verafin",
-        "React JS",
-        "TypeScript",
-        "Node JS",
-        "Webpack",
-      ],
+      chipLabels: ["Nasdaq Verafin", "React", "TypeScript", "Node", "Webpack"],
       chipIcons: [
         <Avatar sx={{ width: "1.4rem", height: "1.4rem" }} src={nasdaqLogo} />,
       ],

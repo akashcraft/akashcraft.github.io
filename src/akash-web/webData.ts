@@ -4,8 +4,9 @@ import img3 from "./../assets/img-web/mahjong.png";
 import img4 from "./../assets/img-web/windows8.png";
 import img5 from "./../assets/img-web/gradeplus.png";
 import img6 from "./../assets/img-account/welcome1.png";
+import img7 from "./../assets/img-web/home-assistant.png";
 
-export const images = [img1, img2, img3, img4, img5, img6];
+export const images = [img1, img2, img3, img4, img5, img6, img7];
 
 export type WebDataType = {
   appName: string;
@@ -34,6 +35,15 @@ export type LegacyAppDataType = {
 };
 
 export const webData: WebDataType[] = [
+  {
+    appName: "Home Assistant",
+    image: images[6],
+    type: "General",
+    description:
+      "Web-based control hub for local Govee Smart Lighting (H618F and H6008)",
+    smallChipLabel: ["View Source Code"],
+    smallChipLinks: ["https://github.com/akashcraft/home-assistant"],
+  },
   {
     appName: "Air Canada In-Flight Map",
     image: images[0],

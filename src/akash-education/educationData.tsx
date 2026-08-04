@@ -79,6 +79,7 @@ export const scholarshipListData = {
     "Scholarship standing for undergraduate students is defined as a 75% average over the previous scholarship year and the successful completion of not less than 30 credit hours",
   ],
   chips: [
+    "Angus Bruneau Award",
     "University Medal for Academic Excellence",
     "PEGNL Academic Excellence Award",
     "Work Term Oral Presentation Dean's Award",

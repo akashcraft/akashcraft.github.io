@@ -1,7 +1,8 @@
 import img1 from "./../assets/img-app/LightCraft.jpeg";
 import img2 from "./../assets/img-work/eyeport7.png";
+import img3 from "./../assets/img-app/eyeos.png";
 
-export const images = [img1, img2];
+export const images = [img1, img2, img3];
 
 export type AppData = {
   appName: string;
@@ -31,6 +32,15 @@ export const appData: AppData[] = [
       "https://github.com/akashcraft/LED-Controller/wiki",
       "https://github.com/akashCraft/LED-Controller",
     ],
+  },
+  {
+    appName: "EyeOS",
+    image: images[2],
+    description:
+      "Python software that provides a webcam-based eye tracking system for controlling the mouse pointer and keyboard input",
+    smallChipLabel: ["View Source Code"],
+    smallChipIcons: ["GitHub"],
+    smallChipLinks: ["https://github.com/akashcraft/EyeOS"],
   },
   {
     appName: "EyePort",

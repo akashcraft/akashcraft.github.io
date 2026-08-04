@@ -48,7 +48,7 @@ function FeaturedCard({
         }}
         modules={[Pagination, Autoplay]}
         pagination={{ clickable: false }}
-        autoplay={{ delay: 10000, pauseOnMouseEnter: true }}
+        autoplay={{ delay: 3000, pauseOnMouseEnter: true }}
       >
         {appData.map((app, index) => (
           <SwiperSlide key={index}>

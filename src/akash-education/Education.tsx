@@ -70,7 +70,7 @@ function Education() {
               width: isPhone ? "120%" : "100%",
             }}
           >
-            {images.slice(4).map((src, index) => (
+            {images.slice(5).map((src, index) => (
               <SwiperSlide key={index} style={{ height: "auto" }}>
                 <StyledImg src={src} />
               </SwiperSlide>
@@ -159,7 +159,7 @@ function Education() {
               width: isPhone ? "250%" : "100%",
             }}
           >
-            {images.slice(0, 4).map((src, index) => (
+            {images.slice(0, 5).map((src, index) => (
               <SwiperSlide key={index} style={{ height: "auto" }}>
                 <StyledImg src={src} />
               </SwiperSlide>

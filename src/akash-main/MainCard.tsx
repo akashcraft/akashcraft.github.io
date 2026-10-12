@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { MacDialogContext, type genericAppData } from "./appData";
-import { styled } from "@mui/material/styles";
+import { styled, useColorScheme } from "@mui/material/styles";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import BlockIcon from "@mui/icons-material/Block";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -29,12 +29,15 @@ type MainCardProps = {
 };
 
 function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
+  const isCertification = data.title === "Licenses & Certifications";
   const subtitle = isDuration ? "Duration: " + data.subtitle : data.subtitle;
   const [hovered, setHovered] = useState<boolean>(false);
   const isPrivate = data.linkText === "Private";
   const isReset = data.linkText === "Reset";
   const { setOpenMacDialog } = useContext(MacDialogContext);
   const navigate = useNavigate();
+  const { mode } = useColorScheme();
+  const isLight = mode === "light";
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -73,7 +76,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
         marginBottom: "1rem",
         gap: "1rem",
         backgroundColor: "var(--mui-palette-background-paper)",
-        ":hover": { backgroundColor: "var(--mui-palette-action-hover)" },
+        ":hover": { backgroundColor: "var(--mui-palette-background-paper)" },
         borderRadius: "1rem",
       }}
       onClick={handleClick}
@@ -82,7 +85,13 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
         <Avatar
           src={data.image}
           variant="rounded"
-          sx={{ transform: "scale(1.7)", margin: "0 1rem" }}
+          sx={{
+            transform: "scale(1.7)",
+            margin: "0 1rem",
+            ...(isCertification && {
+              "& img": { objectFit: "contain", width: "100%", height: "100%" },
+            }),
+          }}
         />
       </ListItemAvatar>
       <ListItemText
@@ -144,6 +153,17 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
             style={{ display: isLoading ? "none" : "block" }}
             height="170"
             image={data.image}
+            sx={
+              isCertification
+                ? {
+                    backgroundColor: isLight
+                      ? "var(--mui-palette-background-buttondark)"
+                      : "var(--mui-palette-background-macosfinder2)",
+                    objectFit: "contain",
+                    padding: "17px",
+                  }
+                : undefined
+            }
           />
         </motion.div>
         <CardContent>
@@ -252,6 +272,7 @@ function MainCard({ data, isDuration, isLoading = false }: MainCardProps) {
 const StyledCard = styled(Card)({
   backgroundColor: "var(--mui-palette-background-paper)",
   borderRadius: "1rem",
+  width: "20rem",
   maxWidth: "20rem",
   textAlign: "left",
 });

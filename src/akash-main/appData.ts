@@ -13,6 +13,7 @@ import banner11 from "../assets/img-main/banner11.png";
 import banner12 from "../assets/img-main/banner12.png";
 import banner13 from "../assets/img-main/banner13.png";
 import macSetupLogo from "../assets/img-macos/macSetup.png";
+import certificationImage from "../assets/img-cert/cert-combo.png";
 import { createContext } from "react";
 
 export const images = [
@@ -133,6 +134,14 @@ export const educationData = [
     image: banner7,
     linkText: "Learn More",
     link: "education",
+  },
+  {
+    title: "Licenses & Certifications",
+    subtitle: "Total: 6",
+    description: "Click here to view all my licenses and certifications",
+    image: certificationImage,
+    linkText: "Learn More",
+    link: "cert",
   },
 ];
 

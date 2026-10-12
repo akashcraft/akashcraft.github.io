@@ -149,7 +149,9 @@ function FeaturedCard({
               alignSelf: "center",
               gap: "1rem",
               backgroundColor: "var(--mui-palette-background-paper)",
-              ":hover": { backgroundColor: "var(--mui-palette-action-hover)" },
+              ":hover": {
+                backgroundColor: "var(--mui-palette-background-paper)",
+              },
               borderRadius: "1rem",
               mb: 2,
             }}

@@ -2,7 +2,7 @@ import "./styles/App.css";
 import Header from "./akash-commons/Header";
 import { Box, Skeleton, Stack, useMediaQuery } from "@mui/material";
 import styled from "@emotion/styled";
-import logo from "./assets/logo2.jpeg";
+import logo from "./assets/logo2.png";
 import christmasHat from "./assets/img-main/christmas.png";
 import {
   codingData,

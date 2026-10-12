@@ -54,7 +54,7 @@ function WebCard({ data, isLoading, isPhone }: WebCardProps) {
           alignSelf: "center",
           gap: "1rem",
           backgroundColor: "var(--mui-palette-background-paper)",
-          ":hover": { backgroundColor: "var(--mui-palette-action-hover)" },
+          ":hover": { backgroundColor: "var(--mui-palette-background-paper)" },
           borderRadius: "1rem",
         }}
         onClick={() => {

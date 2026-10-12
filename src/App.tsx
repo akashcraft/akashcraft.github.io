@@ -14,6 +14,7 @@ import Verafin from "./akash-work/Verafin.tsx";
 import EyePort from "./akash-work/EyePort.tsx";
 import QuestPlunge from "./akash-game/QuestPlunge.tsx";
 import Web from "./akash-web/Web.tsx";
+import Cert from "./akash-cert/Cert.tsx";
 import ScrollToTop from "./akash-commons/ScrollToTop.tsx";
 import { NotFound } from "./NotFound.tsx";
 import Mahjong from "./akash-web/Mahjong.tsx";
@@ -132,6 +133,7 @@ export function App() {
           <Route path="/verafin/:id" element={<Verafin />} />
           <Route path="/eyeport" element={<EyePort />} />
           <Route path="/web" element={<Web />} />
+          <Route path="/cert" element={<Cert />} />
           <Route path="/app" element={<Application />} />
           <Route path="/mahjong" element={<Mahjong />} />
           <Route path="/contact" element={<Contact />} />

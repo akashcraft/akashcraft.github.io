@@ -59,6 +59,12 @@ export function Application() {
                         backgroundColor: "var(--mui-palette-background-light)",
                         borderRadius: "1rem",
                       },
+                      "@media (max-width: 800px)": {
+                        ":hover": {
+                          backgroundColor:
+                            "var(--mui-palette-background-paper)",
+                        },
+                      },
                     }}
                     onClick={() => window.open(item.link, "_blank")}
                   >

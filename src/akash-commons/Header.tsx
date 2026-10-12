@@ -163,6 +163,7 @@ function Header() {
         "/networking",
         "/app",
         "/web",
+        "/cert",
         "/mahjong",
         "/airport/yyt",
         "/questplunge",
@@ -178,6 +179,8 @@ function Header() {
         return "Mahjong";
       } else if (path === "/airport/yyt") {
         return "Live Schedules";
+      } else if (path === "/cert") {
+        return "Certifications";
       }
       return path.charAt(1).toUpperCase() + path.slice(2);
     } else {

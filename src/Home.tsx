@@ -109,8 +109,8 @@ function Home() {
                   style={{
                     position: "absolute",
                     width: "3rem",
-                    top: "-0.1rem",
-                    right: "2rem",
+                    top: "-1.2rem",
+                    right: "1.8rem",
                   }}
                 />
               )}

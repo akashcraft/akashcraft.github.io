@@ -108,9 +108,9 @@ function Home() {
                   src={christmasHat}
                   style={{
                     position: "absolute",
-                    width: "3rem",
-                    top: "-1.2rem",
-                    right: "1.8rem",
+                    width: "2.5rem",
+                    top: "-0.3rem",
+                    right: "2.0rem",
                   }}
                 />
               )}
